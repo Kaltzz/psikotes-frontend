@@ -1,0 +1,163 @@
+'use client';
+import Link from 'next/link';
+import { ArrowLeft, Brain, Clock, ListChecks } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+function IconSeries() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="2" y="4" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="9" y="8" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="16" y="12" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+function IconClock() {
+  return (
+    <svg className="w-5 h-5 inline-block mr-1 -mt-0.5" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+function IconList() {
+  return (
+    <svg className="w-5 h-5 inline-block mr-2 -mt-0.5" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 6h.01M3 12h.01M3 18h.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export default function CFITTest() {
+  return (
+    <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
+        <div className="container mx-auto px-6 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Brain className="text-blue-600" size={28} />
+            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 1: Series</h1>
+          </div>
+          <button
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+          >
+            <ArrowLeft size={18} />
+            <span>Kembali</span>
+          </button>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-10">
+      <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8"
+        >
+          {/* Card */}
+          <section>
+            <div className="p-6 md:p-8">
+              {/* Breadcrumb / Title */}
+              <div className="mb-4">
+                <nav className="text-xs text-slate-500 mb-2" aria-label="Breadcrumb">
+                  <ol className="inline-flex items-center space-x-2">
+                    <li><Link href="/tests/cfit" className="hover:underline">Tes</Link></li>
+                    <li><span className="text-slate-400">/</span></li>
+                    <li className="font-medium text-slate-700">CFIT</li>
+                  </ol>
+                </nav>
+
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Tes CFIT</h2>
+                <p className="mt-2 text-sm text-slate-600">Subtes yang dirancang untuk mengukur kemampuan penalaran non-verbal dan pola berpikir.</p>
+              </div>
+              
+
+              {/* Info box */}
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                  <div className="text-blue-600">
+                    <IconClock />
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-slate-800 font-medium">Total Waktu</div>
+                    <div className="text-slate-600">~ 25 menit (4 subtes)</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-100 rounded-lg">
+                  <div className="text-amber-600">
+                    <IconList />
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-slate-800 font-medium">Jumlah Soal</div>
+                    <div className="text-slate-600">Total 50 soal (tergantung versi)</div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
+                  <div className="text-emerald-600">
+                    <IconSeries />
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-slate-800 font-medium">Format</div>
+                    <div className="text-slate-600">Non-verbal • Gambar & Matriks</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Petunjuk */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-slate-800 mb-3">Petunjuk Umum</h3>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
+                  <li className="flex gap-3 items-start">
+                    <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    Kerjakan setiap soal sesuai petunjuk; beberapa soal berupa gambar berurutan.
+                  </li>
+                  <li className="flex gap-3 items-start">
+                    <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    Untuk subtes bergambar, pilih opsi gambar yang paling sesuai.
+                  </li>
+                  <li className="flex gap-3 items-start">
+                    <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    Pastikan koneksi stabil; jangan reload saat tes berjalan.
+                  </li>
+                  <li className="flex gap-3 items-start">
+                    <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    Baca dengan teliti, gunakan full-screen bila perlu.
+                  </li>
+                </ul>
+              </div>
+              {/* Action area */}
+              <div className="mt-8 border-t pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-sm text-slate-600">
+                  <strong className="text-slate-800">Sebelum mulai:</strong> pastikan data diri sudah lengkap dan Anda siap fokus.
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link href="/profile">
+                    <button className="px-4 py-2 rounded-lg bg-white border text-slate-700 hover:bg-slate-50 transition">
+                      Edit Biodata
+                    </button>
+                  </Link>
+                  <Link href="/tests/cfit/subtest1">
+                    <button
+                      className="px-5 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.01] active:scale-95 transition-transform"
+                      aria-label="Mulai CFIT Subtes 1"
+                    >
+                      Selanjutnya
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+          {/* Footer small */}
+          <div className="mt-6 text-center text-xs text-slate-400">
+            Sistem ini menampilkan format latihan — selama tes sungguhan, waktu akan diatur secara ketat.
+          </div>
+          </motion.div>
+      </main>
+    </div>
+  );
+}
