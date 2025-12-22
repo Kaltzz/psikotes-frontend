@@ -2,8 +2,138 @@
 import Link from 'next/link';
 import { ArrowLeft, Brain, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function CFITSubtest1() {
+interface Question {
+  id: number;
+  images: string[];
+  correctAnswer: number[];
+  explanationRight: string,
+  explanationFalse: string
+}
+
+export default function CFITSubtest2() {
+  const router = useRouter()
+  const [resultText, setResultText] = useState<string>('')
+  const [answers, setAnswers] = useState<number[][]>([])
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [isChecked, setIsChecked] = useState<boolean>(false)
+  // const [selectedOptions, setIsSelectedOptions] = useState<number[][]>([])
+
+  const questions: Question[] = [
+    {
+      id: 1,
+      images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
+      correctAnswer: [2, 3],
+      explanationRight: 'Benar karena opsi yang dipilih benar',
+      explanationFalse: 'Salah karena opsi yang dipilih tidak tepat'
+    },
+    {
+      id: 2,
+      images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
+      correctAnswer: [4, 5],
+      explanationRight: 'Benar karena opsi yang dipilih benar',
+      explanationFalse: 'Salah karena opsi yang dipilih tidak tepat'
+    },
+    {
+      id: 3,
+      images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
+      correctAnswer: [1, 2],
+      explanationRight: 'Benar karena opsi yang dipilih benar',
+      explanationFalse: 'Salah karena opsi yang dipilih tidak tepat'
+    }
+  ]
+
+//   const handleAnswer = (answerIndex:number) =>{
+//     if (isChecked === true)
+//       return
+//     // console.log(answers)
+//     console.log(`answerIndex: ${answerIndex}`)
+//     // const newAnswers = [...answers]
+
+//     // console.log(newAnswers)
+//     const newAnswers = [...answers];
+//     newAnswers[currentQuestion] = answerIndex;
+//     setAnswers(newAnswers);
+
+//     // console.log(answers)
+//  }
+
+  const handleAnswer = (option: number) => {
+  if (isChecked) return;
+
+  setAnswers(prev => {
+    const current = prev[currentQuestion] || [];
+
+    if (current.includes(option)) {
+      const updated = current.filter(o => o !== option);
+      const copy = [...prev];
+      copy[currentQuestion] = updated;
+      return copy;
+    }
+
+    if (current.length === 2) return prev;
+
+    const copy = [...prev];
+    copy[currentQuestion] = [...current, option];
+    return copy;
+  });
+};
+
+
+//   const checkAnswer = (questionIndex: number) => {
+//     const answer = answers[questionIndex]
+
+//     if(answer !== undefined) {
+//       setIsChecked(true)
+//     }
+
+//     if (answer === questions[questionIndex].correctAnswer) {
+//       setResultText(questions[questionIndex].explanationRight)
+//   } else {
+//       setResultText(questions[questionIndex].explanationFalse)
+//   }
+//  }
+
+  const checkAnswer = (questionIndex: number) => {
+  const selected = answers[questionIndex];
+  if (!selected || selected.length !== 2) return;
+
+  setIsChecked(true);
+
+  const correct = questions[questionIndex].correctAnswer;
+  const isCorrect =
+    selected.length === correct.length &&
+    selected.every(v => correct.includes(v));
+
+  setResultText(
+    isCorrect
+      ? questions[questionIndex].explanationRight
+      : questions[questionIndex].explanationFalse
+  );
+};
+
+
+  const handleTestComplete = () => {
+    router.push('/tests/cfit/subtest2/test')
+  }
+
+  const resetState = () => {
+    setResultText('')
+    setIsChecked(false)
+    setAnswers([])
+  }
+
+  const handleNext = () => {
+    resetState()
+    setCurrentQuestion(prev => prev + 1)
+  }
+
+  useEffect(() => {
+          console.log('current question:', currentQuestion);
+          }, [currentQuestion]);
+
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col">
       {/* Header */}
@@ -35,7 +165,7 @@ export default function CFITSubtest1() {
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
               <ListChecks className="text-blue-600" size={22} />
-              Petunjuk Subtes 1
+              Petunjuk Subtes 2
             </h2>
 
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
@@ -46,12 +176,12 @@ export default function CFITSubtest1() {
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>Mengamati rangkaian gambar yang disajikan</li>
                 <li>Menemukan pola atau hubungan antara gambar-gambar tersebut</li>
-                <li>Memilih gambar yang tepat untuk melengkapi rangkaian tersebut</li>
+                <li>Memilih dua buah gambar yang saling berhubungan di antara gambar-gambar tersebut</li>
                 <li>
                   <Clock className="inline-block text-blue-500 mr-1" size={16} />
-                  Waktu pengerjaan: <span className="font-semibold">3 menit</span>
+                  Waktu pengerjaan: <span className="font-semibold">4 menit</span>
                 </li>
-                <li>Jumlah soal: <span className="font-semibold">13 butir</span></li>
+                <li>Jumlah soal: <span className="font-semibold">10 butir</span></li>
               </ul>
             </div>
           </section>
@@ -64,9 +194,132 @@ export default function CFITSubtest1() {
                 Perhatikan rangkaian gambar berikut dan tentukan gambar yang tepat untuk mengisi kotak terakhir:
               </p>
               <div className="flex justify-center items-center bg-white rounded-lg p-8 border">
-                <span className="text-gray-400 italic">
-                  (Contoh gambar soal akan ditampilkan di sini)
-                </span>
+                
+                  <div className='w-full flex flex-col gap-3 text-gray-400 italic'>
+                      <div>
+                        <p>Jawab soal berikut dengan teliti dan cepat.</p>
+                      </div>
+                      <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-6 text-gray-400 italic w-full">
+                      {questions[currentQuestion].images.map((img, i) => (
+                        <div
+                          key={i}
+                          className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 border border-slate-200"
+                        >
+                          <span className="text-xs font-medium">Gambar {i + 1}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-center text-slate-700 mb-6">
+                      Pilih gambar yang paling tepat untuk melengkapi pola:
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 w-full">
+                      {/* {[1, 2, 3, 4, 5, 6].map(option => (
+                        <button
+                          key={option}
+                          onClick={() => handleAnswer(option)}
+                          // className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 ${
+                          //   answers[currentQuestion] === option
+                          //     ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
+                          //     : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
+                          // }`}
+                            className={`aspect-square text-lg font-semibold rounded-xl flex items-center  justify-center transition-all border-2 ${
+                              // isChecked === true && option === questions[currentQuestion].correctAnswer
+                              // ? 'bg-green-600 text-white border-green-600 scale-105 shadow '
+                              // : answers[currentQuestion] === option
+                              // ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow '
+                              // : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
+
+
+                              isChecked === true && option === questions[currentQuestion].correctAnswer
+                              ? 'bg-green-600  text-white border-green-600 scale-105 shadow'
+                              : isChecked === true && !(option === questions[currentQuestion].correctAnswer) && answers[currentQuestion] === option
+                              ? 'bg-red-600 text-white border-red-600 scale-105 shadow'
+                              : answers[currentQuestion] === option
+                              ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
+                              : isChecked === false || answers[currentQuestion] === option
+                              ? ' hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
+                              : !(isChecked === true && option === questions[currentQuestion].correctAnswer)
+                              ? 'border-slate-200 bg-slate-50'
+                              : ''
+
+                              // answers[currentQuestion] === option
+                              // ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
+                              // : 'hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
+
+                            }`}
+                            disabled = {isChecked === true}
+                        >
+                          {option}
+                        </button>
+                      ))} */}
+                      {[1, 2, 3, 4, 5, 6].map(option => {
+                        const selected = answers[currentQuestion]?.includes(option);
+                        const correct = questions[currentQuestion].correctAnswer.includes(option);
+
+                        return (
+                          <button
+                            key={option}
+                            onClick={() => handleAnswer(option)}
+                            disabled={isChecked}
+                            className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2
+                              ${
+                                isChecked && correct
+                                  ? 'bg-green-600 text-white border-green-600'
+                                  : isChecked && selected && !correct
+                                  ? 'bg-red-600 text-white border-red-600'
+                                  : selected
+                                  ? 'bg-blue-600 text-white border-blue-600'
+                                  : 'border-slate-200 bg-slate-50 hover:border-blue-400'
+                              }
+                            `}
+                          >
+                            {option}
+                          </button>
+                        );
+})}
+
+                    </div>
+
+                    <div className=''>
+                      <button onClick={() => checkAnswer(currentQuestion)} disabled = {isChecked === true} className={` px-8 py-3 rounded-lg font-semibold  ${
+                          isChecked === true
+                          ? 'bg-blue-400 text-gray-200'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                        }`} >Cek Jawaban</button>
+                    </div>
+                    <div>
+                      <p>{resultText}</p>
+                    </div>  
+
+                    <div className="flex justify-between items-center">
+            <button
+              onClick={() => 
+                {
+                  setCurrentQuestion(prev => Math.max(0, prev - 1))
+                  resetState()
+                }}
+              disabled={currentQuestion === 0}
+              className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
+                currentQuestion === 0
+                  ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
+                  : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'
+              }`}
+            >
+              ← Sebelumnya
+            </button>
+
+            <button
+              onClick={
+                currentQuestion === questions.length - 1
+                  ? handleTestComplete
+                  : handleNext
+              }
+              className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
+            >
+              {currentQuestion === questions.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
+            </button>
+          </div>
+                  </div>
               </div>
             </div>
           </section>
@@ -78,7 +331,7 @@ export default function CFITSubtest1() {
                 Kembali
               </button>
             </Link>
-            <Link href="/tests/cfit/subtest1/test" className="inline-block">
+            <Link href="/tests/cfit/subtest2/test" className="inline-block">
               <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
                 Mulai Subtes 2
               </button>

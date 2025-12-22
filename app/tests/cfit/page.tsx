@@ -69,7 +69,7 @@ export default function CFITTest() {
                   </ol>
                 </nav>
 
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Tes CFIT</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Tes Culture Fair Intelligence Test (CFIT)</h2>
                 <p className="mt-2 text-sm text-slate-600">Subtes yang dirancang untuk mengukur kemampuan penalaran non-verbal dan pola berpikir.</p>
               </div>
               
@@ -82,7 +82,7 @@ export default function CFITTest() {
                   </div>
                   <div className="text-sm">
                     <div className="text-slate-800 font-medium">Total Waktu</div>
-                    <div className="text-slate-600">~ 25 menit (4 subtes)</div>
+                    <div className="text-slate-600">~ 12,5 menit (4 subtes)</div>
                   </div>
                 </div>
                 
@@ -92,7 +92,7 @@ export default function CFITTest() {
                   </div>
                   <div className="text-sm">
                     <div className="text-slate-800 font-medium">Jumlah Soal</div>
-                    <div className="text-slate-600">Total 50 soal (tergantung versi)</div>
+                    <div className="text-slate-600">Total 46 soal (tergantung versi)</div>
                   </div>
                 </div>
 

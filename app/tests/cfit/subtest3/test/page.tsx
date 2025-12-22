@@ -3,61 +3,61 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Question {
-  id: number;
-  images: string[];
+    id: number;
+    images: string[];
 }
 
-export default function CFITSubtest1Test() {
-  const router = useRouter();
-  const [timeLeft, setTimeLeft] = useState(180); // 3 menit
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
 
-  // Data dummy
-  const questions: Question[] = [
-    {
-      id: 1,
-      images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
-    },
-    {
-      id: 2,
-      images: ['q2-1.png', 'q2-2.png', 'q2-3.png', 'q2-4.png',],
-    },
-  ];
+export default function CFITSubtest3Test() {
+    const router = useRouter();
+    const [timeLeft, setTimeLeft] = useState(180); // 3 menit
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [answers, setAnswers] = useState<number[]>([]);
+    
+    const questions: Question[] = [
+        {
+            id: 1,
+            images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
+        },
+        {
+            id: 2,
+            images: ['q2-1.png', 'q2-2.png', 'q2-3.png', 'q2-4.png',],
+        },
+    ];
 
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      handleTestComplete();
-      return;
-    }
-    const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft]);
+    useEffect(() => {
+        if (timeLeft <= 0) {
+        handleTestComplete();
+        return;
+        }
+        const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+        return () => clearInterval(timer);
+    }, [timeLeft]);
 
-  const handleAnswer = (answerIndex: number) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestion] = answerIndex;
-    setAnswers(newAnswers);
-  };
+    const handleAnswer = (answerIndex: number) => {
+        const newAnswers = [...answers];
+        newAnswers[currentQuestion] = answerIndex;
+        setAnswers(newAnswers);
+    };
 
-  const handleTestComplete = () => {
-    router.push('/tests/cfit/subtest2');
-  };
+    const handleTestComplete = () => {
+        router.push('/tests/cfit/subtest4');
+    };
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remaining = seconds % 60;
-    return `${minutes}:${remaining.toString().padStart(2, '0')}`;
-  };
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remaining = seconds % 60;
+        return `${minutes}:${remaining.toString().padStart(2, '0')}`;
+    };
 
-  useEffect(() => {
-        console.log('answers berubah:', answers);
-        }, [answers]);
+    useEffect(() => {
+            console.log('answers berubah:', answers);
+            }, [answers]);
 
-  const progressPercent = ((currentQuestion + 1) / questions.length) * 100;
+    const progressPercent = ((currentQuestion + 1) / questions.length) * 100;
 
-  return (
-    <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+    return (
+        <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-6 md:p-10">
           {/* Header */}
@@ -87,7 +87,7 @@ export default function CFITSubtest1Test() {
 
           {/* Soal */}
           <div className="border rounded-2xl bg-white shadow-sm p-6 mb-8">
-            <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-6">
+            <div className="w-1/2 grid grid-cols-2 md:grid-cols-2 gap-3 mb-6 m-auto">
               {questions[currentQuestion].images.map((img, i) => (
                 <div
                   key={i}
@@ -155,5 +155,5 @@ export default function CFITSubtest1Test() {
         </div>
       </main>
     </div>
-  );
+    )
 }
