@@ -32,6 +32,9 @@ export default function TestForm() {
     localStorage.setItem('userData', JSON.stringify(formData))
 
     switch (token.toLowerCase()) {
+      case '123':
+        router.push('/tests/cfit')
+        break
       case 'cfit':
         router.push('/tests/cfit')
         break
@@ -47,7 +50,7 @@ export default function TestForm() {
   const isFormValid = Object.values(formData).every(v => v.trim() !== '') && !isSubmitting
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 px-4 py-10">
       <div className="relative w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden border border-indigo-100">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center py-4">
@@ -83,7 +86,7 @@ export default function TestForm() {
               <select
                 name="jenisKelamin"
                 id="jenisKelamin"
-                required
+                required  
                 value={formData.jenisKelamin}
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
@@ -137,7 +140,7 @@ export default function TestForm() {
               </label>
               <input
                 type="text"
-                name="jursan"
+                name="jurusan"  // (perubahan) kesalahan penulisan name, sebelumnya jursan @rezky
                 id="jurusan"
                 required
                 value={formData.jurusan}
@@ -160,7 +163,7 @@ export default function TestForm() {
                 value={formData.token}
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
-                placeholder="Contoh: CFIT / KRAEPELIN"
+                placeholder="Contoh: 123"
               />
             </div>
 

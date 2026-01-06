@@ -141,15 +141,8 @@ export default function CFITSubtest2() {
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Brain className="text-blue-600" size={28} />
-            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 2: Series</h1>
+            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 2</h1>
           </div>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft size={18} />
-            <span>Kembali</span>
-          </button>
         </div>
       </header>
 
@@ -326,11 +319,6 @@ export default function CFITSubtest2() {
 
           {/* Section: Tombol Aksi */}
           <div className="text-center space-x-4">
-            <Link href="/tests/cfit" className="inline-block">
-              <button className="bg-gray-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors">
-                Kembali
-              </button>
-            </Link>
             <Link href="/tests/cfit/subtest2/test" className="inline-block">
               <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
                 Mulai Subtes 2

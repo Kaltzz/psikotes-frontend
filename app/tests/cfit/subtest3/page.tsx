@@ -95,14 +95,8 @@ export default function CFITSubtest3() {
         <div className='container mx-auto px-6 flex justify-between items-center'>
           <div className='flex items-center gap-2'>
             <Brain className="text-blue-600" size={28}/>
-            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 3: Series</h1>
+            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 3</h1>
           </div>
-          <button
-            onClick={()=> router.push('/test/cfit') }
-          >
-            <ArrowLeft size={18} />
-            <span>Kembali</span>
-          </button>
         </div>
       </header>
 
@@ -232,11 +226,6 @@ export default function CFITSubtest3() {
           </section>
 
           <div className="text-center space-x-4">
-            <Link href="/tests/cfit/subtest3" className="inline-block">
-              <button className="bg-gray-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors">
-                Kembali
-              </button>
-            </Link>
             <Link href="/tests/cfit/subtest3/test" className="inline-block">
               <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
                 Mulai Subtes 3

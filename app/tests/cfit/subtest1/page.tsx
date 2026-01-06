@@ -94,20 +94,20 @@ export default function CFITSubtest1() {
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Brain className="text-blue-600" size={28} />
-            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 1: Series</h1>
+            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 1</h1>
           </div>
-          <button
-            onClick={() => router.push('/test/cfit')}
+          {/* <button
+            onClick={() => router.push('/tests/cfit')}
             className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
           >
             <ArrowLeft size={18} />
             <span>Kembali</span>
-          </button>
+          </button> */}
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-10">
+      <main className="grow container mx-auto px-4 py-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -255,11 +255,6 @@ export default function CFITSubtest1() {
 
           {/* Section: Tombol Aksi */}
           <div className="text-center space-x-4">
-            <Link href="/tests/cfit" className="inline-block">
-              <button className="bg-gray-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-600 transition-colors">
-                Kembali
-              </button>
-            </Link>
             <Link href="/tests/cfit/subtest1/test" className="inline-block">
               <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
                 Mulai Subtes 1

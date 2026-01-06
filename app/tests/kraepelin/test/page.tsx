@@ -1,191 +1,186 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { Brain, Clock } from 'lucide-react'
+import { Brain } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
-export default function KraepelinTwoColumn() {
-  const router = useRouter()
-  const DURATION = 30 // durasi tiap baris
-  const numbers = [
-    [6, 3, 4, 8, 2, 7, 5, 9, 1, 4],
-    [2, 5, 7, 1, 6, 3, 4, 8, 9, 2],
-    [1, 9, 3, 6, 2, 4, 5, 7, 8, 1],
-  ]
+export default function KraepelinTestPage() {
+  
+  type Answer = -1 | 0 | 1
 
-  const [currentRow, setCurrentRow] = useState(0)
-  const [timeLeft, setTimeLeft] = useState(DURATION)
-  const [isFinished, setIsFinished] = useState(false)
-  const currentNumbers = numbers[currentRow]
-  const pairCount = currentNumbers.length - 1
-  const [answers, setAnswers] = useState<string[]>(Array(pairCount).fill(''))
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+  // const DURATION = 6
+  const TOTAL_COLUMNS = 3
+  const COLUMN_DURATION = 10 // detik
+  const TOTAL_QUESTIONS = 10;
 
-  // Timer
+  const router = useRouter();
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentColumn, setCurrentColumn] = useState(1)
+  const [columnTimeLeft, setColumnTimeLeft] = useState(COLUMN_DURATION)
+  const [numbers, setNumbers] = useState<[number, number]>([0, 0]);
+  const [answers, setAnswers] = useState<Answer[][]>(
+    Array.from({ length: TOTAL_COLUMNS }, () => [])
+  )
+  
+  const moveToNextColumn = () => {
+  const colIndex = currentColumn - 1
+
+  // isi sisa soal dengan 0
+  fillRemainingWithZero(colIndex)
+
+  if (currentColumn < TOTAL_COLUMNS) {
+    setCurrentColumn(prev => prev + 1)
+    setCurrentIndex(0)
+    setColumnTimeLeft(COLUMN_DURATION)
+    generateNumbers()
+  } else {
+    router.push("/tests/disc")
+  }
+}
+
+  // generate soal baru
+  const generateNumbers = () => {
+    const a = Math.floor(Math.random() * 9) + 1;
+    const b = Math.floor(Math.random() * 9) + 1;
+    setNumbers([a, b]);
+  };
+
+  const handleTestComplete = () => {
+    router.push('/tests/kraepelin');
+  }
+  
   useEffect(() => {
-    if (isFinished) return
+    generateNumbers();
+  }, []);
+  
+  useEffect(() => {
+    console.log('jawaban: ', answers)
+    })
+  
+  useEffect(() => {
+    console.log('Currentindex: ', currentIndex)
+  })
 
-    const t = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(t)
+  useEffect(() => {
+    if (currentColumn > TOTAL_COLUMNS) return
 
-          if (currentRow < numbers.length - 1) {
-            setCurrentRow((r) => r + 1)
-            setAnswers(Array(pairCount).fill(''))
-            setTimeLeft(DURATION)
-          } else {
-            setIsFinished(true)
-          }
+    if (columnTimeLeft <= 0) {
+      moveToNextColumn()
+      return
+      }
 
-          return 0
-        }
-        return prev - 1
-      })
+    const timer = setInterval(() => {
+    setColumnTimeLeft(prev => prev - 1)
     }, 1000)
 
-    return () => clearInterval(t)
-  }, [isFinished, currentRow])
+    return () => clearInterval(timer)
+  }, [columnTimeLeft, currentColumn])
 
-  // Fokus input pertama setiap ganti lajur
-  useEffect(() => {
-    if (!isFinished && inputRefs.current[0]) {
-      inputRefs.current[0].focus()
+
+  
+  const handleInput = (value: string) => {
+  if (!/^\d$/.test(value)) return
+
+  const [a, b] = numbers
+  const correctAnswer = (a + b) % 10
+  const isCorrect: Answer = Number(value) === correctAnswer ? 1 : -1
+
+  setAnswers(prev => {
+    const updated = [...prev]
+    updated[currentColumn - 1] = [
+      ...updated[currentColumn - 1],
+      isCorrect
+    ]
+    return updated
+  })
+
+  // soal masih ada
+  if (currentIndex < TOTAL_QUESTIONS - 1) {
+    setCurrentIndex(prev => prev + 1)
+    generateNumbers()
+  } else {
+    // soal kolom habis → langsung pindah kolom
+    moveToNextColumn()
+  }
+} 
+  const fillRemainingWithZero = (columnIndex: number) => {
+  setAnswers(prev => {
+    const updated = [...prev]
+    const answeredCount = updated[columnIndex].length
+    const remaining = TOTAL_QUESTIONS - answeredCount
+
+    if (remaining > 0) {
+      updated[columnIndex] = [
+        ...updated[columnIndex],
+        ...Array(remaining).fill(0)
+      ]
     }
-  }, [currentRow])
 
-  // 🚀 Redirect otomatis ke /result setelah tes selesai
-  useEffect(() => {
-    if (isFinished) {
-      const timeout = setTimeout(() => {
-        router.push('/result')
-      }, 1500) // kasih jeda 1.5 detik biar transisi halus
-      return () => clearTimeout(timeout)
-    }
-  }, [isFinished, router])
+    return updated
+  })
+}
 
-  const handleAnswerChange = (index: number, val: string) => {
-    const v = val.replace(/[^0-9]/g, '').slice(0, 1)
-    setAnswers((prev) => {
-      const copy = [...prev]
-      copy[index] = v
-      return copy
-    })
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      if (index < pairCount - 1) {
-        inputRefs.current[index + 1]?.focus()
-      } else {
-        setIsFinished(true)
-      }
-    }
-  }
-
-  const rows = Array(currentNumbers.length * 2 - 1).fill('auto').join(' ')
-
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-    const s = seconds % 60
-    return `${m}:${s.toString().padStart(2, '0')}`
-  }
-
-  if (isFinished) {
-    // Tampilan sementara sebelum redirect
-    return (
-      <div className="min-h-screen flex flex-col bg-slate-50 items-center justify-center">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">Tes Selesai!</h2>
-        <p className="text-gray-600 text-sm">Mengalihkan ke halaman hasil...</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-slate-100">
+  return(
+    <div className="fixed inset-0 flex flex-col overflow-hidden bg-gradient-to-b from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
+      <header className="bg-white shadow-sm py-4 z-10">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Brain className="text-blue-600" size={28} />
+         <div className="flex items-center gap-2">
+          <Brain className="text-blue-600" size={28} />
             <h1 className="text-xl font-bold text-gray-800">Tes Kraepelin (Pauli)</h1>
           </div>
         </div>
       </header>
 
       {/* Konten utama */}
-      <main className="container mx-auto px-6 py-10">
-        <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+      <main className="flex-1 overflow-hidden px-4 py-6">
+        <div className="h-full max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6 overflow-hidden">
           {/* Header info */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div className="md:flex-1 text-center md:text-left">
-              <h2 className="text-2xl font-bold text-gray-800 mb-1">Instruksi Tes</h2>
-              <p className="text-gray-500 text-sm leading-relaxed">
-                Jumlahkan dua angka yang berdekatan secara{' '}
-                <span className="font-semibold text-blue-600">vertikal</span> ke bawah.
-                Tulis hasil penjumlahan di kolom kanan (hanya digit terakhir).
-                Setiap lajur memiliki waktu{' '}
-                <span className="font-semibold text-blue-600">30 detik</span>.
-              </p>
+              <div className=" font-bold text-gray-800 mb-1 text-center flex flex-col justify-center gap-y-2">
+                <div className="text-lg">
+                  Kolom {currentColumn} dari {TOTAL_COLUMNS}
+                </div>
+                <div className="text-xl">
+                  Sisa waktu: {columnTimeLeft} detik
+                </div>
+              </div>
             </div>
 
             {/* Timer */}
-            <div className="md:flex-none bg-gray-100 text-lg font-mono px-5 py-2 rounded-lg shadow-sm text-gray-700">
-              ⏱ {formatTime(timeLeft)}
+            
+          </div>
+
+            {/* Grid angka */}
+            <div className='flex flex-col justify-center items-center gap-x-4  '>
+              {/* AREA SOAL (ATAS) */}
+              <div className="flex justify-center items-center mb-10">
+                
+                  <div className="flex flex-col gap-y-4 text-5xl font-bold text-center">
+                    <div>{numbers[0]}</div>
+                    <div>{numbers[1]}</div>
+                  </div>
+                
+              </div>
+
+              {/* AREA NUMPAD (BAWAH) */}
+              {currentColumn < TOTAL_COLUMNS + 1 && (
+                <div className="grid grid-cols-3 md:grid-cols-4 gap-4 max-w-xs mx-auto">
+                  {[1,2,3,4,5,6,7,8,9,0].map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => handleInput(String(num))}
+                      className="h-14 text-xl font-bold rounded-xl p-5 bg-gray-200 hover:bg-blue-500 hover:text-white transition"
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              
             </div>
-          </div>
-
-          {/* Grid angka */}
-          <div
-            className="mt-4 bg-slate-50 p-4 rounded-xl shadow-sm"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'min-content min-content',
-              gridTemplateRows: rows,
-              columnGap: '6px',
-              alignItems: 'center',
-              justifyItems: 'center',
-            }}
-          >
-            {/* Kolom angka kiri */}
-            {currentNumbers.map((num, i) => {
-              const row = i * 2 + 1
-              return (
-                <div
-                  key={`num-${i}`}
-                  style={{ gridColumn: 1, gridRow: row }}
-                  className="text-right pr-1"
-                >
-                  <div className="text-lg font-mono text-slate-800 leading-tight">{num}</div>
-                </div>
-              )
-            })}
-
-            {/* Kolom input kanan */}
-            {Array.from({ length: pairCount }).map((_, idx) => {
-              const row = idx * 2 + 2
-              return (
-                <div
-                  key={`input-${idx}`}
-                  style={{ gridColumn: 2, gridRow: row }}
-                  className="flex items-center justify-center"
-                >
-                  <input
-                    ref={(el) => {
-                      inputRefs.current[idx] = el
-                    }}
-                    inputMode="numeric"
-                    value={answers[idx]}
-                    onChange={(e) => handleAnswerChange(idx, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, idx)}
-                    className="w-9 h-8 text-center border border-slate-300 rounded-lg font-mono text-base focus:ring-2 focus:ring-blue-400 outline-none transition"
-                    maxLength={1}
-                  />
-                </div>
-              )
-            })}
-          </div>
         </div>
       </main>
     </div>

@@ -3,7 +3,16 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Brain, Info, Clock, ListChecks } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
+interface WordGroup {
+  id: number;
+  words: {
+    text: string;
+    type: 'D' | 'I' | 'S' | 'C';
+  }[];
+}
 
 function IconPersonality() {
   return (
@@ -26,9 +35,117 @@ function IconPersonality() {
 
 export default function DISCInstructionPage() {
   const router = useRouter();
+  const [currentGroup, setCurrentGroup] = useState(0);
+  const [answers, setAnswers] = useState<{
+    most: { groupId: number;  type: string }[];
+    least: { groupId: number; type: string }[];
+  }>({ most: [], least: [] });
+  
+  const wordGroups: WordGroup[] = [
+    {
+      id: 1,
+      words: [
+        { text: 'Tegas', type: 'D' },
+        { text: 'Menyenangkan', type: 'I' },
+        { text: 'Setia', type: 'S' },
+        { text: 'Teliti', type: 'C' },
+      ],
+    },
+    {
+      id: 2,
+      words: [
+        { text: 'Ambisius', type: 'D' },
+        { text: 'Optimis', type: 'I' },
+        { text: 'Sabar', type: 'S' },
+        { text: 'Perfeksionis', type: 'C' },
+      ],
+    },
+    {
+      id: 3,
+      words: [
+        { text: 'Tegas', type: 'D' },
+        { text: 'Menyenangkan', type: 'I' },
+        { text: 'Setia', type: 'S' },
+        { text: 'Teliti', type: 'C' },
+      ],
+    },
+  ];
+
+  
+
   const handleStart = () => {
     router.push('/tests/disc/test');
   };
+
+  useEffect(() => {
+          console.log('current group:', currentGroup);
+          }, [currentGroup]);
+
+  useEffect(() => {
+          console.log('current group:', answers);
+          }, [answers]);
+
+  const handleTestComplete = () => {
+    router.push('/tests/disc/test');
+  };
+
+  const handleSelection = (type: 'most' | 'least', wordType: string) => {
+    setAnswers(prev => {
+      const updated = {
+        most: [...prev.most],
+        least: [...prev.least],
+      };
+
+      const currentMost = updated.most[currentGroup];
+      const currentLeast = updated.least[currentGroup];
+
+      // TOGGLE OFF (klik ulang)
+      if (
+        (type === 'most' && currentMost?.type === wordType) ||
+        (type === 'least' && currentLeast?.type === wordType)
+      ) {
+        if (type === 'most') delete updated.most[currentGroup];
+        else delete updated.least[currentGroup];
+        return updated;
+      }
+
+      // TIDAK BOLEH MOST & LEAST DI WORD YANG SAMA
+      if (
+        (type === 'most' && currentLeast?.type === wordType) ||
+        (type === 'least' && currentMost?.type === wordType)
+      ) {
+        return prev;
+      }
+
+      // HANYA SATU MOST & SATU LEAST
+      if (type === 'most' && currentMost) return prev;
+      if (type === 'least' && currentLeast) return prev;
+
+      // SIMPAN PILIHAN
+      if (type === 'most') {
+        updated.most[currentGroup] = {
+          groupId: currentGroup,
+          type: wordType,
+        };
+      } else {
+        updated.least[currentGroup] = {
+          groupId: currentGroup,
+          type: wordType,
+        };
+      }
+
+      return updated;
+    });
+  };
+
+  const resetState = () => {
+      setAnswers({most: [], least: []})
+    }
+
+  const handleNext = () => {
+    resetState()
+    setCurrentGroup(prev => prev + 1)
+  }
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
@@ -39,13 +156,6 @@ export default function DISCInstructionPage() {
             <Brain className="text-blue-600" size={28} />
             <h1 className="text-xl font-bold text-gray-800">Tes Kepribadian DISC</h1>
           </div>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft size={18} />
-            <span>Kembali</span>
-          </button>
         </div>
       </header>
 
@@ -78,11 +188,11 @@ export default function DISCInstructionPage() {
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
                   Tes Kepribadian DISC
                 </h2>
-                <p className="mt-2 text-sm text-slate-600">
+                {/* <p className="mt-2 text-sm text-slate-600">
                   Tes untuk mengenali kecenderungan kepribadian berdasarkan empat tipe utama:
                   <strong> Dominance (D)</strong>, <strong> Influence (I)</strong>,{' '}
                   <strong> Steadiness (S)</strong>, dan <strong> Compliance (C)</strong>.
-                </p>
+                </p> */}
               </div>
 
               {/* Info box */}
@@ -133,10 +243,10 @@ export default function DISCInstructionPage() {
                   <ul className="list-disc list-inside space-y-2 text-gray-700">
                     <li>Pilih satu kata yang paling menggambarkan diri Anda (Paling Sesuai).</li>
                     <li>Pilih satu kata yang paling tidak menggambarkan diri Anda (Paling Tidak Sesuai).</li>
-                    <li>
+                    {/* <li>
                       Setiap pilihan akan membantu menentukan kecenderungan kepribadian Anda
                       berdasarkan empat dimensi utama: D, I, S, dan C.
-                    </li>
+                    </li> */}
                     <li>
                       <Clock className="inline-block text-blue-500 mr-1" size={16} />
                       Waktu pengerjaan: <span className="font-semibold">± 10–15 menit</span>
@@ -152,10 +262,107 @@ export default function DISCInstructionPage() {
                   <p className="text-sm text-gray-600 mb-4">
                     Berikut contoh tampilan soal DISC. Pilih satu kata yang paling dan paling tidak menggambarkan diri Anda.
                   </p>
-                  <div className="flex justify-center items-center bg-white rounded-lg p-8 border">
-                    <span className="text-gray-400 italic">
-                      (Contoh tampilan kelompok kata akan muncul di sini)
-                    </span>
+                  <div className="flex justify-center items-center flex-col bg-white rounded-lg p-8 border text-gray-400 italic">
+                    <div className='w-full'>
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={currentGroup}
+                          initial={{ opacity: 0, y: 40 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -40 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          <div className="grid grid-cols-1 gap-4">
+                            {wordGroups[currentGroup].words.map((word, index) => {
+
+                              const isMost = answers.most[currentGroup]?.type === word.type;
+                              const isLeast = answers.least[currentGroup]?.type === word.type;
+                              const mostTaken = !!answers.most[currentGroup];
+                              const leastTaken = !!answers.least[currentGroup];
+
+                              return (
+                                <div
+                                  key={index}
+                                  className={`flex items-center justify-between p-4 border rounded-lg transition-all ${
+                                    isMost
+                                      ? 'border-green-500 bg-green-50'
+                                      : isLeast
+                                      ? 'border-red-500 bg-red-50'
+                                      : 'border-gray-200 hover:bg-gray-50'
+                                  }`}
+                                >
+                                  <span className="text-lg font-medium text-gray-800">{word.text}</span>
+                                  <div className="flex gap-3">
+                                    <button
+                                      disabled={(!isMost && mostTaken) || isLeast}
+                                      onClick={() => handleSelection('most', word.type)}
+                                      className={`px-4 py-2 rounded-md text-sm font-semibold ${
+                                        isMost
+                                          ? 'bg-green-600 text-white'
+                                          : (!isMost && mostTaken) || isLeast
+                                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                          : 'bg-gray-100 hover:bg-green-100 text-green-700'
+                                      }`}
+                                    >
+                                      PALING (P)
+                                    </button>
+
+                                    <button
+                                      disabled={(!isLeast && leastTaken) || isMost}
+                                      onClick={() => handleSelection('least', word.type)}
+                                      className={`px-4 py-2 rounded-md text-sm font-semibold ${
+                                        isLeast
+                                          ? 'bg-red-600 text-white'
+                                          : (!isLeast && leastTaken) || isMost
+                                          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                          : 'bg-gray-100 hover:bg-red-100 text-red-700'
+                                      }`}
+                                    >
+                                      PALING TIDAK (K)
+                                    </button>
+
+
+
+
+
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+
+                      <div className="flex justify-between items-center mt-7">
+                                <button
+                                    onClick={() => 
+                                    {
+                                        setCurrentGroup(prev => Math.max(0, prev - 1))
+                                        resetState()
+                                    }}
+                                    disabled={currentGroup === 0}
+                                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
+                                    currentGroup === 0
+                                        ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
+                                        : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'
+                                    }`}
+                                >
+                                    ← Sebelumnya
+                                </button>
+
+                                <button
+                                    onClick={
+                                    currentGroup === wordGroups.length - 1
+                                        ? handleTestComplete
+                                        : handleNext
+                                    }
+                                    className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
+                                >
+                                    {currentGroup === wordGroups.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
+                                </button>
+                            </div>
+                    </div>
+                    
                   </div>
                 </div>
               </section>

@@ -20,6 +20,7 @@ export default function DISCTestPage() {
     most: { groupId: number; type: string }[];
     least: { groupId: number; type: string }[];
   }>({ most: [], least: [] });
+  // const [currentQuestion, setCurrentQuestion] = useState(0)
 
   const [timeLeft, setTimeLeft] = useState(300); // 5 menit
 
@@ -45,6 +46,10 @@ export default function DISCTestPage() {
   ];
 
   useEffect(() => {
+    console.log('current group:', answers);
+    }, [answers]);  
+
+  useEffect(() => {
     if (timeLeft <= 0) {
       handleTestComplete();
       return;
@@ -59,24 +64,73 @@ export default function DISCTestPage() {
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
-  const handleSelection = (type: 'most' | 'least', wordType: string) => {
-    const newAnswers = { ...answers };
-    if (type === 'most') {
-      newAnswers.most[currentGroup] = { groupId: currentGroup, type: wordType };
-    } else {
-      newAnswers.least[currentGroup] = { groupId: currentGroup, type: wordType };
-    }
-    setAnswers(newAnswers);
+  // const handleSelection = (type: 'most' | 'least', wordType: string) => {
+  //   const newAnswers = { ...answers };
+  //   if (type === 'most') {
+  //     newAnswers.most[currentGroup] = { groupId: currentGroup, type: wordType };
+  //   } else {
+  //     newAnswers.least[currentGroup] = { groupId: currentGroup, type: wordType };
+  //   }
+  //   setAnswers(newAnswers);
 
-    if (newAnswers.most[currentGroup] && newAnswers.least[currentGroup]) {
-      setTimeout(() => {
-        if (currentGroup < wordGroups.length - 1) {
-          setCurrentGroup((prev) => prev + 1);
-        } else {
-          handleTestComplete();
-        }
-      }, 400);
-    }
+  //   if (newAnswers.most[currentGroup] && newAnswers.least[currentGroup]) {
+  //     setTimeout(() => {
+  //       // if (currentGroup < wordGroups.length - 1) {
+  //       //   setCurrentGroup((prev) => prev + 1);
+  //       // } else {
+  //       //   handleTestComplete();
+  //       // }
+  //     }, 400);
+  //   }
+  // };
+
+  const handleSelection = (type: 'most' | 'least', wordType: string) => {
+    setAnswers(prev => {
+      const updated = {
+        most: [...prev.most],
+        least: [...prev.least],
+      };
+
+      const currentMost = updated.most[currentGroup];
+      const currentLeast = updated.least[currentGroup];
+
+      // 🔁 TOGGLE OFF (klik ulang)
+      if (
+        (type === 'most' && currentMost?.type === wordType) ||
+        (type === 'least' && currentLeast?.type === wordType)
+      ) {
+        if (type === 'most') delete updated.most[currentGroup];
+        else delete updated.least[currentGroup];
+        return updated;
+      }
+
+      // 🚫 TIDAK BOLEH MOST & LEAST DI WORD YANG SAMA
+      if (
+        (type === 'most' && currentLeast?.type === wordType) ||
+        (type === 'least' && currentMost?.type === wordType)
+      ) {
+        return prev;
+      }
+
+      // 🚫 HANYA SATU MOST & SATU LEAST
+      if (type === 'most' && currentMost) return prev;
+      if (type === 'least' && currentLeast) return prev;
+
+      // ✅ SIMPAN PILIHAN
+      if (type === 'most') {
+        updated.most[currentGroup] = {
+          groupId: currentGroup,
+          type: wordType,
+        };
+      } else {
+        updated.least[currentGroup] = {
+          groupId: currentGroup,
+          type: wordType,
+        };
+      }
+
+      return updated;
+    });
   };
 
   const handleTestComplete = () => {
@@ -92,13 +146,6 @@ export default function DISCTestPage() {
             <Brain className="text-blue-600" size={28} />
             <h1 className="text-xl font-bold text-gray-800">DISC Personality Test</h1>
           </div>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft size={18} />
-            <span>Kembali</span>
-          </button>
         </div>
       </header>
 
@@ -142,8 +189,11 @@ export default function DISCTestPage() {
             >
               <div className="grid grid-cols-1 gap-4">
                 {wordGroups[currentGroup].words.map((word, index) => {
+                  
                   const isMost = answers.most[currentGroup]?.type === word.type;
                   const isLeast = answers.least[currentGroup]?.type === word.type;
+                  const mostTaken = !!answers.most[currentGroup];
+                  const leastTaken = !!answers.least[currentGroup];
 
                   return (
                     <div
@@ -158,7 +208,7 @@ export default function DISCTestPage() {
                     >
                       <span className="text-lg font-medium text-gray-800">{word.text}</span>
                       <div className="flex gap-3">
-                        <button
+                        {/* <button
                           onClick={() => handleSelection('most', word.type)}
                           className={`px-4 py-2 text-sm rounded-md font-semibold transition-all ${
                             isMost
@@ -167,8 +217,37 @@ export default function DISCTestPage() {
                           }`}
                         >
                           PALING (P)
-                        </button>
+                        </button> */}
+                        
                         <button
+                          disabled={(!isMost && mostTaken) || isLeast}
+                          onClick={() => handleSelection('most', word.type)}
+                          className={`px-4 py-2 rounded-md text-sm font-semibold ${
+                            isMost
+                              ? 'bg-green-600 text-white'
+                              : (!isMost && mostTaken) || isLeast
+                              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                              : 'bg-gray-100 hover:bg-green-100 text-green-700'
+                              }`}
+                          >
+                          PALING (P)
+                          </button>
+                          
+                          <button
+                            disabled={(!isLeast && leastTaken) || isMost}
+                            onClick={() => handleSelection('least', word.type)}
+                            className={`px-4 py-2 rounded-md text-sm font-semibold ${
+                              isLeast
+                                ? 'bg-red-600 text-white'
+                                : (!isLeast && leastTaken) || isMost
+                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                : 'bg-gray-100 hover:bg-red-100 text-red-700'
+                              }`}
+                          >
+                                      PALING TIDAK (K)
+                                    </button>
+
+                        {/* <button
                           onClick={() => handleSelection('least', word.type)}
                           className={`px-4 py-2 text-sm rounded-md font-semibold transition-all ${
                             isLeast
@@ -177,7 +256,7 @@ export default function DISCTestPage() {
                           }`}
                         >
                           PALING TIDAK (K)
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   );
@@ -185,6 +264,32 @@ export default function DISCTestPage() {
               </div>
             </motion.div>
           </AnimatePresence>
+          
+          <div className="flex justify-between items-center mt-8">
+            <button
+              onClick={() => setCurrentGroup(prev => Math.max(0, prev - 1))}
+              disabled={currentGroup === 0}
+              className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
+                currentGroup === 0
+                  ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
+                  : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'
+                }`}
+            >
+              ← Sebelumnya
+            </button>
+
+            <button
+              onClick={
+                currentGroup === wordGroups.length - 1
+                  ? handleTestComplete
+                  : () => setCurrentGroup(prev => prev + 1)
+                }
+              className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
+            >
+              {currentGroup === wordGroups.length - 1 ? 'Selesai Tes' : 'Soal Berikutnya →'}
+            </button>
+          </div>
+
         </div>
       </main>
     </div>

@@ -14,6 +14,8 @@ export default function CFITsubtest2Test() {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<number[][]>([]);
 
+    const answered = answers[currentQuestion]?.length
+
     // Data dummy
     const questions: Question[] = [
         {
@@ -40,6 +42,13 @@ export default function CFITsubtest2Test() {
     useEffect(() => {
         console.log('answers berubah:', answers);
         }, [answers]);
+
+    useEffect(()=> {
+        console.log('currentQuestion: ', currentQuestion)
+    }, [currentQuestion]) 
+    // useEffect(()=>{
+    //     console.log('length ', answers[currentQuestion].length)
+    // }, [answers[currentQuestion].length])
 
     const handleAnswer = (answerIndex: number) => {
         setAnswers(prev => {
@@ -83,6 +92,8 @@ export default function CFITsubtest2Test() {
 
     const progressPercent = ((currentQuestion + 1) / questions.length) * 100;
 
+
+
     return (
         <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
             <main className="container mx-auto px-4 py-8">
@@ -90,8 +101,8 @@ export default function CFITsubtest2Test() {
                     {/* Header */}
                     <div className="flex flex-col md:flex-row justify-between items-center mb-8">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-800">CFIT — Subtes 2: Series</h1>
-                            <p className="text-sm text-slate-500">Temukan pola urutan pada rangkaian gambar berikut.</p>
+                            <h1 className="text-2xl font-bold text-slate-800">CFIT — Subtes 2</h1>
+                            <p className="text-sm text-slate-500">Temukan dua buah gambar yang memiliki pola yang sama pada rangkaian gambar berikut.</p>
                         </div>
                         <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-5 py-2 rounded-xl font-mono text-lg tracking-wider border border-slate-200">
                             ⏱ {formatTime(timeLeft)}
@@ -136,6 +147,8 @@ export default function CFITsubtest2Test() {
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                             {[1, 2, 3, 4, 5].map(option => {
                                 const selected = answers[currentQuestion]?.includes(option);
+
+                                // const answered = answers[currentQuestion].length
                                 return (
                                     <button
                                     key={option}
@@ -150,6 +163,9 @@ export default function CFITsubtest2Test() {
                                 </button>
                                 )
                             })}
+                        </div>
+                        <div className={`mt-4 text-red-500 text-lg font-semibold`}>
+                            {answered <= 1 ? 'Catatan: Pastikan untuk memilih dua opsi' : ''}
                         </div>
                     </div>
 

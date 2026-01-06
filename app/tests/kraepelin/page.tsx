@@ -4,6 +4,24 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Brain, Info, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { div } from 'framer-motion/client';
+
+interface Question {
+  id: number,
+  num1: number,
+  num2: number,
+  answer: number
+  explanationRight: string,
+  explanationFalse: string
+}
+
+// const questions: Question[] = {
+//   id: 1,
+//   num1: 3
+//   num2: 6
+//   explanation 
+// }
 
 function IconMath() {
   return (
@@ -23,11 +41,68 @@ function IconMath() {
   );
 }
 
-export default function KraepelinInstructionPage() {
+type Answer = 0 | 1
+
+const KraepelinInstructionPage: React.FC = () => {
+
+  const TOTAL_QUESTIONS = 10;
+
+  const TOTAL_EXAMPLES = 5
+
+  const [showResult, setShowResult] = useState(false)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [numbers, setNumbers] = useState<[number, number]>([0, 0]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+
+  // generate soal baru
+  const generateNumbers = () => {
+    const a = Math.floor(Math.random() * 9) + 1;
+    const b = Math.floor(Math.random() * 9) + 1;
+    setNumbers([a, b]);
+  };
+
+  useEffect(() => {
+    generateNumbers();
+  }, []);
+
+  useEffect(() => {
+    console.log('number: ', numbers)
+  })
+
+  useEffect(() => {
+    console.log('Currentindex: ', currentIndex)
+  })
+
+  const handleInput = (value: string) => {
+  if (!/^\d$/.test(value) || showResult) return
+
+  const [a, b] = numbers
+  const correctAnswer = (a + b) % 10
+  const correct = Number(value) === correctAnswer
+
+  setIsCorrect(correct)
+  setShowResult(true)
+
+  setAnswers(prev => [...prev, correct ? 1 : 0])
+}
+
+
   const router = useRouter();
   const handleStart = () => {
     router.push('/tests/kraepelin/test');
   };
+
+  const handleNext = () => {
+  if (currentIndex < TOTAL_EXAMPLES - 1) {
+    setCurrentIndex(prev => prev + 1)
+    setShowResult(false)
+    setIsCorrect(null)
+    generateNumbers()
+  }
+}
+
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
@@ -38,13 +113,6 @@ export default function KraepelinInstructionPage() {
             <Brain className="text-blue-600" size={28} />
             <h1 className="text-xl font-bold text-gray-800">Tes Kraepelin</h1>
           </div>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft size={18} />
-            <span>Kembali</span>
-          </button>
         </div>
       </header>
 
@@ -163,10 +231,71 @@ export default function KraepelinInstructionPage() {
                   <p className="text-sm text-gray-600 mb-4">
                     Berikut contoh tampilan soal DISC. Pilih satu kata yang paling dan paling tidak menggambarkan diri Anda.
                   </p>
-                  <div className="flex justify-center items-center bg-white rounded-lg p-8 border">
-                    <span className="text-gray-400 italic">
-                      (Contoh tampilan kelompok kata akan muncul di sini)
-                    </span>
+                  <div className="flex flex-col justify-center items-center bg-white rounded-lg p-8 border text-2xl italic">
+                    <div className=" font-bold text-gray-800 text-center flex flex-col justify-center gap-y-2 mb-4">
+                      <div className="text-lg">
+                        Kolom <span className='text-green-600'>2</span> dari <span className='text-green-600'>50</span>
+                      </div>
+                      <div className="text-xl">
+                        Sisa waktu: <span className='text-green-600'>120</span> detik
+                      </div>
+                    </div>
+                    <div className='flex justify-center items-center gap-x-4  '>
+                      <div className='flex flex-col justify-center items-center gap-x-4  '>
+                        {/* AREA SOAL (ATAS) */}
+                        <div className="flex justify-center items-center mb-10">
+                          
+                            <div className="flex flex-col gap-y-6 text-5xl font-bold text-center">
+                              <div>{numbers[0]}</div>
+                              <div>{numbers[1]}</div>
+                            </div>
+                          
+                        </div>
+
+                        {showResult && (
+                          <div
+                            className={`mb-3 text-lg font-semibold text-center ${
+                              isCorrect ? 'text-green-600' : 'text-red-600'
+                            }`}
+                          >
+                            <div>{isCorrect ? `Jawaban Benar.` : 'Jawaban Salah'}</div>
+                            <div>{isCorrect 
+                            ? `Hasil dari ${numbers[0]} + ${numbers[1]} adalah ${numbers[0] + numbers[1]}. Oleh karena itu, jawaban yang tepat adalah ${(numbers[0] + numbers[1]) % 10}` 
+                            : `Hasil dari ${numbers[0]} + ${numbers[1]} adalah ${numbers[0] + numbers[1]}. Sehingga, jawaban yang tepat adalah ${(numbers[0] + numbers[1]) % 10}`}</div>
+                          </div>
+                        )}
+
+                        {showResult && currentIndex < TOTAL_EXAMPLES - 1 && (
+                          <button
+                            onClick={handleNext}
+                            className="mb-3 px-3 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition text-lg"
+                          >
+                            Next
+                          </button>
+                        )}
+
+
+                        {/* AREA NUMPAD (BAWAH) */}
+                        
+                          <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto">
+                            {[1,2,3,4,5,6,7,8,9,0].map((num) => (
+                              <button
+                                key={num}
+                                disabled={showResult}
+                                onClick={() => handleInput(String(num))}
+                                className={`h-14 text-xl font-bold rounded-xl p-5 transition
+                                  ${showResult
+                                    ? 'bg-gray-300 cursor-not-allowed'
+                                    : 'bg-gray-200 hover:bg-blue-500 hover:text-white'}
+                                `}
+                              >
+                                {num}
+                              </button>
+
+                            ))}
+                          </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
@@ -198,3 +327,5 @@ export default function KraepelinInstructionPage() {
     </div>
   );
 }
+
+export default KraepelinInstructionPage;

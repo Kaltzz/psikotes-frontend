@@ -37,15 +37,8 @@ export default function CFITTest() {
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Brain className="text-blue-600" size={28} />
-            <h1 className="text-xl font-bold text-gray-800">CFIT - Subtes 1: Series</h1>
+            <h1 className="text-xl font-bold text-gray-800">CFIT (Culture Fair Intelligent Test)</h1>
           </div>
-          <button
-            onClick={() => window.history.back()}
-            className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <ArrowLeft size={18} />
-            <span>Kembali</span>
-          </button>
         </div>
       </header>
 
@@ -135,11 +128,6 @@ export default function CFITTest() {
                   <strong className="text-slate-800">Sebelum mulai:</strong> pastikan data diri sudah lengkap dan Anda siap fokus.
                 </div>
                 <div className="flex items-center gap-3">
-                  <Link href="/profile">
-                    <button className="px-4 py-2 rounded-lg bg-white border text-slate-700 hover:bg-slate-50 transition">
-                      Edit Biodata
-                    </button>
-                  </Link>
                   <Link href="/tests/cfit/subtest1">
                     <button
                       className="px-5 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.01] active:scale-95 transition-transform"

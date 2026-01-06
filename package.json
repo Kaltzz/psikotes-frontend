@@ -9,10 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "chart.js": "^4.5.1",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "flowbite": "^4.0.1",
     "framer-motion": "^12.23.22",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",
     "react": "19.1.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "19.1.0"
   },
   "devDependencies": {

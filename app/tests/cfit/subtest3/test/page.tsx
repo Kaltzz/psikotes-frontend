@@ -63,7 +63,7 @@ export default function CFITSubtest3Test() {
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">CFIT — Subtes 1: Series</h1>
+              <h1 className="text-2xl font-bold text-slate-800">CFIT — Subtes 3</h1>
               <p className="text-sm text-slate-500">Temukan pola urutan pada rangkaian gambar berikut.</p>
             </div>
             <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-5 py-2 rounded-xl font-mono text-lg tracking-wider border border-slate-200">
