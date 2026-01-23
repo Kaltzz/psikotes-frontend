@@ -49,10 +49,13 @@ export default function ResultPage() {
 
           <div className="mt-6">
             <button
-              onClick={() => router.push('/tests')}
+              onClick={() => {
+                sessionStorage.clear()
+                router.push('/')
+              }}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2.5 rounded-lg hover:shadow-md transition-all duration-200"
             >
-              Kembali ke Daftar Tes
+              Kembali ke halaman utama
             </button>
           </div>
         </div>

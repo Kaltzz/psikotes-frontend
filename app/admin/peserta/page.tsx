@@ -1,14 +1,40 @@
 'use client'
 import { div, tr } from "framer-motion/client";
 import Link from "next/link";
+import { getAllPeserta } from "@/services/peserta.service";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const peserta = [
-    {id: 1, nama: 'Rezky', progres: 'belum mulai'},
-    {id: 2, nama: 'Steve', progres: 'sedang mengerjakan'},
-    {id: 2, nama: 'Roger', progres: 'Selesai'},
-]
+interface TestSession {
+    statusTest: number
+}
+
+interface Data {
+    id: number
+    nama: string
+    testSession: TestSession[]
+}
 
 export default function AdminPeserta() {
+    const [data, setData] = useState<Data[]>([])
+    const router = useRouter()
+
+    useEffect(()=> {
+        const getPeserta = async () => {
+            try {
+                const peserta = await getAllPeserta()
+                setData(peserta.data.data)
+            } catch (err:any){
+                router.push('/login')
+            }   
+        }
+        getPeserta()
+    }, [])
+
+    useEffect(()=> {
+        console.log(data)
+    }, [data])
+
     return (
         <div>
             <p className="mb-12 text-3xl font-bold border-b pb-5 border-gray-200">List Peserta</p>
@@ -22,7 +48,10 @@ export default function AdminPeserta() {
                         </tr>
                     </thead>
                     <tbody>
-                        {peserta.map(item => (
+                        {data.map(item => { 
+
+                            const status = item.testSession[0].statusTest
+                            return (
                             <tr
                                 key={item.nama}
                                 className="border-b border-gray-300 text-base"
@@ -30,23 +59,28 @@ export default function AdminPeserta() {
                                 <td className="py-2 px-4">{item.nama}</td>
                                 <td className={`py-2 px-4 flex`}>
                                         <p className={` py-1 px-3 rounded-lg font-semibold text-white ${
-                                    item.progres === 'belum mulai'
+                                    status === 0
                                     ? 'bg-gray-400'
-                                    : item.progres === 'sedang mengerjakan'
+                                    : status === 1
                                     ? 'bg-yellow-300'
-                                    : item.progres === 'Selesai'
+                                    : status === 2
                                     ? 'bg-green-600'
                                     : ''
-                                    }`}>{item.progres}</p>
+                                    }`}>{
+                                        status === 0 
+                                        ? 'Belum mengerjakan'
+                                        : status === 1 
+                                        ? 'Sedang mengerjakan' 
+                                        : 'Selesai mengerjakan'}</p>
                                     </td>
                                 <td className="py-2 px-4">
                                     <Link
-                                    href={`/admin/peserta/detail`}
+                                    href={`/admin/peserta/detail/${item.id}`}
                                     className="px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                                     >Detail</Link>
                                 </td>
                             </tr>
-                        ))}
+                        )})}
                     </tbody>
                 </table>
             </div>

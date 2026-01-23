@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { json } from 'stream/consumers'
+import { login } from '@/services/auth.service'
 
 export default function AdminLoginForm() {
     
-    const router = useRouter()
+    const router = useRouter()  
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -17,18 +17,26 @@ export default function AdminLoginForm() {
         const { name, value } = e.target
         setFormData(prev=> ({...prev, [name]: value}))
     }
+    
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        const {username, password} = formData
-        if(!username || !password) {
-            alert('Mohon Lengkapi semua data')
-            return
-        }
+      try {
+        setIsSubmitting(true);
+        const res = await login(formData);
+        // console.log(res.data);
+        router.push('/admin/dashboard')
+      } catch (err: any) {
+        alert(err.response?.data?.message || 'Login gagal');
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
 
-        setIsSubmitting(true)
-        localStorage.setItem('userdata', JSON.stringify(formData))
-    }
+    useEffect( ()=>{
+      console.log('ini answers: ', formData)
+    }, [])
+
 
     const isFormValid = Object.values(formData).every(v => v.trim() !== '') && !isSubmitting
 
@@ -81,9 +89,6 @@ export default function AdminLoginForm() {
             {/* Tombol */}
             <div className='flex justify-center'>
               <button
-                onClick={() => {
-                  router.push('dashboard')
-                }}
                 className={`w-1/2  py-2 text-sm font-semibold text-white rounded-md shadow-md transition-all duration-200 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700
                 `}
               >
@@ -97,7 +102,3 @@ export default function AdminLoginForm() {
     </div>
     )
 }
-
-{/* ${isFormValid
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
-                  : 'bg-gray-400 cursor-not-allowed'} */}

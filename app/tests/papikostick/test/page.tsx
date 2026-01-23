@@ -88,8 +88,25 @@ export default function PapiTestPage() {
     const handleNext = () => {
         setCurrentGroup(prev => prev + 1)
     }
+    
     const handleTestComplete = () => {
-        router.push('/tests/mbti');
+        const testSession = sessionStorage.getItem('testSession')
+        if(!testSession)
+            return alert('gagal')
+
+        const testSessionParsed = JSON.parse(testSession)
+        const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+        if(tests) {
+            router.push(`/tests/${tests.toLowerCase()}`)
+            const indexIncrement = testSessionParsed.currentIndex + 1
+            testSessionParsed.currentIndex = indexIncrement
+
+            const updatedTestString = JSON.stringify(testSessionParsed)
+            sessionStorage.setItem('testSession', updatedTestString)        
+        } else {
+            sessionStorage.clear()
+            router.push('/result')
+        }
     };
 
     return(

@@ -1,15 +1,15 @@
 'use client'
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
+import { logout } from "@/services/auth.service"
 
 const menu = [
     { label: 'Dashboard', href: '/admin/dashboard', icon: '/assets/dashboardsvg.svg'},
     { label: 'Token Tes', href: '/admin/tokentes', icon: '/assets/tokensvg.svg'},
     { label: 'Peserta', href: '/admin/peserta', icon: '/assets/teamsvg.svg'},
     { label: 'Hasil Tes', href: '/admin/hasiltes', icon: '/assets/assignmentsvg.svg'},
-    
 ]
 
 interface SidebarProps {
@@ -19,6 +19,13 @@ interface SidebarProps {
 
 export default function Sidebar({isOpen, toggle}: SidebarProps) {
     const pathname = usePathname()
+    const router = useRouter()
+
+    const handleClick = async () => {
+        // console.log("hai")
+        const res = await logout()
+        router.push('/login')
+    }
 
     return(
         <>
@@ -61,7 +68,9 @@ export default function Sidebar({isOpen, toggle}: SidebarProps) {
                         </Link>
                     
                 ))}
-                <button className="text-left px-4 flex gap-x-3 text-lg font-semibold hover:bg-gray-200 mb-4 py-4 rounded-lg">
+                <button className="text-left px-4 flex gap-x-3 text-lg font-semibold hover:bg-gray-200 mb-4 py-4 rounded-lg"
+                    onClick={handleClick}
+                >
                     <Image 
                         src="/assets/logoutsvg.svg"
                         width={25}

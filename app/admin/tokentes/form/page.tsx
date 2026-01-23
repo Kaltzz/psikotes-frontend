@@ -4,66 +4,95 @@ import { div } from "framer-motion/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { postToken } from "@/services/token.service";
+import { getFormToken } from "@/services/token.service";
 
 export default function AdminForm() {
 
     const router = useRouter()
     const [formData, setFormData] = useState<{
-        tes: string[],
-        kuota: string
+        tests: string[],
+        kuota: number
     }>({
-        tes: [],
-        kuota: ''
-
+        tests: [],
+        kuota: 0
     })
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-) => {
-  const { name, value, type } = e.target;
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+    const { name, value, type } = e.target
 
-  if (type === 'checkbox') {
-    const checked = (e.target as HTMLInputElement).checked;
+    // checkbox (array tests)
+    if (type === 'checkbox') {
+        const checked = (e.target as HTMLInputElement).checked
 
-    setFormData(prev => {
-      const tes = prev.tes;
-
-      return {
+        setFormData(prev => ({
         ...prev,
-        tes: checked
-          ? [...tes, value]                // tambah
-          : tes.filter(item => item !== value), // hapus
-      };
-    });
+        tests: checked
+            ? [...prev.tests, value]
+            : prev.tests.filter(item => item !== value)
+        }))
+        return
+    }
 
-    return;
-  }
+    // input number (kuota)
+    if (type === 'number') {
+        setFormData(prev => ({
+        ...prev,
+        [name]: Number(value) // 🔑 casting ke number
+        }))
+        return
+    }
 
-  // selain checkbox (input biasa)
-  setFormData(prev => ({
-    ...prev,
-    [name]: value,
-  }));
-};
+    // input biasa
+    setFormData(prev => ({
+        ...prev,
+        [name]: value
+    }))
+    }
+
 
     
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        const {tes, kuota} = formData
-        if(tes.length === 0 || !kuota) {
-            alert('Mohon Lengkapi semua data')
-            return
+
+        try {
+            setIsSubmitting(true)
+            const res = await postToken(formData)
+            router.push('/admin/tokentes')
+
+        } catch(err:any){
+
+        } finally {
+            setIsSubmitting(false)
         }
-        setIsSubmitting(true)
-        localStorage.setItem('userdata', JSON.stringify(formData))
+        // const {tests, kuota} = formData
+        // if(tests.length === 0 || !kuota) {
+        //     alert('Mohon Lengkapi semua data')
+        //     return
+        // }
+        // setIsSubmitting(true)
+        // localStorage.setItem('userdata', JSON.stringify(formData))
     }
 
 
     useEffect(()=> {
         console.log('Ini isi form data: ', formData)
     }, [formData])
+
+    useEffect(()=> {
+        const getForm = async () => {
+                try {
+                    const token = await getFormToken()
+                } catch( err:any) {
+                    router.push('/login')
+                }
+            }
+            getForm() 
+    } , [])
 
     return (
         <div>
@@ -73,27 +102,27 @@ export default function AdminForm() {
                     <p className="">Jenis tes: </p>
                     <div className="">
                         <div className="space-x-3">
-                            <input type="checkbox" id="cfit" value="cfit" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="cfit" value="CFIT" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">CFIT</label>
                         </div>
                         <div className="space-x-3">
-                            <input type="checkbox" id="disc" value="disc" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="disc" value="DISC" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">DISC</label>
                         </div>
                         <div className="space-x-3">
-                            <input type="checkbox" id="kraepelin" value="kraepelin" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="kraepelin" value="KRAEPELIN" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">Kraepelin</label>
                         </div>
                         <div className="space-x-3">
-                            <input type="checkbox" id="mbti" value="mbti" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="mbti" value="MBTI" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">MBTI</label>
                         </div>
                         <div className="space-x-3">
-                            <input type="checkbox" id="msdt" value="msdt" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="msdt" value="MSDT" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">MSDT</label>
                         </div>
                         <div className="space-x-3">
-                            <input type="checkbox" id="papi" value="papi" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="papi" value="PAPI" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">PapiKostick</label>
                         </div>
                     </div>

@@ -34,7 +34,24 @@ export default function KraepelinTestPage() {
     setColumnTimeLeft(COLUMN_DURATION)
     generateNumbers()
   } else {
-    router.push("/tests/disc")
+    const testSession = sessionStorage.getItem('testSession')
+        if(!testSession)
+            return alert('gagal')
+
+        const testSessionParsed = JSON.parse(testSession)
+        const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+        if(tests) {
+            router.push(`/tests/${tests.toLowerCase()}`)
+            const indexIncrement = testSessionParsed.currentIndex + 1
+            testSessionParsed.currentIndex = indexIncrement
+
+            const updatedTestString = JSON.stringify(testSessionParsed)
+            sessionStorage.setItem('testSession', updatedTestString)        
+        } else {
+            sessionStorage.clear()
+            router.push('/result')
+        }
+    // router.push("/tests/disc")
   }
 }
 
