@@ -15,10 +15,6 @@ export default function AdminLayout({children}: Readonly<{
     const toggleSidebar = () => {
     setIsSidebarOpen(prev => !prev);
   };
-
-//   useEffect(()=> {
-//     console.log('ini isSide: ', isSidebarOpen)
-//   }, [isSidebarOpen])
     
     return(
         <div className='font-sans flex flex-row bg-gradient-to-br from-red-50 to-indigo-100 w-full text-slate-800'>
