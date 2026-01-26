@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, Brain } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import Modal from "@/app/components/Modal"
 
 interface MbtiQuestion {
     id: number,
@@ -23,6 +24,7 @@ export default function MbtiTestPage() {
         { groupId: number; type: string }[]
         >([]);
     const [timeLeft, setTimeLeft] = useState(300); // 5 menit
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
 
     const mbti: MbtiQuestion[]  = [
@@ -81,10 +83,6 @@ export default function MbtiTestPage() {
         })
     }
 
-    const handleStart = () => {
-    router.push('/tests/mbti/test');
-    };
-
     const handleNext = () => {
         setCurrentGroup(prev => prev + 1)
     }
@@ -106,8 +104,11 @@ export default function MbtiTestPage() {
             sessionStorage.clear()
             router.push('/result')
         }
-        // router.push('/tests/mbti');
     };
+
+    const handleModal = () => {
+        setIsModalOpen(true)
+    }
 
     return(
         <div className="font-sans min-h-screen bg-gray-50">
@@ -212,7 +213,7 @@ export default function MbtiTestPage() {
                                     <button
                                         onClick={
                                         currentGroup === mbti.length - 1
-                                            ? handleTestComplete
+                                            ? handleModal
                                             : handleNext
                                         }
                                         className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -225,6 +226,26 @@ export default function MbtiTestPage() {
                 </section>
                 </div>
             </main>
+
+            <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+                <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+                <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+                <div className='flex gap-x-3 justify-evenly mt-4'>
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={()=> setIsModalOpen(false)}
+                    >
+                        Kembali
+                    </button>
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={handleTestComplete}
+                    >
+                        Mulai Tes
+                    </button>
+                </div>
+            </Modal>
+
         </div>
     )
 }

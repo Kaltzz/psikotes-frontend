@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ArrowLeft, Brain, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { div } from 'framer-motion/client';
 import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/Modal';
 
 interface Question {
   id: number;
@@ -20,6 +20,7 @@ export default function CFITSubtest4() {
     const [answers, setAnswers] = useState<number[]>([])
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [isChecked, setIsChecked] = useState<boolean | null>(false)
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     // Data dummy
   const questions: Question[] = [
@@ -90,7 +91,6 @@ export default function CFITSubtest4() {
             sessionStorage.clear()
             router.push('/result')
         }
-        // router.push('/tests/cfit/subtest4/test')
     }
   
     const resetState = () => {
@@ -102,6 +102,10 @@ export default function CFITSubtest4() {
     const handleNext = () => {
       resetState()
       setCurrentQuestion(prev => prev + 1)
+    }
+
+    const handleModal = () => {
+        setIsModalOpen(true)
     }
 
     return(
@@ -181,19 +185,7 @@ export default function CFITSubtest4() {
                                 <button
                                 key={option}
                                 onClick={() => handleAnswer(option)}
-                                // className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 ${
-                                //   answers[currentQuestion] === option
-                                //     ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
-                                //     : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
-                                // }`}
                                     className={`aspect-square text-lg font-semibold rounded-xl flex items-center  justify-center transition-all border-2 ${
-                                    // isChecked === true && option === questions[currentQuestion].correctAnswer
-                                    // ? 'bg-green-600 text-white border-green-600 scale-105 shadow '
-                                    // : answers[currentQuestion] === option
-                                    // ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow '
-                                    // : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
-
-
                                     isChecked === true && option === questions[currentQuestion].correctAnswer
                                     ? 'bg-green-600  text-white border-green-600 scale-105 shadow'
                                     : isChecked === true && !(option === questions[currentQuestion].correctAnswer) && answers[currentQuestion] === option
@@ -205,11 +197,6 @@ export default function CFITSubtest4() {
                                     : !(isChecked === true && option === questions[currentQuestion].correctAnswer)
                                     ? 'border-slate-200 bg-slate-50'
                                     : ''
-
-                                    // answers[currentQuestion] === option
-                                    // ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
-                                    // : 'hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
-
                                     }`}
                                     
                                 >
@@ -249,7 +236,7 @@ export default function CFITSubtest4() {
                                 <button
                                     onClick={
                                     currentQuestion === questions.length - 1
-                                        ? handleTestComplete
+                                        ? handleModal
                                         : handleNext
                                     }
                                     className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -265,14 +252,35 @@ export default function CFITSubtest4() {
 
                 {/* Section: Tombol Aksi */}
                 <div className="text-center space-x-4">
-                    <Link href="/tests/cfit/subtest4/test" className="inline-block">
-                    <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
+                    <button 
+                        className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+                        onClick={handleModal}
+                    >
                         Mulai Subtes 4
                     </button>
-                    </Link>
                 </div>
                 </motion.div>
             </main>
+
+            <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+                <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+                <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+                <div className='flex gap-x-3 justify-evenly mt-4'>
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={()=> setIsModalOpen(false)}
+                    >
+                        Kembali
+                    </button>
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={handleTestComplete}
+                    >
+                        Mulai Tes
+                    </button>
+                </div>
+            </Modal>
+
         </div>
     )
 }

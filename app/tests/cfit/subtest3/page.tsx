@@ -1,10 +1,10 @@
 'use client';
-import Link from 'next/link';
 import { ArrowLeft, Brain, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { div } from 'framer-motion/client';
 import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/Modal';
+
 
 interface Question {
   id: number;
@@ -21,6 +21,7 @@ export default function CFITSubtest3() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<number[]>([])
   const [isChecked, setIsChecked] = useState<boolean | null>(false)
+  const [isModalOpen, setIsModalOpen] =useState(false)
 
   const questions: Question[] = [
     {
@@ -87,6 +88,10 @@ export default function CFITSubtest3() {
   useEffect(() => {
     console.log('answers berubah:', answers);
     }, [answers]);
+
+  const handleModal = () => {
+    setIsModalOpen(true)
+  }
 
   return(
     <div className='font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col'>
@@ -212,7 +217,7 @@ export default function CFITSubtest3() {
                       <button
                         onClick={
                           currentQuestion === questions.length - 1
-                            ? handleTestComplete
+                            ? handleModal
                             : handleNext
                         }
                         className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -226,14 +231,33 @@ export default function CFITSubtest3() {
           </section>
 
           <div className="text-center space-x-4">
-            <Link href="/tests/cfit/subtest3/test" className="inline-block">
-              <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
+              <button 
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+                onClick={handleModal}
+              >
                 Mulai Subtes 3
               </button>
-            </Link>
           </div>
         </motion.div>
       </main>
+      <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+        <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+        <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+        <div className='flex gap-x-3 justify-evenly mt-4'>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={()=> setIsModalOpen(false)}
+          >
+            Kembali
+          </button>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={handleTestComplete}
+          >
+            Mulai Tes
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

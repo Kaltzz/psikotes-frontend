@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Brain, Info, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { div } from 'framer-motion/client';
+import Modal from '@/app/components/Modal';
 
 interface Question {
   id: number,
@@ -15,13 +15,6 @@ interface Question {
   explanationRight: string,
   explanationFalse: string
 }
-
-// const questions: Question[] = {
-//   id: 1,
-//   num1: 3
-//   num2: 6
-//   explanation 
-// }
 
 function IconMath() {
   return (
@@ -55,6 +48,7 @@ const KraepelinInstructionPage: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [numbers, setNumbers] = useState<[number, number]>([0, 0]);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   // generate soal baru
   const generateNumbers = () => {
@@ -90,7 +84,7 @@ const KraepelinInstructionPage: React.FC = () => {
 
 
   const router = useRouter();
-  const handleStart = () => {
+  const handleTestComplete = () => {
     router.push('/tests/kraepelin/test');
   };
 
@@ -102,6 +96,10 @@ const KraepelinInstructionPage: React.FC = () => {
     generateNumbers()
   }
 }
+
+  const handleModal = () => {
+    setIsModalOpen(true)
+  }
 
 
   return (
@@ -309,7 +307,7 @@ const KraepelinInstructionPage: React.FC = () => {
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleStart}
+                  onClick={handleModal}
                   className="px-5 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:shadow-lg transition-all"
                 >
                   Mulai Tes
@@ -324,6 +322,26 @@ const KraepelinInstructionPage: React.FC = () => {
           </div>
           </motion.div>
       </main>
+
+      <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+        <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+        <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+        <div className='flex gap-x-3 justify-evenly mt-4'>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={()=> setIsModalOpen(false)}
+          >
+            Kembali
+          </button>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={handleTestComplete}
+          >
+            Mulai Tes
+          </button>
+        </div>
+      </Modal>
+
     </div>
   );
 }

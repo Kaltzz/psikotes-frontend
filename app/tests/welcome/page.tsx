@@ -5,26 +5,25 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import test from "node:test"
 import { useEffect, useState } from "react"
+import Modal from "@/app/components/Modal"
 
 
 
 export default function frontPage()  {
     const router = useRouter()
     const [data, setData] = useState()
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
 //     useEffect(()=> {
 //     const tests = sessionStorage.getItem('testSession')
 //     console.log(tests)
 // }, [])
 
-    const handleClick = () => {
-        // if(typeof !window=== undefined) {
-        //     const tests = sessionStorage.getItem('testSession')
-        //     console.log(tests)
-        // } else{
-        //     console.log("gagal")
-        // }
+    const handleModal = () => {
+        setIsModalOpen(true)
+    }
 
+    const handleTest = () => {
         const testSession = sessionStorage.getItem('testSession')
         if(!testSession)
             return console.log('gagal')
@@ -32,15 +31,15 @@ export default function frontPage()  {
         const testSessionParsed = JSON.parse(testSession)
         const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
         if(tests) {
-            router.push(`/tests/${tests.toLowerCase()}`)
             const indexIncrement = testSessionParsed.currentIndex + 1
             testSessionParsed.currentIndex = indexIncrement
 
             const updatedTestString = JSON.stringify(testSessionParsed)
-            sessionStorage.setItem('testSession', updatedTestString)        
+            sessionStorage.setItem('testSession', updatedTestString)
+            router.push(`/tests/${tests.toLowerCase()}`)        
         } else {
             router.push('/result')
-        } 
+        }
     }
     
     return (
@@ -90,10 +89,31 @@ export default function frontPage()  {
                                 <button
                                     className="px-5 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.01] active:scale-95 transition-transform"
                                     aria-label="Mulai CFIT Subtes 1"
-                                    onClick={handleClick}
+                                    onClick={handleModal}
                                 >
                                     Selanjutnya
                                 </button>
+                                <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+                                    <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+                                    <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+                                    <div className='flex gap-x-3 justify-evenly mt-4'>
+                                    <button 
+                                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                                    onClick={()=> setIsModalOpen(false)}
+                                    >
+                                        Kembali
+                                    </button>
+
+                                    <button 
+                                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                                    onClick={handleTest}
+                                    >
+                                        Mulai Tes
+                                    </button>
+                                    </div>
+                                    
+
+                                </Modal>
                             </div>
                             
                         </div>

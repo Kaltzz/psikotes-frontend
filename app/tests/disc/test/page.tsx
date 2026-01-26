@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, ArrowLeft } from 'lucide-react';
+import Modal from '@/app/components/Modal';
 
 interface WordGroup {
   id: number;
@@ -20,7 +21,7 @@ export default function DISCTestPage() {
     most: { groupId: number; type: string }[];
     least: { groupId: number; type: string }[];
   }>({ most: [], least: [] });
-  // const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [timeLeft, setTimeLeft] = useState(300); // 5 menit
 
@@ -63,26 +64,6 @@ export default function DISCTestPage() {
     const s = seconds % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
   };
-
-  // const handleSelection = (type: 'most' | 'least', wordType: string) => {
-  //   const newAnswers = { ...answers };
-  //   if (type === 'most') {
-  //     newAnswers.most[currentGroup] = { groupId: currentGroup, type: wordType };
-  //   } else {
-  //     newAnswers.least[currentGroup] = { groupId: currentGroup, type: wordType };
-  //   }
-  //   setAnswers(newAnswers);
-
-  //   if (newAnswers.most[currentGroup] && newAnswers.least[currentGroup]) {
-  //     setTimeout(() => {
-  //       // if (currentGroup < wordGroups.length - 1) {
-  //       //   setCurrentGroup((prev) => prev + 1);
-  //       // } else {
-  //       //   handleTestComplete();
-  //       // }
-  //     }, 400);
-  //   }
-  // };
 
   const handleSelection = (type: 'most' | 'least', wordType: string) => {
     setAnswers(prev => {
@@ -151,8 +132,11 @@ export default function DISCTestPage() {
             sessionStorage.clear()
             router.push('/result')
         }
-    // router.push('/tests/kraepelin');
   };
+
+  const handleModal = () => {
+    setIsModalOpen(true)
+  }
 
   return (
     <div className="font-sans min-h-screen bg-gray-50">
@@ -263,17 +247,6 @@ export default function DISCTestPage() {
                           >
                                       PALING TIDAK (K)
                                     </button>
-
-                        {/* <button
-                          onClick={() => handleSelection('least', word.type)}
-                          className={`px-4 py-2 text-sm rounded-md font-semibold transition-all ${
-                            isLeast
-                              ? 'bg-red-600 text-white shadow-md'
-                              : 'bg-gray-100 hover:bg-red-100 text-red-700'
-                          }`}
-                        >
-                          PALING TIDAK (K)
-                        </button> */}
                       </div>
                     </div>
                   );
@@ -298,7 +271,7 @@ export default function DISCTestPage() {
             <button
               onClick={
                 currentGroup === wordGroups.length - 1
-                  ? handleTestComplete
+                  ? handleModal
                   : () => setCurrentGroup(prev => prev + 1)
                 }
               className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -309,6 +282,26 @@ export default function DISCTestPage() {
 
         </div>
       </main>
+
+      <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+        <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+        <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+        <div className='flex gap-x-3 justify-evenly mt-4'>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={()=> setIsModalOpen(false)}
+          >
+            Kembali
+          </button>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={handleTestComplete}
+          >
+            Mulai Tes
+          </button>
+        </div>
+      </Modal>
+
     </div>
   );
 }

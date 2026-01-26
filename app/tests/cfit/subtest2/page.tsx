@@ -4,6 +4,7 @@ import { ArrowLeft, Brain, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/Modal';
 
 interface Question {
   id: number;
@@ -19,7 +20,7 @@ export default function CFITSubtest2() {
   const [answers, setAnswers] = useState<number[][]>([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [isChecked, setIsChecked] = useState<boolean>(false)
-  // const [selectedOptions, setIsSelectedOptions] = useState<number[][]>([])
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const questions: Question[] = [
     {
@@ -45,21 +46,6 @@ export default function CFITSubtest2() {
     }
   ]
 
-//   const handleAnswer = (answerIndex:number) =>{
-//     if (isChecked === true)
-//       return
-//     // console.log(answers)
-//     console.log(`answerIndex: ${answerIndex}`)
-//     // const newAnswers = [...answers]
-
-//     // console.log(newAnswers)
-//     const newAnswers = [...answers];
-//     newAnswers[currentQuestion] = answerIndex;
-//     setAnswers(newAnswers);
-
-//     // console.log(answers)
-//  }
-
   const handleAnswer = (option: number) => {
   if (isChecked) return;
 
@@ -80,21 +66,6 @@ export default function CFITSubtest2() {
     return copy;
   });
 };
-
-
-//   const checkAnswer = (questionIndex: number) => {
-//     const answer = answers[questionIndex]
-
-//     if(answer !== undefined) {
-//       setIsChecked(true)
-//     }
-
-//     if (answer === questions[questionIndex].correctAnswer) {
-//       setResultText(questions[questionIndex].explanationRight)
-//   } else {
-//       setResultText(questions[questionIndex].explanationFalse)
-//   }
-//  }
 
   const checkAnswer = (questionIndex: number) => {
   const selected = answers[questionIndex];
@@ -128,6 +99,10 @@ export default function CFITSubtest2() {
   const handleNext = () => {
     resetState()
     setCurrentQuestion(prev => prev + 1)
+  }
+
+  const handleModal = () => {
+    setIsModalOpen(true)
   }
 
   useEffect(() => {
@@ -206,45 +181,6 @@ export default function CFITSubtest2() {
                       Pilih gambar yang paling tepat untuk melengkapi pola:
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 w-full">
-                      {/* {[1, 2, 3, 4, 5, 6].map(option => (
-                        <button
-                          key={option}
-                          onClick={() => handleAnswer(option)}
-                          // className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 ${
-                          //   answers[currentQuestion] === option
-                          //     ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
-                          //     : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
-                          // }`}
-                            className={`aspect-square text-lg font-semibold rounded-xl flex items-center  justify-center transition-all border-2 ${
-                              // isChecked === true && option === questions[currentQuestion].correctAnswer
-                              // ? 'bg-green-600 text-white border-green-600 scale-105 shadow '
-                              // : answers[currentQuestion] === option
-                              // ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow '
-                              // : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
-
-
-                              isChecked === true && option === questions[currentQuestion].correctAnswer
-                              ? 'bg-green-600  text-white border-green-600 scale-105 shadow'
-                              : isChecked === true && !(option === questions[currentQuestion].correctAnswer) && answers[currentQuestion] === option
-                              ? 'bg-red-600 text-white border-red-600 scale-105 shadow'
-                              : answers[currentQuestion] === option
-                              ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
-                              : isChecked === false || answers[currentQuestion] === option
-                              ? ' hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
-                              : !(isChecked === true && option === questions[currentQuestion].correctAnswer)
-                              ? 'border-slate-200 bg-slate-50'
-                              : ''
-
-                              // answers[currentQuestion] === option
-                              // ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
-                              // : 'hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
-
-                            }`}
-                            disabled = {isChecked === true}
-                        >
-                          {option}
-                        </button>
-                      ))} */}
                       {[1, 2, 3, 4, 5, 6].map(option => {
                         const selected = answers[currentQuestion]?.includes(option);
                         const correct = questions[currentQuestion].correctAnswer.includes(option);
@@ -304,7 +240,7 @@ export default function CFITSubtest2() {
             <button
               onClick={
                 currentQuestion === questions.length - 1
-                  ? handleTestComplete
+                  ? handleModal
                   : handleNext
               }
               className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -319,11 +255,12 @@ export default function CFITSubtest2() {
 
           {/* Section: Tombol Aksi */}
           <div className="text-center space-x-4">
-            <Link href="/tests/cfit/subtest2/test" className="inline-block">
-              <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all">
+              <button 
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 shadow-md hover:shadow-lg transition-all"
+                onClick={handleModal}
+              >
                 Mulai Subtes 2
               </button>
-            </Link>
           </div>
         </motion.div>
       </main>
@@ -332,6 +269,26 @@ export default function CFITSubtest2() {
       <footer className="text-center text-gray-500 text-sm py-6">
         © {new Date().getFullYear()} Psikotes Online • Kurniawan Group
       </footer>
+
+      <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+        <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+        <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+        <div className='flex gap-x-3 justify-evenly mt-4'>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={()=> setIsModalOpen(false)}
+          >
+            Kembali
+          </button>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={handleTestComplete}
+          >
+            Mulai Tes
+          </button>
+        </div>
+      </Modal>
+
     </div>
   );
 }

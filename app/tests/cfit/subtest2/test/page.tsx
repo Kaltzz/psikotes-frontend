@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/Modal';
 
 interface Question {
     id: number;
@@ -13,6 +14,7 @@ export default function CFITsubtest2Test() {
     const [timeLeft, setTimeLeft] = useState(240); // 3 menit
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<number[][]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const answered = answers[currentQuestion]?.length
 
@@ -84,15 +86,15 @@ export default function CFITsubtest2Test() {
         return `${minutes}:${remaining.toString().padStart(2, '0')}`;
     };
 
-
+    const handleModal = () => {
+        setIsModalOpen(true)
+    }
 
     const handleNext = () => {
     setCurrentQuestion(prev => prev + 1)
   }
 
     const progressPercent = ((currentQuestion + 1) / questions.length) * 100;
-
-
 
     return (
         <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -185,7 +187,7 @@ export default function CFITsubtest2Test() {
                         <button
                             onClick={
                                 currentQuestion === questions.length - 1
-                                    ? handleTestComplete
+                                    ? handleModal
                                     : handleNext
                             }
                             className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -200,6 +202,26 @@ export default function CFITsubtest2Test() {
                     Waktu berjalan otomatis. Tes akan selesai saat waktu habis.
                 </div>
             </main>
+
+            <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+                <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+                <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+                <div className='flex gap-x-3 justify-evenly mt-4'>
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={()=> setIsModalOpen(false)}
+                    >
+                        Kembali
+                    </button>
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={handleTestComplete}
+                    >
+                        Mulai Tes
+                    </button>
+                </div>
+            </Modal>
+
         </div>
     );
 }

@@ -12,7 +12,9 @@ interface Data {
     token: string
     tests: []
     kuota: number
+    usedCount: number
     isActive: boolean
+
 }
 
 export default function AdminTokenTes() {
@@ -118,7 +120,7 @@ export default function AdminTokenTes() {
                                     </ul>
                                 ))}
                                 </td>
-                                <td className="py-2 px-4">{item.kuota}</td>
+                                <td className="py-2 px-4">{item.usedCount}/{item.kuota}</td>
                                 <td className="py-2 px-4">
                                     <div className={`text-center text-white rounded-lg py-0.5 ${
                                         item.isActive
