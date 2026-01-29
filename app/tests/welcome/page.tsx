@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import test from "node:test"
 import { useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
+import { postStatusTest } from "@/services/answers.service"
 
 
 
@@ -23,17 +24,20 @@ export default function frontPage()  {
         setIsModalOpen(true)
     }
 
-    const handleTest = () => {
+    const handleTest = async () => {
         const testSession = sessionStorage.getItem('testSession')
         if(!testSession)
             return console.log('gagal')
 
         const testSessionParsed = JSON.parse(testSession)
         const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
-        if(tests) {
+
+        console.log('ini tests:', testSessionParsed)
+        const sessionId = testSessionParsed.sessionId
+        if(sessionId && !(tests === null)) {
             const indexIncrement = testSessionParsed.currentIndex + 1
             testSessionParsed.currentIndex = indexIncrement
-
+            const id = await postStatusTest(sessionId)
             const updatedTestString = JSON.stringify(testSessionParsed)
             sessionStorage.setItem('testSession', updatedTestString)
             router.push(`/tests/${tests.toLowerCase()}`)        

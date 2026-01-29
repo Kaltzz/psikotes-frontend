@@ -83,10 +83,6 @@ export default function PapiTestPage() {
         })
     }
 
-    const handleStart = () => {
-    router.push('/tests/disc/test');
-    };
-
     const handleNext = () => {
         setCurrentGroup(prev => prev + 1)
     }

@@ -74,23 +74,7 @@ export default function CFITSubtest4() {
    }
 
     const handleTestComplete = () => {
-        const testSession = sessionStorage.getItem('testSession')
-        if(!testSession)
-            return alert('gagal')
-
-        const testSessionParsed = JSON.parse(testSession)
-        const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
-        if(tests) {
-            router.push(`/tests/${tests.toLowerCase()}`)
-            const indexIncrement = testSessionParsed.currentIndex + 1
-            testSessionParsed.currentIndex = indexIncrement
-
-            const updatedTestString = JSON.stringify(testSessionParsed)
-            sessionStorage.setItem('testSession', updatedTestString)        
-        } else {
-            sessionStorage.clear()
-            router.push('/result')
-        }
+        router.push('/tests/cfit/subtest4/test')
     }
   
     const resetState = () => {

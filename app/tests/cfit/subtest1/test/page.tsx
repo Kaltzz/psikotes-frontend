@@ -2,17 +2,26 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
+import { storeAnswersCfit } from '@/services/answers.service';
 
 interface Question {
   id: number;
   images: string[];
 }
 
+type CfitAnswer = {
+  questionId: number
+  answers: number[]
+  subtest: number
+}
+
 export default function CFITSubtest1Test() {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(180); // 3 menit
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<number[]>([]);
+  // const [answers, setAnswers] = useState<number[]>([]);
+
+  const [answers, setAnswers] = useState<CfitAnswer[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   // Data dummy
@@ -36,14 +45,42 @@ export default function CFITSubtest1Test() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  const handleAnswer = (answerIndex: number) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestion] = answerIndex;
-    setAnswers(newAnswers);
-  };
+  // const handleAnswer = (answerIndex: number) => {
+  //   const newAnswers = [...answers];
+  //   newAnswers[currentQuestion] = answerIndex;
+  //   setAnswers(newAnswers);
+  // };
 
-  const handleTestComplete = () => {
-    router.push('/tests/cfit/subtest2');
+  const handleAnswer = (answers: number) => {
+        setAnswers(prev => {
+            const updated = [...prev];
+
+            updated[currentQuestion] = {
+            questionId: currentQuestion,
+            answers: [answers],
+            subtest: 1
+            };
+
+            return updated; 
+        })
+    }
+
+  const handleTestComplete = async () => {
+    try {
+      const testSession = sessionStorage.getItem('testSession')
+      
+      if(!testSession) {
+        return (console.log('gagal'))
+      }
+
+      const testSessionParsed = JSON.parse(testSession)
+      const sessionId = testSessionParsed.sessionId
+      const res = await storeAnswersCfit(sessionId, answers)
+      console.log('ini jawaban subtest1: ', res)
+      router.push('/tests/cfit/subtest2');
+    } catch(err:any) {
+      console.log('error: ', err)
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -116,7 +153,7 @@ export default function CFITSubtest1Test() {
                   key={option}
                   onClick={() => handleAnswer(option)}
                   className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 ${
-                    answers[currentQuestion] === option
+                    answers[currentQuestion]?.answers?.includes(option)
                       ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
                       : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
                   }`}

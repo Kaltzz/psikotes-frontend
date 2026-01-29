@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
+import { storeAnswersCfit } from '@/services/answers.service';
 
 interface Question {
     id: number;
@@ -9,14 +10,21 @@ interface Question {
     correctAnswer: number[];
 }
 
+type CfitAnswer = {
+  questionId: number
+  answers: number[]   // isi 2 angka
+  subtest: number
+}
+
 export default function CFITsubtest2Test() {
     const router = useRouter();
     const [timeLeft, setTimeLeft] = useState(240); // 3 menit
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [answers, setAnswers] = useState<number[][]>([]);
+    // const [answers, setAnswers] = useState<number[][]>([]);
+    const [answers, setAnswers] = useState<CfitAnswer[]>([])
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const answered = answers[currentQuestion]?.length
+    const answered = answers[currentQuestion]?.answers?.length
 
     // Data dummy
     const questions: Question[] = [
@@ -48,36 +56,90 @@ export default function CFITsubtest2Test() {
     useEffect(()=> {
         console.log('currentQuestion: ', currentQuestion)
     }, [currentQuestion]) 
-    // useEffect(()=>{
-    //     console.log('length ', answers[currentQuestion].length)
-    // }, [answers[currentQuestion].length])
+
+    // const handleAnswer = (answerIndex: number) => {
+    //     setAnswers(prev => {
+    //         const copy = [...prev];
+
+    //         // ambil jawaban soal saat ini (default array kosong)
+    //         const currentAnswers = copy[currentQuestion] ?? [];
+
+    //         // kalau option sudah dipilih → UNSELECT
+    //         if (currentAnswers.includes(answerIndex)) {
+    //         copy[currentQuestion] = currentAnswers.filter(o => o !== answerIndex);
+    //         return copy;
+    //         }
+
+    //         // kalau sudah 2 pilihan → TOLAK pilihan ke-3
+    //         if (currentAnswers.length === 2) {
+    //         return prev;
+    //         }
+
+    //         // tambah option baru
+    //         copy[currentQuestion] = [...currentAnswers, answerIndex];
+    //         return copy;
+    //     });
+    // };
 
     const handleAnswer = (answerIndex: number) => {
         setAnswers(prev => {
-            const copy = [...prev];
+            const existing = prev.find(a => a.questionId === currentQuestion)
 
-            // ambil jawaban soal saat ini (default array kosong)
-            const currentAnswers = copy[currentQuestion] ?? [];
+            //  BELUM ADA DATA → buat baru
+            if (!existing) {
+            return [
+                ...prev,
+                {
+                questionId: currentQuestion,
+                answers: [answerIndex],
+                subtest: 2
+                }
+            ]
+            }
 
-            // kalau option sudah dipilih → UNSELECT
+            const currentAnswers = existing.answers ?? []
+
+            //  UNSELECT
             if (currentAnswers.includes(answerIndex)) {
-            copy[currentQuestion] = currentAnswers.filter(o => o !== answerIndex);
-            return copy;
+                return prev.map(a =>
+                    a.questionId === currentQuestion
+                    ? { ...a, answers: currentAnswers.filter(x => x !== answerIndex) }
+                    : a
+                )
             }
 
-            // kalau sudah 2 pilihan → TOLAK pilihan ke-3
+        //  TOLAK PILIHAN KE-3
             if (currentAnswers.length === 2) {
-            return prev;
+                return prev
             }
 
-            // tambah option baru
-            copy[currentQuestion] = [...currentAnswers, answerIndex];
-            return copy;
-        });
-    };
+            //  TAMBAH JAWABAN
+            return prev.map(a =>
+                a.questionId === currentQuestion
+                    ? { ...a, answers: [...currentAnswers, answerIndex] }
+                    : a
+                )
+            })
+    }   
 
-    const handleTestComplete = () => {
-        router.push('/tests/cfit/subtest3');
+
+
+    const handleTestComplete = async () => {
+        try {
+              const testSession = sessionStorage.getItem('testSession')
+              
+              if(!testSession) {
+                return (console.log('gagal'))
+              }
+        
+              const testSessionParsed = JSON.parse(testSession)
+              const sessionId = testSessionParsed.sessionId
+              const res = await storeAnswersCfit(sessionId, answers)
+              console.log('ini jawaban subtest2: ', res)
+              router.push('/tests/cfit/subtest3');
+            } catch(err:any) {
+              console.log('error: ', err)
+            }
     };
 
     const formatTime = (seconds: number) => {
@@ -148,7 +210,7 @@ export default function CFITsubtest2Test() {
                         {/* Pilihan Jawaban */}
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                             {[1, 2, 3, 4, 5].map(option => {
-                                const selected = answers[currentQuestion]?.includes(option);
+                                const selected = answers[currentQuestion]?.answers?.includes(option);
 
                                 // const answered = answers[currentQuestion].length
                                 return (

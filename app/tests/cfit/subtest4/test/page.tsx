@@ -1,17 +1,26 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Modal from '@/app/components/Modal';
+import { storeAnswersCfit } from '@/services/answers.service';
 
 interface Question {
     id: number;
     images: string[];
 }
 
+type CfitAnswer = {
+  questionId: number
+  answers: number[]
+  subtest: number
+}
+
 export default function CFITSubtest4Test() {
     const router = useRouter();
     const [timeLeft, setTimeLeft] = useState(180); // 3 menit
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [answers, setAnswers] = useState<number[]>([]);
+    const [answers, setAnswers] = useState<CfitAnswer[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const questions: Question[] = [
         {
@@ -33,14 +42,42 @@ export default function CFITSubtest4Test() {
         return () => clearInterval(timer);
     }, [timeLeft]);
 
-    const handleAnswer = (answerIndex: number) => {
-        const newAnswers = [...answers];
-        newAnswers[currentQuestion] = answerIndex;
-        setAnswers(newAnswers);
+    const handleAnswer = (answers: number) => {
+        setAnswers(prev => {
+            const updated = [...prev];
+
+            updated[currentQuestion] = {
+            questionId: currentQuestion,
+            answers: [answers],
+            subtest: 4
+            };
+
+            return updated; 
+        })
     };
 
-    const handleTestComplete = () => {
-        router.push('/tests/disc');
+    const handleTestComplete = async () => {
+            const testSession = sessionStorage.getItem('testSession')
+                      
+            if(!testSession) {
+                return (console.log('gagal'))
+            }            
+            const testSessionParsed = JSON.parse(testSession)
+            const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+            const sessionId = testSessionParsed.sessionId
+            console.log('ini test4:', tests)
+            const res = await storeAnswersCfit(sessionId, answers)
+            
+            if (!(tests === undefined)) {
+                const indexIncrement = testSessionParsed.currentIndex + 1
+                testSessionParsed.currentIndex = indexIncrement
+                console.log('ini jawaban subtest4: ', res)
+                const updatedTestString = JSON.stringify(testSessionParsed)
+                sessionStorage.setItem('testSession', updatedTestString)
+                router.push(`/tests/${tests.toLowerCase()}`)  
+            } else {
+                router.push('/result')
+            }         
     };
 
     const formatTime = (seconds: number) => {
@@ -53,6 +90,10 @@ export default function CFITSubtest4Test() {
             console.log('answers berubah:', answers);
             }, [answers]);
 
+
+    const handleModal = () => {
+      setIsModalOpen(true)
+    }
     const progressPercent = ((currentQuestion + 1) / questions.length) * 100;
 
     return(
@@ -109,7 +150,7 @@ export default function CFITSubtest4Test() {
                         key={option}
                         onClick={() => handleAnswer(option)}
                         className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 ${
-                            answers[currentQuestion] === option
+                            answers[currentQuestion]?.answers?.includes(option)
                             ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
                             : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
                         }`}
@@ -138,7 +179,7 @@ export default function CFITSubtest4Test() {
                     <button
                     onClick={
                         currentQuestion === questions.length - 1
-                        ? handleTestComplete
+                        ? handleModal
                         : () => setCurrentQuestion(prev => prev + 1)
                     }
                     className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
@@ -153,6 +194,26 @@ export default function CFITSubtest4Test() {
                 Waktu berjalan otomatis. Tes akan selesai saat waktu habis.
                 </div>
             </main>
+
+            <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+        <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+        <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+        <div className='flex gap-x-3 justify-evenly mt-4'>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={()=> setIsModalOpen(false)}
+          >
+            Kembali
+          </button>
+          <button 
+            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+            onClick={handleTestComplete}
+          >
+            Mulai Tes
+          </button>
+        </div>
+      </Modal>
+
         </div>
     )
 }
