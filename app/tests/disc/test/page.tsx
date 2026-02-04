@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, ArrowLeft } from 'lucide-react';
 import Modal from '@/app/components/Modal';
+import { storeAnswersDisc } from '@/services/answers.service';
 
 interface WordGroup {
   id: number;
@@ -15,15 +16,6 @@ interface WordGroup {
 }
 
 export default function DISCTestPage() {
-  const router = useRouter();
-  const [currentGroup, setCurrentGroup] = useState(0);
-  const [answers, setAnswers] = useState<{
-    most: { groupId: number; type: string }[];
-    least: { groupId: number; type: string }[];
-  }>({ most: [], least: [] });
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const [timeLeft, setTimeLeft] = useState(300); // 5 menit
 
   const wordGroups: WordGroup[] = [
     {
@@ -45,6 +37,22 @@ export default function DISCTestPage() {
       ],
     },
   ];
+
+  const router = useRouter();
+  const [currentGroup, setCurrentGroup] = useState(0);
+  const [answers, setAnswers] = useState<{
+    most: { groupId: number; type: string }[];
+    least: { groupId: number; type: string }[];
+  }>({
+    least: Array.from({length: wordGroups.length}, (_, index) => ({
+      groupId: index, type: ''
+    })),
+    most: Array.from({length: wordGroups.length}, (_, index) => ({
+      groupId: index, type: ''
+    }))
+});
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(7); // 5 menit
 
   useEffect(() => {
     console.log('current group:', answers);
@@ -114,24 +122,37 @@ export default function DISCTestPage() {
     });
   };
 
-  const handleTestComplete = () => {
+  const handleTestComplete = async () => {
+    // const testSession = sessionStorage.getItem('testSession')
+    //     if(!testSession)
+    //         return alert('gagal')
+
+    //     const testSessionParsed = JSON.parse(testSession)
+    //     const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+    //     if(tests) {
+    //         router.push(`/tests/${tests.toLowerCase()}`)
+    //         const indexIncrement = testSessionParsed.currentIndex + 1
+    //         testSessionParsed.currentIndex = indexIncrement
+
+    //         const updatedTestString = JSON.stringify(testSessionParsed)
+    //         sessionStorage.setItem('testSession', updatedTestString)        
+    //     } else {
+    //         sessionStorage.clear()
+    //         router.push('/result')
+    //     }
     const testSession = sessionStorage.getItem('testSession')
-        if(!testSession)
-            return alert('gagal')
 
-        const testSessionParsed = JSON.parse(testSession)
-        const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
-        if(tests) {
-            router.push(`/tests/${tests.toLowerCase()}`)
-            const indexIncrement = testSessionParsed.currentIndex + 1
-            testSessionParsed.currentIndex = indexIncrement
+    if(!testSession) {
+      return (console.log('gagal'))
+    }            
+    const testSessionParsed = JSON.parse(testSession)
+    const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+    const sessionId = testSessionParsed.sessionId
+    console.log('ini test4:', tests)
+    console.log('ini sessionId:', sessionId)
 
-            const updatedTestString = JSON.stringify(testSessionParsed)
-            sessionStorage.setItem('testSession', updatedTestString)        
-        } else {
-            sessionStorage.clear()
-            router.push('/result')
-        }
+    const res = await storeAnswersDisc(sessionId, answers)
+
   };
 
   const handleModal = () => {

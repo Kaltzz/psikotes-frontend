@@ -17,16 +17,6 @@ type CfitAnswer = {
 }
 
 export default function CFITsubtest2Test() {
-    const router = useRouter();
-    const [timeLeft, setTimeLeft] = useState(240); // 3 menit
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    // const [answers, setAnswers] = useState<number[][]>([]);
-    const [answers, setAnswers] = useState<CfitAnswer[]>([])
-    const [isModalOpen, setIsModalOpen] = useState(false)
-
-    const answered = answers[currentQuestion]?.answers?.length
-
-    // Data dummy
     const questions: Question[] = [
         {
             id: 1,
@@ -40,6 +30,22 @@ export default function CFITsubtest2Test() {
         },
     ];
 
+    const router = useRouter();
+    const [timeLeft, setTimeLeft] = useState(8); // 3 menit
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    // const [answers, setAnswers] = useState<number[][]>([]);
+    const [answers, setAnswers] = useState<CfitAnswer[]>(
+        Array.from({ length: questions.length}, (_, index) => ({
+            questionId: index,
+            answers: [],
+            subtest: 2
+    }))
+)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const answered = answers[currentQuestion]?.answers?.length
+
+    // Data dummy
     useEffect(() => {
         if (timeLeft <= 0) {
             handleTestComplete();

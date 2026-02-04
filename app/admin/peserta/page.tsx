@@ -63,9 +63,7 @@ export default function AdminPeserta() {
                                     ? 'bg-gray-400'
                                     : status === 1
                                     ? 'bg-yellow-300'
-                                    : status === 2
-                                    ? 'bg-green-600'
-                                    : ''
+                                    : 'bg-green-600'
                                     }`}>{
                                         status === 0 
                                         ? 'Belum mengerjakan'

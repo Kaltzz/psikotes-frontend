@@ -17,6 +17,7 @@ export default function TestForm() {
   const [formData, setFormData] = useState({
     nama: '',
     jenisKelamin: '',
+    unit: '',
     usia: 0,
     pendidikanTerakhir: '',
     jurusan: '',
@@ -131,6 +132,29 @@ export default function TestForm() {
                   <option value="">Pilih Jenis Kelamin</option>
                   <option value="LAKI_LAKI">Laki-laki</option>
                   <option value="PEREMPUAN">Perempuan</option>
+                </select>
+              </div>
+
+            {/* Unit */}
+              <div>
+                <label htmlFor="jenisKelamin" className="block text-sm font-medium text-gray-700 mb-1">
+                  Perusahaan yang dilamar
+                </label>
+                <select
+                  name="unit"
+                  id="unit"
+                  required  
+                  value={formData.unit}
+                  onChange={handleChange}
+                  className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
+                >
+                  <option value="">Pilih Perusahaan</option>
+                  <option value="SMP">PT. Samamaju Prima</option>
+                  <option value="MPP">PT. Makassar Putra Prima</option>
+                  <option value="MMPP">PT. Makassar Mega Putra Prima</option>
+                  <option value="IMP">PT. Indo Mega Prima</option>
+                  <option value="PPH">PT. Putra Prima Hotel</option>
+                  <option value="ACS">PT. Aptana Citra Solusindo</option>
                 </select>
               </div>
 
