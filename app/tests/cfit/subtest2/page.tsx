@@ -5,48 +5,84 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
+import { getContohCfit2Service } from '@/services/questions.service';
 
 interface Question {
   id: number;
   images: string[];
-  correctAnswer: number[];
+  correctAnswer: string[];
   explanationRight: string,
   explanationFalse: string
+}
+
+interface Option {
+  questionId: number;
+  label: string;
+  imagePath: string;
+}
+
+interface Questionz {
+  imagePath: string;
+  options : Option[]
 }
 
 export default function CFITSubtest2() {
   const router = useRouter()
   const [resultText, setResultText] = useState<string>('')
-  const [answers, setAnswers] = useState<number[][]>([])
+  const [answers, setAnswers] = useState<string[][]>([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [isChecked, setIsChecked] = useState<boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const [question, setQuestion] = useState<Questionz[]>([])
 
   const questions: Question[] = [
     {
       id: 1,
       images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
-      correctAnswer: [2, 3],
+      correctAnswer: ["B", "C"],
       explanationRight: 'Benar karena opsi yang dipilih benar',
       explanationFalse: 'Salah karena opsi yang dipilih tidak tepat'
     },
     {
       id: 2,
       images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
-      correctAnswer: [4, 5],
+      correctAnswer: ["D", "E"],
       explanationRight: 'Benar karena opsi yang dipilih benar',
       explanationFalse: 'Salah karena opsi yang dipilih tidak tepat'
     },
     {
       id: 3,
       images: ['q1-1.png', 'q1-2.png', 'q1-3.png', 'q1-4.png'],
-      correctAnswer: [1, 2],
+      correctAnswer: ["A", "B"],
       explanationRight: 'Benar karena opsi yang dipilih benar',
       explanationFalse: 'Salah karena opsi yang dipilih tidak tepat'
     }
   ]
 
-  const handleAnswer = (option: number) => {
+//   const handleAnswer = (option: number) => {
+//   if (isChecked) return;
+
+//   setAnswers(prev => {
+//     const current = prev[currentQuestion] || [];
+
+//     if (current.includes(option)) {
+//       const updated = current.filter(o => o !== option);
+//       const copy = [...prev];
+//       copy[currentQuestion] = updated;
+//       return copy;
+//     }
+
+//     if (current.length === 2) return prev;
+
+//     const copy = [...prev];
+//     copy[currentQuestion] = [...current, option];
+//     return copy;
+//   });
+// };
+
+
+const handleAnswer = (option: string) => {
   if (isChecked) return;
 
   setAnswers(prev => {
@@ -66,7 +102,6 @@ export default function CFITSubtest2() {
     return copy;
   });
 };
-
   const checkAnswer = (questionIndex: number) => {
   const selected = answers[questionIndex];
   if (!selected || selected.length !== 2) return;
@@ -108,6 +143,18 @@ export default function CFITSubtest2() {
   useEffect(() => {
           console.log('current question:', currentQuestion);
           }, [currentQuestion]);
+
+  useEffect(() => {
+        const getCfit2Contoh = async () => {
+          try {
+            const getQuestion = await getContohCfit2Service()
+            setQuestion(getQuestion.data.data)
+          } catch (error) {
+            console.log('gagal')
+          }
+        }
+        getCfit2Contoh()
+      }, [])
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col">
@@ -164,31 +211,19 @@ export default function CFITSubtest2() {
               <div className="flex justify-center items-center bg-white rounded-lg p-8 border">
                 
                   <div className='w-full flex flex-col gap-3 text-gray-400 italic'>
-                      <div>
-                        <p>Jawab soal berikut dengan teliti dan cepat.</p>
-                      </div>
-                      <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mb-6 text-gray-400 italic w-full">
-                      {questions[currentQuestion].images.map((img, i) => (
-                        <div
-                          key={i}
-                          className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 border border-slate-200"
-                        >
-                          <span className="text-xs font-medium">Gambar {i + 1}</span>
-                        </div>
-                      ))}
-                    </div>
                     <div className="text-center text-slate-700 mb-6">
                       Pilih gambar yang paling tepat untuk melengkapi pola:
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-6 gap-4 w-full">
-                      {[1, 2, 3, 4, 5, 6].map(option => {
-                        const selected = answers[currentQuestion]?.includes(option);
-                        const correct = questions[currentQuestion].correctAnswer.includes(option);
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 w-full">
+                      {/* {[1, 2, 3, 4, 5, 6].map(option => { */}
+                      { question[currentQuestion]?.options?.map((option) => {
+                        const selected = answers[currentQuestion]?.includes(option.label);
+                        const correct = questions[currentQuestion].correctAnswer.includes(option.label);
 
                         return (
                           <button
-                            key={option}
-                            onClick={() => handleAnswer(option)}
+                            key={option.label}
+                            onClick={() => handleAnswer(option.label)}
                             disabled={isChecked}
                             className={`aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2
                               ${
@@ -202,7 +237,12 @@ export default function CFITSubtest2() {
                               }
                             `}
                           >
-                            {option}
+                            <img 
+                            src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}${option.imagePath}`} 
+                            // src={option.imagePath} 
+                            alt={`Option ${option.label}`}
+                            className="w-full h-full object-contain p-2 rounded-xl"
+                          />
                           </button>
                         );
 })}
@@ -239,13 +279,13 @@ export default function CFITSubtest2() {
 
             <button
               onClick={
-                currentQuestion === questions.length - 1
+                currentQuestion === question.length - 1
                   ? handleModal
                   : handleNext
               }
               className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
             >
-              {currentQuestion === questions.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
+              {currentQuestion === question.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
             </button>
           </div>
                   </div>

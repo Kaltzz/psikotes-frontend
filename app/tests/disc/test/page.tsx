@@ -216,6 +216,7 @@ export default function DISCTestPage() {
                   const isLeast = answers.least[currentGroup]?.type === word.type;
                   const mostTaken = !!answers.most[currentGroup];
                   const leastTaken = !!answers.least[currentGroup];
+                  console.log(isMost)
 
                   return (
                     <div

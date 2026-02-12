@@ -4,7 +4,7 @@ export const storeAnswersCfit = (
     sessionId: number,
     data: {
         questionId: number,
-        answers: number[],
+        answers: string[],
         subtest: number
     }[]
 ) => api.post(`/api/user/answers/cfit/${sessionId}`, data)
