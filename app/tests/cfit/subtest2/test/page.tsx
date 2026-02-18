@@ -218,8 +218,15 @@ export default function CFITsubtest2Test() {
                                 )
                             })}
                         </div>
-                        <div className={`mt-4 text-red-500 text-lg font-semibold`}>
-                            {answered <= 1 && answered >=1 ? 'Catatan: Pastikan untuk memilih dua opsi' : ''}
+                        <div 
+                            className={`  
+                                ${
+                                answered <= 1 && answered >=1
+                                ? 'mt-4 bg-red-100 border border-red-300 rounded-xl text-red-500 py-1 px-2 text-lg not-italic'
+                                : ''
+                                }
+                                `}>
+                            {answered <= 1 && answered >=1 ? 'Pastikan untuk memilih dua opsi.' : ''}
                         </div>
                     </div>
 

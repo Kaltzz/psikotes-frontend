@@ -35,6 +35,7 @@ export default function CFITSubtest2() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [question, setQuestion] = useState<Questionz[]>([])
+  const answered = answers[currentQuestion]?.length
 
   const questions: Question[] = [
     {
@@ -248,7 +249,16 @@ const handleAnswer = (option: string) => {
 })}
 
                     </div>
-
+                    <div 
+                      className={`  
+                        ${
+                          answered <= 1 && answered >=1
+                          ? 'mt-4 bg-red-100 border border-red-300 rounded-xl text-red-500 py-1 px-2 text-lg not-italic'
+                          : ''
+                        }
+                        `}>
+                      {answered <= 1 && answered >=1 ? 'Pastikan untuk memilih dua opsi.' : ''}
+                    </div>
                     <div className=''>
                       <button onClick={() => checkAnswer(currentQuestion)} disabled = {isChecked === true} className={` px-8 py-3 rounded-lg font-semibold  ${
                           isChecked === true

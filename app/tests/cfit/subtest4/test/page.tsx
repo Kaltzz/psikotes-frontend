@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
-import { storeAnswersCfit } from '@/services/answers.service';
+import { storeAnswersCfit, triggerN8n } from '@/services/answers.service';
 import { getSoalCfit4Service } from '@/services/questions.service';
 
 interface Question {
@@ -98,6 +98,8 @@ export default function CFITSubtest4Test() {
             const sessionId = testSessionParsed.sessionId
             console.log('ini test4:', tests)
             const res = await storeAnswersCfit(sessionId, answers)
+            const pesertaId = testSessionParsed.pesertaId
+            const trigger = await triggerN8n(pesertaId, tests)
             
             if (!(tests === undefined)) {
                 const indexIncrement = testSessionParsed.currentIndex + 1
@@ -105,6 +107,7 @@ export default function CFITSubtest4Test() {
                 console.log('ini jawaban subtest4: ', res)
                 const updatedTestString = JSON.stringify(testSessionParsed)
                 sessionStorage.setItem('testSession', updatedTestString)
+                
                 router.push(`/tests/${tests.toLowerCase()}`)  
             } else {
                 router.push('/result')

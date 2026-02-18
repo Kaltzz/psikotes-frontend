@@ -20,3 +20,8 @@ export const storeAnswersDisc = (
 export const postStatusTest = (
     sessionId: number
 ) =>api.put(`/api/user/peserta/status/${sessionId}`)
+
+export const triggerN8n = (
+    pesertaId: number,
+    tests: string
+) => api.post(`/api/n8n/cfit/${pesertaId}`)

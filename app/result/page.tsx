@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Brain } from 'lucide-react'
+import { triggerN8n } from '@/services/answers.service'
 
 export default function ResultPage() {
   const router = useRouter()
@@ -14,6 +15,18 @@ export default function ResultPage() {
       setUserData(JSON.parse(storedUserData))
     }
   }, [])
+
+  const handleAnswer = async () => {
+    const testSession = sessionStorage.getItem('testSession')
+    if(!testSession) {
+      return (console.log('gagal'))
+    }
+    const testSessionParsed = JSON.parse(testSession)
+    // const pesertaId = testSessionParsed.pesertaId
+    // const trigger = await triggerN8n(pesertaId)
+    sessionStorage.clear()
+    router.push('/')
+  }
 
   if (!userData) {
     return (
@@ -49,10 +62,7 @@ export default function ResultPage() {
 
           <div className="mt-6">
             <button
-              onClick={() => {
-                sessionStorage.clear()
-                router.push('/')
-              }}
+              onClick={() => handleAnswer()}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2.5 rounded-lg hover:shadow-md transition-all duration-200"
             >
               Kembali ke halaman utama

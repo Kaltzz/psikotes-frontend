@@ -4,11 +4,13 @@ export const getAllPeserta = () => api.get('/api/admin/peserta')
 
 export const registerPeserta = (data: {
     nama: string,
+    email: string,
     jenisKelamin: string,
-    unit: String,
+    unit: string,
     usia: number,
     pendidikanTerakhir: string,
     jurusan: string,
+    posisi: string,
     tokenPeserta: string
 }) => api.post('/api/user/peserta', data)
 
