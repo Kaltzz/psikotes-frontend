@@ -16,6 +16,27 @@ interface WordGroup {
   }[];
 }
 
+// interface DiscQuestion {
+//   id: number
+//   questionIndex: number
+//   questions: {
+//     sentences: string
+//     optionIndex: number
+//   }[]
+// }
+
+// interface DiscAnswers {
+//   questionIndex: number
+//   p1: number
+//   p2: number
+//   p3: number
+//   p4: number
+//   k1: number
+//   k2: number
+//   k3: number
+//   k4: number
+// }
+
 function IconPersonality() {
   return (
     <svg
@@ -42,7 +63,43 @@ export default function DISCInstructionPage() {
     most: { groupId: number;  type: string }[];
     least: { groupId: number; type: string }[];
   }>({ most: [], least: [] });
+
+  // const [answers, setAnswers] = useState<DiscAnswers>({
+  //   questionIndex: 0,
+  //   p1: 0,
+  //   p2: 0,
+  //   p3: 0,
+  //   p4: 0,
+  //   k1: 0,
+  //   k2: 0,
+  //   k3: 0,
+  //   k4: 0,
+  // })
+
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  // const discQuestion:DiscQuestion[] = [
+  //   {
+  //     id: 0,
+  //     questionIndex: 1,
+  //     questions: [
+  //       { sentences: 'Mudah bergaul', optionIndex: 1 },
+  //       { sentences: 'Suka menyendiri', optionIndex: 2 },
+  //       { sentences: 'Kurang nyaman di kerumunan', optionIndex: 3 },
+  //       { sentences: 'Nyaman di keramaian asalkan dengan teman', optionIndex: 4 }
+  //     ],
+  //   },
+  //   {
+  //     id: 1,
+  //     questionIndex: 2,
+  //     questions: [
+  //       { sentences: 'Rendah hati, Sederhana', optionIndex: 1 },
+  //       { sentences: 'Ingin Kemajuan', optionIndex: 2 },
+  //       { sentences: 'Terbuka memperlihatkan perasaan', optionIndex: 3 },
+  //       { sentences: 'Puas dengan segalanya', optionIndex: 4 }
+  //     ],
+  //   }
+  // ]
   
   const wordGroups: WordGroup[] = [
     {
@@ -134,6 +191,20 @@ export default function DISCInstructionPage() {
       return updated;
     });
   };
+
+  // const resetState = () => {
+  //     setAnswers({
+  //       questionIndex: 0,
+  //       p1: 0,
+  //       p2: 0,
+  //       p3: 0,
+  //       p4: 0,
+  //       k1: 0,
+  //       k2: 0,
+  //       k3: 0,
+  //       k4: 0,
+  //     })
+  //   }
 
   const resetState = () => {
       setAnswers({most: [], least: []})
@@ -269,6 +340,42 @@ export default function DISCInstructionPage() {
                           transition={{ duration: 0.4 }}
                         >
                           <div className="grid grid-cols-1 gap-4">
+
+                            {/* {discQuestion[currentGroup].questions.map((question, index) => {
+
+                              // const isMost = 
+
+                              return (
+                                <div
+                                  key={index}
+                                  className='flex items-center justify-between p-4 border rounded-lg transition-all'
+                                >
+                                  <span className="text-lg font-medium text-gray-800">{question.sentences}</span>
+                                  <div className="flex gap-3">
+                                    <button
+                                      // disabled={(!isMost && mostTaken) || isLeast}
+                                      // onClick={() => handleSelection('most', word.type)}
+                                      className={`px-4 py-2 rounded-md text-sm font-semibold 
+                                        
+                                          `}
+                                    >
+                                      PALING (P)
+                                    </button>
+
+                                    <button
+                                      // disabled={(!isLeast && leastTaken) || isMost}
+                                      // onClick={() => handleSelection('least', word.type)}
+                                      className={`px-4 py-2 rounded-md text-sm font-semibold 
+                                        
+                                          `}
+                                    >
+                                      PALING TIDAK (K)
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            } )} */}
+
                             {wordGroups[currentGroup].words.map((word, index) => {
 
                               const isMost = answers.most[currentGroup]?.type === word.type;
