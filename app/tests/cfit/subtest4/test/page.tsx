@@ -105,7 +105,7 @@ export default function CFITSubtest4Test() {
             const pesertaId = testSessionParsed.pesertaId
             const trigger = await triggerN8n(pesertaId, tests)
 
-            const indexIncrement = testSessionParsed.currentIndex + 1
+            const indexIncrement = await testSessionParsed.currentIndex + 1
             testSessionParsed.currentIndex = indexIncrement
             console.log('ini jawaban subtest4: ', res)
             const updatedTestString = JSON.stringify(testSessionParsed)
