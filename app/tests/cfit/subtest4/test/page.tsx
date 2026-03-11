@@ -107,10 +107,9 @@ export default function CFITSubtest4Test() {
 
             const indexIncrement = await testSessionParsed.currentIndex + 1
             testSessionParsed.currentIndex = indexIncrement
-            console.log('ini jawaban subtest4: ', res)
             const updatedTestString = JSON.stringify(testSessionParsed)
             sessionStorage.setItem('testSession', updatedTestString)
-            const newTests:string = testSessionParsed
+            const newTests:string = await testSessionParsed.tests[testSessionParsed.currentIndex] 
             
             if (!(newTests === undefined)) {
                 router.push(`/tests/${tests.toLowerCase()}`)  
