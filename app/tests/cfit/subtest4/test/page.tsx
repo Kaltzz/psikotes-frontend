@@ -104,19 +104,20 @@ export default function CFITSubtest4Test() {
 
             const pesertaId = testSessionParsed.pesertaId
             const trigger = await triggerN8n(pesertaId, tests)
+
+            const indexIncrement = testSessionParsed.currentIndex + 1
+            testSessionParsed.currentIndex = indexIncrement
+            console.log('ini jawaban subtest4: ', res)
+            const updatedTestString = JSON.stringify(testSessionParsed)
+            sessionStorage.setItem('testSession', updatedTestString)
+            const newTests:string = testSessionParsed
             
-            if (!(tests === undefined)) {
-                const indexIncrement = testSessionParsed.currentIndex + 1
-                testSessionParsed.currentIndex = indexIncrement
-                console.log('ini jawaban subtest4: ', res)
-                const updatedTestString = JSON.stringify(testSessionParsed)
-                sessionStorage.setItem('testSession', updatedTestString)
-                
+            if (!(newTests === undefined)) {
                 router.push(`/tests/${tests.toLowerCase()}`)  
-            } else {
-                
+            } else { 
+                sessionStorage.removeItem('testSession')
                 router.push('/result')
-            }         
+            }           
     };
 
     const formatTime = (seconds: number) => {
