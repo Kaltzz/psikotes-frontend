@@ -7,7 +7,7 @@ import { Brain, ArrowLeft } from 'lucide-react';
 import Modal from '@/app/components/Modal';
 import { storeAnswersDisc } from '@/services/answers.service';
 import TestHeader from '@/app/components/TestHeader';
-import { updateStatusTest } from "@/services/answers.service"
+import { updateStatusTest, triggerN8n } from "@/services/answers.service"
 import { getSoalDiscService } from '@/services/questions.service';
 
 interface WordGroup {
@@ -178,8 +178,8 @@ export default function DISCTestPage() {
 
     const statusTest = await updateStatusTest(sessionId)
 
-    // const pesertaId = testSessionParsed.pesertaId
-    // const trigger = await triggerN8n(pesertaId, tests)
+    const pesertaId = testSessionParsed.pesertaId
+    const trigger = await triggerN8n(pesertaId, tests)
 
     const indexIncrement = await testSessionParsed.currentIndex + 1
     testSessionParsed.currentIndex = indexIncrement
