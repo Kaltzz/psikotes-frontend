@@ -122,7 +122,7 @@ export default function AdminForm() {
                             <label htmlFor="tes">MSDT</label>
                         </div>
                         <div className="space-x-3">
-                            <input type="checkbox" id="papi" value="PAPI" name="tes" onChange={handleChange}/>
+                            <input type="checkbox" id="papi" value="PAPIKOSTICK" name="tes" onChange={handleChange}/>
                             <label htmlFor="tes">PapiKostick</label>
                         </div>
                     </div>

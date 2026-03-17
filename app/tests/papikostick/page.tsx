@@ -6,15 +6,25 @@ import { ArrowLeft, Brain, Info, Clock, ListChecks } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Modal from '@/app/components/Modal';
+import { getPapikostickQuestionsService } from '@/services/questions.service';
 
 interface PapiQuestion {
-    id: number,
+    id: number
     sentences: {
         text: string
         type: 
          'G' | 'L' | 'I' | 'T' | 'V' | 'S' | 'R' | 'D' | 'C' | 'E' | 
          'N' | 'A' | 'P' | 'X' | 'B' | 'O' | 'Z' | 'K' | 'F' | 'W'
 
+    }[]
+}
+
+interface PapikostickQuestion {
+    id: number
+    questionIndex: number
+    option: {
+        sentences: string
+        optionType: 1 | 2
     }[]
 }
 
@@ -59,8 +69,28 @@ export default function PapiInstructionPage() {
     // ])
 
     const [answers, setAnswers] = useState<
-        { groupId: number; type: string }[]
+        { groupId: number; type: number }[]
         >([]);
+    const [questions, setQuestions] = useState<PapikostickQuestion[]>([])
+
+    const papikostick: PapikostickQuestion[] = [
+        {
+            id: 0,
+            questionIndex: 1,
+            option: [
+                {sentences: 'Saya suka menjadi pendengar', optionType: 1},
+                {sentences: 'Saya mengerjakan semua pekerjaan sekaligus', optionType: 2}
+            ]
+        },
+        {
+            id: 1,
+            questionIndex: 2,
+            option: [
+                {sentences: 'Saya orangnya teliti', optionType: 1},
+                {sentences: 'Saya ingin menjadi pemimpin', optionType: 2}
+            ]
+        },
+    ]
     
     const papi: PapiQuestion[]  = [
         {
@@ -96,7 +126,7 @@ export default function PapiInstructionPage() {
         router.push('/tests/papikostick/test');
     };
 
-    const handleSelection = (newType: string) => {
+    const handleSelection = (newType: 1 | 2) => {
         // const newAnswers = {...answers}
             // console.log(`ini adalah type (lama): ${newAnswers.type}`)
             // console.log(`ini adalah groupId (lama): ${newAnswers.groupId}`)
@@ -125,6 +155,22 @@ export default function PapiInstructionPage() {
     useEffect(()=> {
         console.log('isi new answers: ', answers)
     }, [answers])
+
+    useEffect(() => {
+        const getPapikostickQuestions = async () => {
+            try {
+                const getQuestion = await getPapikostickQuestionsService()
+                setQuestions(getQuestion.data.data)
+            } catch (error) {
+                console.log('gagal')
+            }
+        }
+        getPapikostickQuestions()
+    }, [])
+
+    useEffect(()=> {
+        console.log('isi question: ', questions)
+    }, [questions])
 
     const resetState = () => {
         setAnswers([]);
@@ -255,9 +301,9 @@ export default function PapiInstructionPage() {
                             transition={{ duration: 0.4 }}
                             >
                             <div className="grid grid-cols-1 gap-4 w-full">
-                                {papi[currentGroup].sentences.map((sentence, index) => {
+                                {papikostick[currentGroup].option.map((opt, index) => {
 
-                                const selected = answers[currentGroup]?.type === sentence.type;
+                                const selected = answers[currentGroup]?.type === opt.optionType;
 
                                 return (
                                     <div
@@ -266,14 +312,14 @@ export default function PapiInstructionPage() {
                                     >
                                         <button
                                         // disabled={(!isMost && mostTaken) || isLeast}
-                                        onClick={() => handleSelection(sentence.type)}
+                                        onClick={() => handleSelection(opt.optionType)}
                                         className={`p4 rounded-md text-lg font-medium border  text-gray-700 flex items-center justify-between p-4 transition-all  w-full  ${
                                             selected
                                                 ? 'bg-green-100 border-green-500'
                                                 : 'bg-gray-50 hover:bg-gray-300 border-gray-300'
                                             }`}
                                         >
-                                        {sentence.text}
+                                        {opt.sentences}
                                         </button>
 
                                     </div>
