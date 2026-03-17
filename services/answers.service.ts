@@ -22,6 +22,13 @@ export const storeAnswersKraepelin = (
     data: string
 ) => api.post(`/api/user/answers/kraepelin/${sessionId}`, data)
 
+export const storeAnswersPapikostik = (
+    sessionId:number,
+    data: {
+        groupId: number; type: number
+    }[]
+ )=>api.post(`/api/user/answers/papikostik/${sessionId}`, data)
+
 export const updateStatusTest = (
     sessionId: number
 ) =>api.put(`/api/user/peserta/status/${sessionId}`)

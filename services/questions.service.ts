@@ -13,3 +13,5 @@ export const getContohCfit4Service = () => api.get(`/api/user/questions/cfit4/co
 export const getSoalCfit4Service = () => api.get(`/api/user/questions/cfit4/soal`)
 
 export const getSoalDiscService = () => api.get(`/api/user/questions/disc`)
+
+export const getPapikostickQuestionsService = () => api.get(`/api/user/questions/papikostik`)
