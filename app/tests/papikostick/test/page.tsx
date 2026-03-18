@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
 import { getPapikostickQuestionsService } from "@/services/questions.service"
 import { triggerN8n, updateStatusTest, storeAnswersPapikostik } from "@/services/answers.service"
+import TestHeader from "@/app/components/TestHeader"
 
 interface PapiQuestion {
     id: number,
@@ -151,12 +152,7 @@ export default function PapiTestPage() {
     return(
         <div className="font-sans min-h-screen bg-gray-50">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
-                <div className="container mx-auto px-6 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <Brain className="text-blue-600" size={28} />
-                        <h1 className="text-xl font-bold text-gray-800">DISC Personality Test</h1>
-                    </div>
-                </div>
+                <TestHeader />
             </header>
 
             <main className="container mx-auto px-6 py-10">
@@ -166,8 +162,7 @@ export default function PapiTestPage() {
                     <div className="text-center md:text-left">
                     <h2 className="text-2xl font-bold text-gray-800">Instruksi</h2>
                     <p className="text-gray-500 text-sm">
-                        Pilih kalimat yang <span className="text-green-600 font-semibold">PALING (P)</span> dan{' '}
-                        <span className="text-red-600 font-semibold">PALING TIDAK (K)</span> menggambarkan diri Anda.
+                        Pilih kalimat yang paling menggambarkan diri Anda.
                     </p>
                     </div>
                     <div className="bg-gray-100 text-xl font-mono px-4 py-2 rounded-lg shadow-sm">
@@ -274,8 +269,8 @@ export default function PapiTestPage() {
             </main>
 
         <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
-            <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
-            <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
+            <p className='text-gray-800'>Anda telah menyelesaikan sesi tes. Waktu pengerjaan telah berakhir dan sesi tidak dapat diulang.</p>
+            <p className='text-gray-600 text-sm mt-3'>(Terima kasih telah mengikuti tes. Silakan menunggu instruksi selanjutnya.)</p>
             <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 
                     className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
