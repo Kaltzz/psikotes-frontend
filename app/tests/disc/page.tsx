@@ -43,6 +43,16 @@ interface DiscAnswers {
   }[]
 }
 
+function IconSeries() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="2" y="4" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="9" y="8" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="16" y="12" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 function IconPersonality() {
   return (
     <svg
@@ -280,20 +290,10 @@ export default function DISCInstructionPage() {
               {/* Breadcrumb */}
               <div className="mb-4">
                 <nav className="text-xs text-slate-500 mb-2" aria-label="Breadcrumb">
-                  <ol className="inline-flex items-center space-x-2">
-                    <li>
-                      <Link href="/tests" className="hover:underline">
-                        Tes
-                      </Link>
-                    </li>
-                    <li>
-                      <span className="text-slate-400">/</span>
-                    </li>
-                    <li className="font-medium text-slate-700">DISC</li>
-                  </ol>
+                  
                 </nav>
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                  Tes Kepribadian DISC
+                  Tes Psikotes
                 </h2>
                 {/* <p className="mt-2 text-sm text-slate-600">
                   Tes untuk mengenali kecenderungan kepribadian berdasarkan empat tipe utama:
@@ -324,13 +324,22 @@ export default function DISCInstructionPage() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
+                {/* <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
                   <div className="text-emerald-600">
                     <IconPersonality />
                   </div>
                   <div className="text-sm">
                     <div className="text-slate-800 font-medium">Tujuan</div>
                     <div className="text-slate-600">Mengukur tipe kepribadian Anda</div>
+                  </div>
+                </div> */}
+                <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
+                  <div className="text-emerald-600">
+                    <IconSeries />
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-slate-800 font-medium">Format</div>
+                    <div className="text-slate-600">Verbal • Teks & Pernyataan </div>
                   </div>
                 </div>
               </div>
@@ -339,7 +348,7 @@ export default function DISCInstructionPage() {
               <section className="mt-10 mb-10">
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                   <ListChecks className="text-blue-600" size={22} />
-                  Petunjuk Tes DISC
+                  Petunjuk Tes
                 </h2>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
@@ -367,7 +376,7 @@ export default function DISCInstructionPage() {
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">Contoh Soal</h2>
                 <div className="border border-gray-200 rounded-xl p-6 bg-gray-50">
                   <p className="text-sm text-gray-600 mb-4">
-                    Berikut contoh tampilan soal DISC. Pilih satu kata yang paling dan paling tidak menggambarkan diri Anda.
+                    Berikut contoh tampilan soal. Pilih satu kata yang paling dan paling tidak menggambarkan diri Anda.
                   </p>
                   <div className="flex justify-center items-center flex-col bg-white rounded-lg p-8 border text-gray-400 italic">
                     <div className='w-full'>

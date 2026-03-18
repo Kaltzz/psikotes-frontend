@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Modal from '@/app/components/Modal';
 import { getPapikostickQuestionsService } from '@/services/questions.service';
+import TestHeader from '@/app/components/TestHeader';
 
 interface PapiQuestion {
     id: number
@@ -26,6 +27,16 @@ interface PapikostickQuestion {
         sentences: string
         optionType: 1 | 2
     }[]
+}
+
+function IconSeries() {
+  return (
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="2" y="4" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="9" y="8" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="16" y="12" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
 }
 
 function IconPersonality() {
@@ -184,12 +195,7 @@ export default function PapiInstructionPage() {
         <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
         {/* Header */}
         <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
-            <div className="container mx-auto px-6 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <Brain className="text-blue-600" size={28} />
-                    <h1 className="text-xl font-bold text-gray-800">Tes Kepribadian PAPIKostick</h1>
-                </div>
-            </div>
+            <TestHeader />
         </header>
 
         {/* Main Content */}
@@ -205,7 +211,7 @@ export default function PapiInstructionPage() {
                 <div className="p-6 md:p-8">
                 {/* Breadcrumb */}
                 <div className="mb-4">
-                    <nav className="text-xs text-slate-500 mb-2" aria-label="Breadcrumb">
+                    {/* <nav className="text-xs text-slate-500 mb-2" aria-label="Breadcrumb">
                     <ol className="inline-flex items-center space-x-2">
                         <li>
                         <Link href="/tests" className="hover:underline">
@@ -217,13 +223,10 @@ export default function PapiInstructionPage() {
                         </li>
                         <li className="font-medium text-slate-700">PAPIKostick</li>
                     </ol>
-                    </nav>
+                    </nav> */}
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                    Tes Kepribadian PAPIKostick
+                    Tes Psikotes
                     </h2>
-                    <p className="mt-2 text-sm text-slate-600">
-                        Tes untuk mengidentifikasi kebutuhan, motivasi, dan gaya perilaku individu dalam lingkungan kerja.
-                    </p>
                 </div>
 
                 {/* Info box */}
@@ -249,21 +252,21 @@ export default function PapiInstructionPage() {
                     </div>
 
                     <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
-                    <div className="text-emerald-600">
-                        <IconPersonality />
-                    </div>
-                    <div className="text-sm">
-                        <div className="text-slate-800 font-medium">Tujuan</div>
-                        <div className="text-slate-600">Mengetahui motivasi kerja</div>
-                    </div>
-                    </div>
+                  <div className="text-emerald-600">
+                    <IconSeries />
+                  </div>
+                  <div className="text-sm">
+                    <div className="text-slate-800 font-medium">Format</div>
+                    <div className="text-slate-600">Verbal • Teks & Pernyataan </div>
+                  </div>
+                </div>
                 </div>
 
                 {/* Section: Petunjuk */}
                 <section className="mt-10 mb-10">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                     <ListChecks className="text-blue-600" size={22} />
-                    Petunjuk Tes PAPIKostick
+                    Petunjuk Tes
                     </h2>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
@@ -288,7 +291,7 @@ export default function PapiInstructionPage() {
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6">Contoh Soal</h2>
                     <div className="border border-gray-200 rounded-xl p-6 bg-gray-50">
                     <p className="text-sm text-gray-600 mb-4">
-                        Berikut contoh tampilan soal PAPIKostick. Pilih satu kata yang paling menggambarkan diri Anda.
+                        Berikut contoh tampilan soal. Pilih satu kalimat yang paling menggambarkan diri Anda.
                     </p>
                     <div className="flex justify-center items-center flex-col bg-white rounded-lg p-8 border text-gray-400 italic">
                         <div className='w-full'>
