@@ -5,6 +5,7 @@ import { ArrowLeft, Brain } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
+import TestHeader from "@/app/components/TestHeader"
 
 interface MsdtQuestion {
     id: number,
@@ -118,16 +119,11 @@ export default function MsdtTestPage() {
     return(
         <div className="font-sans min-h-screen bg-gray-50">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
-                <div className="container mx-auto px-6 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <Brain className="text-blue-600" size={28} />
-                        <h1 className="text-xl font-bold text-gray-800">MBTI Personality Test</h1>
-                    </div>
-                </div>
+                <TestHeader />
             </header>
 
             <main className="container mx-auto px-6 py-10">
-                <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+                <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-8">
                 {/* Header Info */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div className="text-center md:text-left">
@@ -208,7 +204,7 @@ export default function MsdtTestPage() {
                                         disabled={currentGroup === 0}
                                         className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
                                         currentGroup === 0
-                                            ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
+                                            ? 'px-4 sm:px-5 py-2 text-xs sm:text-sm opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
                                             : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'
                                         }`}
                                     >
@@ -221,7 +217,7 @@ export default function MsdtTestPage() {
                                             ? handleModal
                                             : handleNext
                                         }
-                                        className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
+                                        className="px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
                                     >
                                         {currentGroup === msdt.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
                                     </button>
