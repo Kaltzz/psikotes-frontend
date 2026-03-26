@@ -6,6 +6,7 @@ import { ArrowLeft, Brain, Info, Clock, ListChecks } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import Modal from '@/app/components/Modal';
+import TestHeader from '@/app/components/TestHeader';
 
 interface MsdtQuestion {
     id: number,
@@ -18,21 +19,12 @@ interface MsdtQuestion {
     }[]
 }
 
-function IconPersonality() {
+function IconSeries() {
   return (
-    <svg
-      className="w-6 h-6 text-blue-600"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-    >
-      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M4 20c0-4 4-6 8-6s8 2 8 6"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="2" y="4" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="9" y="8" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="16" y="12" width="6" height="6" rx="1.2" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -115,13 +107,9 @@ export default function MsdtInstructionPage() {
         <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
         {/* Header */}
         <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
-            <div className="container mx-auto px-6 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <Brain className="text-blue-600" size={28} />
-                    <h1 className="text-xl font-bold text-gray-800">Tes Kepribadian MSDT (Management Style Diagnostic Test)</h1>
-                </div>
-            </div>
+            <TestHeader />
         </header>
+        
 
         {/* Main Content */}
         <main className="container mx-auto px-4 py-10">
@@ -129,28 +117,18 @@ export default function MsdtInstructionPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8"
+            className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-8"
             >
             {/* Card utama */}
             <section>
-                <div className="p-6 md:p-8">
+                <div className="md:p-8">
                 {/* Breadcrumb */}
                 <div className="mb-4">
                     <nav className="text-xs text-slate-500 mb-2" aria-label="Breadcrumb">
-                    <ol className="inline-flex items-center space-x-2">
-                        <li>
-                        <Link href="/tests" className="hover:underline">
-                            Tes
-                        </Link>
-                        </li>
-                        <li>
-                        <span className="text-slate-400">/</span>
-                        </li>
-                        <li className="font-medium text-slate-700">MSDT</li>
-                    </ol>
+                    
                     </nav>
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                    Tes Kepribadian MSDT
+                    Tes Psikotes
                     </h2>
                     {/* <p className="mt-2 text-sm text-slate-600">
                         Tes untuk mengidentifikasi kebutuhan, motivasi, dan gaya perilaku individu dalam lingkungan kerja.
@@ -180,13 +158,13 @@ export default function MsdtInstructionPage() {
                     </div>
 
                     <div className="flex items-start gap-3 p-4 bg-emerald-50 border border-emerald-100 rounded-lg">
-                    <div className="text-emerald-600">
-                        <IconPersonality />
-                    </div>
-                    <div className="text-sm">
-                        <div className="text-slate-800 font-medium">Tujuan</div>
-                        <div className="text-slate-600">Mengetahui motivasi kerja</div>
-                    </div>
+                        <div className="text-emerald-600">
+                            <IconSeries />
+                        </div>
+                        <div className="text-sm">
+                            <div className="text-slate-800 font-medium">Format</div>
+                            <div className="text-slate-600">Verbal • Teks & Pernyataan </div>
+                        </div>
                     </div>
                 </div>
 
@@ -194,12 +172,12 @@ export default function MsdtInstructionPage() {
                 <section className="mt-10 mb-10">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                     <ListChecks className="text-blue-600" size={22} />
-                    Petunjuk Tes MSDT
+                    Petunjuk Tes
                     </h2>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                     <p className="text-gray-700 mb-4">
-                        Pada tes ini, Anda akan diberikan sejumlah pernyataan yang menggambarkan sikap atau perilaku kerja. Setiap kelompok berisi dua pernyataan.
+                        Pada tes ini, Anda akan diberikan sejumlah pernyataan. Setiap kelompok berisi dua pernyataan.
                     </p>
                     <ul className="list-disc list-inside space-y-2 text-gray-700">
                         <li>Pilih satu kata yang paling menggambarkan diri Anda.</li>
@@ -216,9 +194,9 @@ export default function MsdtInstructionPage() {
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6">Contoh Soal</h2>
                     <div className="border border-gray-200 rounded-xl p-6 bg-gray-50">
                     <p className="text-sm text-gray-600 mb-4">
-                        Berikut contoh tampilan soal MSDT. Pilih satu kata yang paling menggambarkan diri Anda.
+                        Berikut contoh tampilan soal. Pilih satu kata yang paling menggambarkan diri Anda.
                     </p>
-                    <div className="flex justify-center items-center flex-col bg-white rounded-lg p-8 border text-gray-400 italic">
+                    <div className="flex justify-center items-center flex-col bg-white rounded-lg p-5 md:p-8 border text-gray-400 italic">
                         <div className='w-full'>
                         <AnimatePresence mode="wait">
                             <motion.div
@@ -265,7 +243,7 @@ export default function MsdtInstructionPage() {
                                             // resetState()
                                         }}
                                         disabled={currentGroup === 0}
-                                        className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
+                                        className={`px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg border font-medium transition ${
                                         currentGroup === 0
                                             ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
                                             : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'
@@ -280,7 +258,7 @@ export default function MsdtInstructionPage() {
                                             ? handleModal
                                             : handleNext
                                         }
-                                        className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
+                                        className="px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
                                     >
                                         {currentGroup === msdt.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
                                     </button>
