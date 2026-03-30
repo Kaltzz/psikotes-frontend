@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Brain } from 'lucide-react'
 import { triggerN8n } from '@/services/answers.service'
+import TestHeader from '../components/TestHeader'
 
 export default function ResultPage() {
   const router = useRouter()
@@ -40,12 +41,7 @@ export default function ResultPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-slate-100">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Brain className="text-blue-600" size={28} />
-            <h1 className="text-xl font-bold text-gray-800">Tes Psikologi Rekrutmen</h1>
-          </div>
-        </div>
+        <TestHeader />
       </header>
 
       {/* Konten utama */}
