@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
 import TestHeader from "@/app/components/TestHeader"
+import { getMbtiQuestionsService } from "@/services/questions.service"
 
 interface MbtiQuestion {
     id: number,
@@ -18,39 +19,25 @@ interface MbtiQuestion {
     }[]
 }
 
+interface MbtiQuestions {
+    id: number,
+    question: string,
+    questionIndex: number,
+    options: {
+        sentences: string,
+        optionType: 1 | 2
+    }[]
+}
+
 export default function MbtiTestPage() {
     const router = useRouter()
     const [currentGroup, setCurrentGroup] = useState(0)
     const [answers, setAnswers] = useState<
-        { groupId: number; type: string }[]
+        { groupId: number; type: 1 | 2 }[]
         >([]);
     const [timeLeft, setTimeLeft] = useState(300); // 5 menit
     const [isModalOpen, setIsModalOpen] = useState(false)
-
-
-    const mbti: MbtiQuestion[]  = [
-        {
-            id: 1,
-            sentences: [
-                {text: 'Saya suka menjadi pendengar', type: 'R'},
-                {text: 'Saya mengerjakan semua pekerjaan sekaligus', type: 'F'}
-            ]
-        },
-        {
-            id: 2,
-            sentences: [
-                {text: 'Saya orangnya teliti', type: 'I'},
-                {text: 'Saya ingin menjadi pemimpin', type: 'A'}
-            ]
-        },
-        {
-            id: 3,
-            sentences: [
-                {text: 'Saya ingin bebas', type: 'I'},
-                {text: 'Saya suka hal yang baru', type: 'G'}
-            ]
-        }
-    ]
+    const [questions, setQuestions] = useState<MbtiQuestions[]>([])
 
     useEffect(() => {
         if (timeLeft <= 0) {
@@ -65,13 +52,25 @@ export default function MbtiTestPage() {
             console.log('isi new answers: ', answers)
         }, [answers])
 
+    useEffect(()=> {
+        const getMbtiQuestions = async () => {
+            try{
+                const getQuestion = await getMbtiQuestionsService()
+                setQuestions(getQuestion.data.data)
+            } catch (error) {
+                console.log('gagal')
+            }
+        }
+        getMbtiQuestions()
+    }, [])
+
     const formatTime = (seconds: number) => {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
         return `${m}:${s.toString().padStart(2, '0')}`;
     };
 
-    const handleSelection = (newType: string) => {
+    const handleSelection = (newType: 1 | 2) => {
         setAnswers(prev => {
             const updated = [...prev];
 
@@ -135,12 +134,12 @@ export default function MbtiTestPage() {
                 {/* Progress */}
                 <div className="">
                     <div className="text-sm text-gray-600 mb-2 text-center">
-                    Kelompok {currentGroup + 1} dari {mbti.length}
+                    Kelompok {currentGroup + 1} dari {questions.length}
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
                         className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${((currentGroup + 1) / mbti.length) * 100}%` }}
+                        style={{ width: `${((currentGroup + 1) / questions.length) * 100}%` }}
                     />
                     </div>
                 </div>
@@ -161,9 +160,10 @@ export default function MbtiTestPage() {
 
                                 </div>
                             <div className="grid grid-cols-1 gap-4 w-full">
-                                {mbti[currentGroup].sentences.map((sentence, index) => {
+                                <p className='text-lg font-bold  text-gray-700'>{questions[currentGroup]?.question}...</p>
+                                {questions[currentGroup]?.options.map((option, index) => {
 
-                                const selected = answers[currentGroup]?.type === sentence.type;
+                                const selected = answers[currentGroup]?.type === option.optionType;
 
                                 return (
                                     <div
@@ -172,14 +172,14 @@ export default function MbtiTestPage() {
                                     >
                                         <button
                                         // disabled={(!isMost && mostTaken) || isLeast}
-                                        onClick={() => handleSelection(sentence.type)}
+                                        onClick={() => handleSelection(option.optionType)}
                                         className={`p4 rounded-md text-lg font-medium border border-gray-300 text-gray-700 flex items-center justify-between p-4 transition-all  w-full  ${
                                             selected
                                                 ? 'bg-blue-600 text-white'
                                                 : 'bg-gray-50 hover:bg-gray-300'
                                             }`}
                                         >
-                                        {sentence.text}
+                                        {option.sentences}
                                         </button>
 
                                     </div>
@@ -207,14 +207,21 @@ export default function MbtiTestPage() {
                                     </button>
 
                                     <button
+                                        disabled= {!(answers[currentGroup])}
                                         onClick={
-                                        currentGroup === mbti.length - 1
+                                        currentGroup === questions.length - 1
                                             ? handleModal
                                             : handleNext
                                         }
-                                        className="px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
+                                        className={`px-4 py-2 rounded-lg bg-gradient-to-r  text-white shadow hover:scale-[1.02] active:scale-95 transition
+                                            ${
+                                            !(answers[currentGroup])
+                                                ? 'cursor-not-allowed bg-gray-400'
+                                                : 'from-blue-600 to-indigo-600'
+                                            }
+                                            `}
                                     >
-                                        {currentGroup === mbti.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
+                                        {currentGroup === questions.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
                                     </button>
                                 </div>
                         </div> 

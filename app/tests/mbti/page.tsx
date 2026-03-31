@@ -163,7 +163,7 @@ export default function MbtiInstructionPage() {
                         </div>
                         <div className="text-sm">
                             <div className="text-slate-800 font-medium">Jumlah Soal</div>
-                            <div className="text-slate-600">90 Soal</div>
+                            <div className="text-slate-600">70 Soal</div>
                         </div>
                     </div>
 
@@ -182,7 +182,7 @@ export default function MbtiInstructionPage() {
                 <section className="mt-10 mb-10">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                     <ListChecks className="text-blue-600" size={22} />
-                    Petunjuk Tes MBTI
+                    Petunjuk Tes
                     </h2>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
