@@ -37,6 +37,13 @@ export const storeAnswersMsdt = (
     }[]
 )=>api.post(`/api/user/answers/msdt/${sessionId}`, data)
 
+export const storeAnswersMbti = (
+    sessionId: number,
+    data: {
+        groupId: number; type:number
+    }[]
+) => api.post(`/api/user/answers/msdt${sessionId}`, data)
+
 
 export const updateStatusTest = (
     sessionId: number
