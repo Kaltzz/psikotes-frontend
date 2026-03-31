@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
 import TestHeader from "@/app/components/TestHeader"
 import { getMbtiQuestionsService } from "@/services/questions.service"
+import { storeAnswersMbti, updateStatusTest, triggerN8n } from "@/services/answers.service"
 
 interface MbtiQuestion {
     id: number,
@@ -86,22 +87,33 @@ export default function MbtiTestPage() {
     const handleNext = () => {
         setCurrentGroup(prev => prev + 1)
     }
-    const handleTestComplete = () => {
+    const handleTestComplete = async () => {
         const testSession = sessionStorage.getItem('testSession')
+                
         if(!testSession)
             return alert('gagal')
-
+                
         const testSessionParsed = JSON.parse(testSession)
         const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
-        if(tests) {
-            router.push(`/tests/${tests.toLowerCase()}`)
-            const indexIncrement = testSessionParsed.currentIndex + 1
-            testSessionParsed.currentIndex = indexIncrement
-
-            const updatedTestString = JSON.stringify(testSessionParsed)
-            sessionStorage.setItem('testSession', updatedTestString)        
-        } else {
-            sessionStorage.clear()
+        const sessionId = testSessionParsed.sessionId
+        console.log('ini test4:', tests)
+        const res = await storeAnswersMbti(sessionId, answers)
+        
+        const statusTest = await updateStatusTest(sessionId)
+                
+        const pesertaId = testSessionParsed.pesertaId
+        const trigger = await triggerN8n(pesertaId, tests)
+                
+        const indexIncrement = await testSessionParsed.currentIndex + 1
+        testSessionParsed.currentIndex = indexIncrement
+        const updatedTestString = JSON.stringify(testSessionParsed)
+        sessionStorage.setItem('testSession', updatedTestString)
+        const newTests:string = await testSessionParsed.tests[testSessionParsed.currentIndex] 
+                    
+        if (!(newTests === undefined)) {
+            router.push(`/tests/${tests.toLowerCase()}`)  
+        } else { 
+            sessionStorage.removeItem('testSession')
             router.push('/result')
         }
     };

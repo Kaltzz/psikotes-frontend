@@ -120,6 +120,7 @@ export default function MsdtTestPage() {
     const handleNext = () => {
         setCurrentGroup(prev => prev + 1)
     }
+    
     const handleTestComplete = async() => {
         const testSession = sessionStorage.getItem('testSession')
         
