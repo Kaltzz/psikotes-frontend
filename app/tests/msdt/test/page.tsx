@@ -272,7 +272,7 @@ export default function MsdtTestPage() {
             </main>
 
         <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
-            <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+            <p className='text-gray-800'>Tes telah selesai. Silakan lanjut ke tahap berikutnya.</p>
             <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
             <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 
@@ -285,7 +285,7 @@ export default function MsdtTestPage() {
                     className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
                     onClick={handleTestComplete}
                 >
-                    Mulai Tes
+                    Selesai
                 </button>
             </div>
         </Modal>

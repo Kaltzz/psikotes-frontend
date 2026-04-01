@@ -159,8 +159,8 @@ export default function CFITSubtest4Test() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-800">SUBTES 4</h1>
-                        <p className="text-sm text-slate-500">Temukan pola urutan pada rangkaian gambar berikut.</p>
+                        <h1 className="text-2xl font-bold text-slate-800 text-center md:text-left">SUBTES 4</h1>
+                        <p className="text-sm text-slate-500 text-center md:text-left">Temukan pola urutan pada rangkaian gambar berikut.</p>
                     </div>
                     <div className='flex gap-x-3'>
                         <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
@@ -188,14 +188,14 @@ export default function CFITSubtest4Test() {
 
                 {/* Soal */}
                 <div className="border rounded-2xl bg-white shadow-sm p-6 mb-8">
-                    <div className="flex justify-center items-center gap-3 mb-6 m-auto">
+                    <div className="flex justify-center items-center gap-3 mb-3 m-auto">
                         <div
-                        className="aspect-square w-2/12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 border border-slate-200"
+                        className="aspect-square bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 border border-slate-200"
                         >
                             <img 
                                 src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}${question[currentQuestion]?.imagePath}`} 
                                 alt=""
-                                className='w-full h-full rounded-lg' />
+                                className='w-27 rounded-lg' />
                         </div>
                     </div>
 
@@ -264,7 +264,7 @@ export default function CFITSubtest4Test() {
             </main>
 
             <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
-                <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+                <p className='text-gray-800'>Tes telah selesai. Silakan lanjut ke tahap berikutnya.</p>
                 <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
                 <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 

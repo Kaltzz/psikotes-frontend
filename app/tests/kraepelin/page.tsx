@@ -9,11 +9,11 @@ import Modal from '@/app/components/Modal';
 import TestHeader from '@/app/components/TestHeader';
 
 interface Question {
-  id: number,
-  num1: number,
-  num2: number,
+  id: number
+  num1: number
+  num2: number
   answer: number
-  explanationRight: string,
+  explanationRight: string
   explanationFalse: string
 }
 
@@ -196,29 +196,23 @@ const KraepelinInstructionPage: React.FC = () => {
                 </h2>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-5 text-sm text-slate-700 list-disc marker:text-slate-400 pl-3">
+                    <li className="marker:text-2xl">
                       Anda akan melihat kolom berisi angka-angka vertikal.
                     </li>
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl">
                       Jumlahkan dua angka yang berdekatan secara vertikal.
                     </li>
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl">
                       Tuliskan <strong className="text-blue-600">digit terakhir</strong> hasil penjumlahan.
                     </li>
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl">
                       Setiap lajur memiliki batas waktu <strong className="text-blue-600">30 detik</strong>.
                     </li>
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl">
                       Setelah waktu habis, sistem akan berpindah otomatis ke lajur berikutnya.
                     </li>
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl">
                       Kerjakan secepat dan seakurat mungkin.
                     </li>
                   </ul>
@@ -230,43 +224,36 @@ const KraepelinInstructionPage: React.FC = () => {
 
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6">Petunjuk Teknis Soal</h2>
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <ul className='text-slate-800 text-sm flex flex-col gap-y-2'>
-                    <li className="flex gap-3 items-start">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                  <ul className='grid grid-cols-1 gap-y-2 gap-x-5 text-sm text-slate-700 list-disc marker:text-slate-400 pl-3'>
+                    <li className="marker:text-2xl">
                       Soal terbagi ke dalam beberapa lajur, dan setiap lajur dikerjakan dalam waktu <span className='font-bold'>30 detik</span>.
                     </li>
-                    <li className="flex gap-3 items-start ">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl ">
                       Pengerjaan dimulai dari bagian bawah lajur.
                     </li>
-                    <li className="flex gap-3 items-start ">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl ">
                       Peserta cukup langsung mengisi jawaban pada kotak yang tersedia tanpa melakukan aktivitas tambahan, seperti memindahkan soal atau berpindah lajur secara mandiri.
                     </li>
-                    <li className="flex gap-3 items-start ">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl ">
                       Pengisian jawaban dapat dilakukan menggunakan keyboard maupun numpad yang tersedia di samping soal.
                     </li>
-                    <li className="flex gap-3 items-start ">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl ">
                       Jawaban diisi berdasarkan hasil penjumlahan dua angka yang berdekatan dengan ketentuan sebagai berikut:
                     </li>
-                    <div className='ml-7 flex flex-col gap-y-2'>
-                      <li className="flex gap-3 items-start ">
-                        <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 "></span>
-                        Jika hasil penjumlahan berupa satu digit (misalnya 3 + 4 = 7), maka yang diinput adalah angka tersebut, yaitu 7.
-                      </li>
-                      <li className="flex gap-3 items-start ">
-                        <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 "></span>
-                        Jika hasil penjumlahan berupa dua digit (misalnya 7 + 5 = 12), maka yang diinput adalah digit satuan atau angka terakhir, yaitu 2.
-                      </li>
-                    </div>
-                    <li className="flex gap-3 items-start ">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                      <ul className='ml-7 list-disc marker:text-slate-400 pl-3'>
+                        <li className="marker:text-2xl">
+                          Jika hasil penjumlahan berupa satu digit (misalnya 3 + 4 = 7), maka yang diinput adalah angka tersebut, yaitu 7.
+                        </li>
+                        <li className="marker:text-2xl">
+                          Jika hasil penjumlahan berupa dua digit (misalnya 7 + 5 = 12), maka yang diinput adalah digit satuan atau angka terakhir, yaitu 2.
+                        </li>
+                      </ul>
+                    <li className="marker:text-2xl ">
+                      
                       Peserta <span className='text-red-600 font-bold'>dilarang</span> berpindah kotak jawaban.
                     </li>
-                    <li className="flex gap-3 items-start ">
-                      <span className="flex-none mt-1 w-2.5 h-2.5 bg-slate-400 rounded-full"></span>
+                    <li className="marker:text-2xl ">
+                      
                       Peserta <span className='text-red-600 font-bold'>dilarang</span> berpindah lajur.
                     </li>
                   </ul>

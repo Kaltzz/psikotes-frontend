@@ -400,7 +400,7 @@ export default function DISCInstructionPage() {
                               return (
                                 <div
                                   key={index}
-                                  className={`flex items-center text-sm md:text-base  justify-between p-4 border rounded-lg transition-all ${
+                                  className={`flex items-center text-xs md:text-base  justify-between p-4 border rounded-lg transition-all ${
                                     isMost
                                       ? 'border-green-500 bg-green-50'
                                       : isLeast
@@ -408,7 +408,7 @@ export default function DISCInstructionPage() {
                                       : 'border-gray-200 hover:bg-gray-50'
                                   }`}
                                 >
-                                  <span className="font-medium text-gray-800">{question.sentences}</span>
+                                  <span className="font-medium text-gray-800 mr-1">{question.sentences}</span>
                                   <div className="flex gap-3">
                                     <button
                                       disabled={(!isMost && mostTaken) || isLeast}
@@ -453,7 +453,7 @@ export default function DISCInstructionPage() {
                                         resetState()
                                     }}
                                     disabled={currentGroup === 0}
-                                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
+                                    className={`px-4 sm:px-5 py-2 rounded-lg border text-sm font-medium transition ${
                                     currentGroup === 0
                                         ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
                                         : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'

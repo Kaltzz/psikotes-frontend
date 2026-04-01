@@ -417,7 +417,6 @@ export default function PapiInstructionPage() {
                 </button>
             </div>
         </Modal>
-
         </div>
     )
 }

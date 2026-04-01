@@ -269,7 +269,7 @@ export default function PapiTestPage() {
             </main>
 
         <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
-            <p className='text-gray-800'>Anda telah menyelesaikan sesi tes. Waktu pengerjaan telah berakhir dan sesi tidak dapat diulang.</p>
+            <p className='text-gray-800'>Tes telah selesai. Silakan lanjut ke tahap berikutnya.</p>
             <p className='text-gray-600 text-sm mt-3'>(Terima kasih telah mengikuti tes. Silakan menunggu instruksi selanjutnya.)</p>
             <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 
@@ -282,7 +282,7 @@ export default function PapiTestPage() {
                     className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
                     onClick={handleTestComplete}
                 >
-                    Mulai Tes
+                    Selesai
                 </button>
             </div>
         </Modal>

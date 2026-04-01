@@ -709,7 +709,7 @@ export default function KraeplinTest() {
           )}
 
           {(colStates[systemActiveCol].timedOut || timeLeftMs <= 5000) && (
-            <div className={`rounded-lg p-2 text-center text-xs font-semibold ${
+            <div className={` hidden md:block rounded-lg p-2 text-center text-xs font-semibold ${
               colStates[systemActiveCol].timedOut && graceTimeLeftMs === 0
                 ? "bg-red-200 border border-red-400 text-red-800"
                 : colStates[systemActiveCol].timedOut
@@ -772,7 +772,30 @@ export default function KraeplinTest() {
 
         {/* ─── RIGHT PANEL ─── */}
         <div className="w-52 shrink-0 border-l border-stone-200 bg-white flex flex-col items-center justify-center gap-5 px-4">
+          
+          {status === "playing" && (
+            <div className=" md:hidden text-sm text-stone-500 border border-stone-300 p-2 rounded-lg">
+              {/* REVISI 2: Tampilkan systemActiveCol sebagai lajur sistem */}
+              {/* {" · "} */}
+              Waktu: <span className="font-mono font-bold text-blue-600">{Math.ceil(timeLeftMs / 1000)} detik</span>
+            </div>
+          )}
 
+          {(colStates[systemActiveCol].timedOut || timeLeftMs <= 5000) && (
+            <div className={`md:hidden rounded-lg p-2 text-center text-xs font-semibold ${
+              colStates[systemActiveCol].timedOut && graceTimeLeftMs === 0
+                ? "bg-red-200 border border-red-400 text-red-800"
+                : colStates[systemActiveCol].timedOut
+                ? "bg-red-100 border border-red-300 text-red-700 animate-pulse"
+                : "bg-yellow-100 border border-yellow-300 text-yellow-700 animate-pulse"
+            }`}>
+              {colStates[systemActiveCol].timedOut && graceTimeLeftMs === 0
+                ? "🚨 Terlambat pindah lajur! Pindah lajur sekarang!"
+                : colStates[systemActiveCol].timedOut && graceTimeLeftMs !== null
+                ? `⏰ Diharapkan pindah ke lajur berikutnya! ${Math.ceil(graceTimeLeftMs / 1000)}d tersisa`
+                : "⚠ Waktu hampir selesai, Bersiap pindah ke lajur berikutnya!"}
+            </div>
+          )}
           {/* ── IDLE: Start ── */}
           {status === "idle" && (
             <div className="flex flex-col items-center gap-4 w-full">

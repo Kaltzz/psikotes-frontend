@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image"
 
-export default function testHeader() {
+export default function TestHeader() {
     return (
         <div className="container mx-auto px-6 flex justify-center md:justify-between md:items-center">
                   <div className="flex justify-center items-center gap-4">

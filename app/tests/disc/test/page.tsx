@@ -324,7 +324,7 @@ export default function DISCTestPage() {
                   ? handleModal
                   : () => setCurrentGroup(prev => prev + 1)
                 }
-              className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+              className={`px-3 sm:px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
                 !(answers.most[currentGroup] && answers.least[currentGroup])
                 ? 'cursor-not-allowed bg-gray-400'
                 : 'from-blue-600 to-indigo-600'
@@ -354,7 +354,7 @@ export default function DISCTestPage() {
             className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
             onClick={handleTestComplete}
           >
-            Berikutnya
+            Selesai
           </button>
         </div>
       </Modal>
