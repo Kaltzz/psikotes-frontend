@@ -249,7 +249,7 @@ const handleAnswer = (option: string) => {
                       className={`  
                         ${
                           answered <= 1 && answered >=1
-                          ? 'mt-4 bg-red-100 border border-red-300 rounded-xl text-sm sm:text-lg text-red-500 py-1 px-2 not-italic'
+                          ? 'mb-3 bg-red-100 border border-red-300 rounded-xl text-xs sm:text-lg text-red-500 py-1 px-2 not-italic'
                           : ''
                         }
                         `}>

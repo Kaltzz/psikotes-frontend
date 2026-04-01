@@ -7,6 +7,7 @@ import test from "node:test"
 import { useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
 import { updateStatusTest } from "@/services/answers.service"
+import TestHeader from "@/app/components/TestHeader"
 
 
 
@@ -60,6 +61,11 @@ export default function FrontPage()  {
     return (
         <div>
             <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
+                <header
+                                className='bg-white shadow-sm py-4 sticky top-0 z-10'
+                            >
+                                <TestHeader />
+                            </header>
                 <main className="container mx-auto px-4 py-10">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -73,7 +79,7 @@ export default function FrontPage()  {
                             Pada tahap selanjutnya, Anda akan mengikuti rangkaian tes psikologi sesuai dengan token yang telah diberikan kepada Anda.
 
                             <span className="block mt-2">Setiap tes memiliki tujuan dan aturan pengerjaan yang berbeda.
-                            Oleh karena itu, sangat disarankan untuk membaca petunjuk pada setiap tes dengan saksama sebelum memulai..</span></p>
+                            Oleh karena itu, sangat disarankan untuk membaca petunjuk pada setiap tes dengan saksama sebelum memulai.</span></p>
                             <div className="mt-8">
                                 <h3 className="text-lg font-semibold text-slate-800 mb-3">Petunjuk Umum</h3>
                                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-700">
@@ -109,7 +115,7 @@ export default function FrontPage()  {
                                     Selanjutnya
                                 </button>
                                 <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
-                                    <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+                                    <p className='text-gray-800'>Anda akan memasuki halaman petunjuk tes dan contoh soal. Silakan baca dengan saksama sebelum memulai tes.</p>
                                     <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
                                     <div className='flex gap-x-3 justify-evenly mt-4'>
                                     <button 

@@ -157,7 +157,7 @@ export default function CFITSubtest3Test() {
                 <img 
                   src={`${process.env.NEXT_PUBLIC_CDN_BASE_URL}${question[currentQuestion]?.imagePath}`} 
                   alt=""
-                  className='w-50 rounded-lg' />
+                  className='w-30 rounded-lg' />
                   
               </div>
            
@@ -174,7 +174,7 @@ export default function CFITSubtest3Test() {
                   <button
                   key={option.label}
                   onClick={() => handleAnswer(option.label)}
-                  className={`w-35 aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 p-3 ${
+                  className={`w-30 aspect-square text-lg font-semibold rounded-xl flex items-center justify-center transition-all border-2 p-3 ${
                     answers[currentQuestion]?.answers?.includes(option.label)
                       ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
                       : 'border-slate-200 bg-slate-50 hover:border-blue-400 hover:scale-[1.02]'
@@ -224,7 +224,7 @@ export default function CFITSubtest3Test() {
       </main>
 
       <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
-        <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
+        <p className='text-gray-800'>Tes telah selesai. Silakan lanjut ke tahap berikutnya.</p>
         <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
         <div className='flex gap-x-3 justify-evenly mt-4'>
           <button 

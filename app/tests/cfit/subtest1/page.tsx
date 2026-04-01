@@ -197,7 +197,7 @@ export default function CFITSubtest1() {
                         <button
                           key={option.label}
                           onClick={() => handleAnswer(option.label)} // Kirim label (A, B, C, dst)
-                          className={`aspect-square text-lg font-semibold 
+                          className={`aspect-square font-semibold 
                             rounded-xl flex items-center justify-center transition-all border-2 ${
                             isChecked === true && option.label === questions[currentQuestion].correctAnswer
                               ? 'bg-green-600 text-white border-green-600 scale-105 shadow'
@@ -214,7 +214,7 @@ export default function CFITSubtest1() {
                               : ''
                           }`}
                         >
-                          <div className='pl-3 pt-2 h-full text-slate-700'>
+                          <div className='pt-2 h-full text-slate-700 text-xs'>
                             {option.label}
                           </div>
                           

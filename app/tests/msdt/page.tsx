@@ -219,7 +219,7 @@ export default function MsdtInstructionPage() {
                                         <button
                                         // disabled={(!isMost && mostTaken) || isLeast}
                                         onClick={() => handleSelection(sentence.type)}
-                                        className={`p4 rounded-md text-lg font-medium border text-left text-gray-700 flex items-center justify-between p-4 transition-all  w-full  ${
+                                        className={`px-4 md:px-5 py-2 rounded-md text-xs sm:text-sm font-medium border text-left text-gray-700 flex items-center justify-between p-4 transition-all  w-full  ${
                                             selected
                                                 ? 'bg-blue-600 text-white'
                                                 : 'bg-gray-50 hover:bg-gray-300 border-gray-300'
@@ -243,7 +243,7 @@ export default function MsdtInstructionPage() {
                                             // resetState()
                                         }}
                                         disabled={currentGroup === 0}
-                                        className={`px-4 sm:px-5 py-2 text-xs sm:text-sm rounded-lg border font-medium transition ${
+                                        className={`px-3 sm:px-5 py-2 text-xs sm:text-sm rounded-lg border font-medium transition ${
                                         currentGroup === 0
                                             ? 'opacity-50 cursor-not-allowed bg-slate-50 text-slate-400 border-slate-200'
                                             : 'bg-white border-slate-300 hover:bg-slate-50 text-slate-700'
