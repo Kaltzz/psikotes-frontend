@@ -35,7 +35,7 @@ export default function PapiTestPage() {
     const [answers, setAnswers] = useState<
         { groupId: number; type: number }[]
         >([]);
-    const [timeLeft, setTimeLeft] = useState(10); // 5 menit
+    const [timeLeft, setTimeLeft] = useState(1800); // 5 menit
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [questions, setQuestions] = useState<PapikostickQuestion[]>([])
     const [isOvertime, setIsOvertime] = useState(false);
