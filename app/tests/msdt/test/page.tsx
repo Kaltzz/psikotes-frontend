@@ -39,6 +39,8 @@ export default function MsdtTestPage() {
     const [timeLeft, setTimeLeft] = useState(300); // 5 menit
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [questions, setQuestions] = useState<MsdtQuestions[]>([])
+    const [isOvertime, setIsOvertime] = useState(false);
+    const [overtime, setOvertime] = useState(0);
 
 
     const msdt: MsdtQuestion[]  = [
@@ -66,13 +68,19 @@ export default function MsdtTestPage() {
     ]
 
     useEffect(() => {
-        if (timeLeft <= 0) {
-        handleTestComplete();
-        return;
+        if (!isOvertime && timeLeft <= 0) {
+            setIsOvertime(true);
+            return;
         }
+
+        if (isOvertime) {
+            const timer = setInterval(() => setOvertime((prev) => prev + 1), 1000);
+            return () => clearInterval(timer);
+        }
+
         const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
         return () => clearInterval(timer);
-    }, [timeLeft]);
+    }, [timeLeft, isOvertime]);
 
     useEffect(()=> {
             console.log('isi new answers: ', answers)
@@ -168,8 +176,16 @@ export default function MsdtTestPage() {
                         Pilih kalimat yang paling menggambarkan diri Anda.
                     </p>
                     </div>
-                    <div className="bg-gray-100 text-xl font-mono px-4 py-2 rounded-lg shadow-sm">
-                    ⏱ {formatTime(timeLeft)}
+                    <div className="">
+                    {/* ⏱ {formatTime(timeLeft)} */}
+                        <div className={`text-xl font-mono px-4 py-2 rounded-lg shadow-sm ${
+                            isOvertime ? 'bg-red-100 text-red-600' : 'bg-gray-100'
+                        }`}>
+                            {isOvertime 
+                                ? `⚠️ +${formatTime(overtime)}` 
+                                : `⏱ ${formatTime(timeLeft)}`
+                            }
+                        </div>
                     </div>
                 </div>
 
