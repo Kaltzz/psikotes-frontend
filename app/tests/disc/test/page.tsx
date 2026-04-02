@@ -74,6 +74,8 @@ export default function DISCTestPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [timeLeft, setTimeLeft] = useState(1200); // 5 menit
+  const [isOvertime, setIsOvertime] = useState(false);
+  const [overtime, setOvertime] = useState(0);
 
   useEffect(()=> {
     const getDiscQuestions = async () => {
@@ -100,13 +102,19 @@ export default function DISCTestPage() {
     }, [currentGroup]);
 
   useEffect(() => {
-    if (timeLeft <= 0) {
-      handleTestComplete();
-      return;
-    }
-    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-    return () => clearInterval(timer);
-  }, [timeLeft]);
+        if (!isOvertime && timeLeft <= 0) {
+            setIsOvertime(true);
+            return;
+        }
+
+        if (isOvertime) {
+            const timer = setInterval(() => setOvertime((prev) => prev + 1), 1000);
+            return () => clearInterval(timer);
+        }
+
+        const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+        return () => clearInterval(timer);
+    }, [timeLeft, isOvertime]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -218,9 +226,17 @@ export default function DISCTestPage() {
                 <span className="text-red-600 font-semibold">PALING TIDAK (K)</span> menggambarkan diri Anda.
               </p>
             </div>
-            <div className="bg-gray-100 text-xl font-mono px-4 py-2 rounded-lg shadow-sm">
-              ⏱ {formatTime(timeLeft)}
-            </div>
+            <div className="">
+                    {/* ⏱ {formatTime(timeLeft)} */}
+                        <div className={`text-xl font-mono px-4 py-2 rounded-lg shadow-sm ${
+                            isOvertime ? 'bg-red-100 text-red-600' : 'bg-gray-100'
+                        }`}>
+                            {isOvertime 
+                                ? `⚠️ +${formatTime(overtime)}` 
+                                : `⏱ ${formatTime(timeLeft)}`
+                            }
+                        </div>
+                    </div>
           </div>
 
           {/* Progress */}
