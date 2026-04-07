@@ -75,27 +75,47 @@ export default function CFITSubtest3Test() {
         return () => clearInterval(timer);
     }, [timeLeft]);
 
-    const handleAnswer = (answers: string) => {
-        setAnswers(prev => {
-            const updated = [...prev];
-            if (prev[currentQuestion].answers[0] === answers) {
-              updated[currentQuestion] = {
-                questionId: currentQuestion + 1,
-                answers: [],
-                subtest: 3
-              }
-              return updated
-            }
+    // const handleAnswer = (answers: string) => {
+    //     setAnswers(prev => {
+    //         const updated = [...prev];
+    //         if (prev[currentQuestion].answers[0] === answers) {
+    //           updated[currentQuestion] = {
+    //             questionId: currentQuestion + 1,
+    //             answers: [],
+    //             subtest: 3
+    //           }
+    //           return updated
+    //         }
 
-            updated[currentQuestion] = {
+    //         updated[currentQuestion] = {
+    //         questionId: currentQuestion + 1,
+    //         answers: [answers],
+    //         subtest: 3
+    //         };
+
+    //         return updated; 
+    //     })
+    // }
+    const handleAnswer = async (answer: string) => {
+    const updated = [...answers];
+    
+    if (answers[currentQuestion]?.answers?.[0] === answer) {
+        updated[currentQuestion] = {
             questionId: currentQuestion + 1,
-            answers: [answers],
-            subtest: 3
-            };
-
-            return updated; 
-        })
+            answers: [],
+            subtest: 1
+        };
+    } else {
+        updated[currentQuestion] = {
+            questionId: currentQuestion + 1,
+            answers: [answer],
+            subtest: 1
+        };
     }
+
+    setAnswers(updated);
+    localStorage.setItem('tempAnswers', JSON.stringify(updated));
+};
 
     const handleTestComplete = async () => {
         try {
@@ -126,6 +146,15 @@ export default function CFITSubtest3Test() {
             }, [answers]);
 
     const progressPercent = ((currentQuestion + 1) / question.length) * 100;
+
+    useEffect(()=> {
+    const temp = localStorage.getItem('tempAnswers')
+    if(temp !== null) {
+      const answer = JSON.parse(temp)
+      setAnswers(answer)
+    }
+  }, [])
+
 
     const handleModal = () => {
       setIsModalOpen(true)

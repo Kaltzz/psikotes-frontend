@@ -77,27 +77,54 @@ export default function CFITSubtest1Test() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  const handleAnswer = (answers: string) => {
-        setAnswers(prev => {
-            const updated = [...prev];
-            if (prev[currentQuestion].answers[0] === answers) {
-              updated[currentQuestion] = {
-                questionId: currentQuestion + 1,
-                answers: [],
-                subtest: 1
-              }
-              return updated
-            }
+  // const handleAnswer = async (answer: string) => {
+  //       // {questionId, answers subtest}
+        
 
-            updated[currentQuestion] = {
+  //       setAnswers(prev => {
+  //           const updated = [...prev];
+  //           if (prev[currentQuestion].answers[0] === answer) {
+  //             updated[currentQuestion] = {
+  //               questionId: currentQuestion + 1,
+  //               answers: [],
+  //               subtest: 1
+  //             }
+
+  //             return updated
+  //           }
+
+  //           updated[currentQuestion] = {
+  //           questionId: currentQuestion + 1,
+  //           answers: [answer],
+  //           subtest: 1
+  //           };
+
+  //           return updated; 
+  //       })
+
+  //       const tempAnswers =  answers
+  //       const  store = localStorage.setItem('tempAnswers', JSON.stringify(tempAnswers))
+  //   }
+  const handleAnswer = async (answer: string) => {
+    const updated = [...answers];
+    
+    if (answers[currentQuestion]?.answers?.[0] === answer) {
+        updated[currentQuestion] = {
             questionId: currentQuestion + 1,
-            answers: [answers],
+            answers: [],
             subtest: 1
-            };
-
-            return updated; 
-        })
+        };
+    } else {
+        updated[currentQuestion] = {
+            questionId: currentQuestion + 1,
+            answers: [answer],
+            subtest: 1
+        };
     }
+
+    setAnswers(updated);
+    localStorage.setItem('tempAnswers', JSON.stringify(updated));
+};
 
   const handleTestComplete = async () => {
     try {
@@ -133,11 +160,20 @@ export default function CFITSubtest1Test() {
     console.log('isi data: ', question.length)
   }, [question])
 
+  useEffect(()=> {
+    const temp = localStorage.getItem('tempAnswers')
+    if(temp !== null) {
+      const answer = JSON.parse(temp)
+      setAnswers(answer)
+    }
+  }, [])
+
   const progressPercent = ((currentQuestion + 1) / question.length) * 100;
 
   const handleModal = () => {
     setIsModalOpen(true)
   }
+
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">

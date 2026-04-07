@@ -54,6 +54,8 @@ export default function CFITSubtest4Test() {
           getCfit4Soal()
     }, [])
 
+    
+
     useEffect(() => {
       if (question.length > 0 && answers.length === 0) {
         setAnswers(
@@ -75,28 +77,50 @@ export default function CFITSubtest4Test() {
         return () => clearInterval(timer);
     }, [timeLeft]);
 
-    const handleAnswer = (answers: string) => {
-        setAnswers(prev => {
-            const updated = [...prev];
-            if (prev[currentQuestion].answers[0] === answers) {
-              updated[currentQuestion] = {
-                questionId: currentQuestion + 1,
-                answers: [],
-                subtest: 1
-              }
-              return updated
-            }
+    // const handleAnswer = (answers: string) => {
+    //     setAnswers(prev => {
+    //         const updated = [...prev];
+    //         if (prev[currentQuestion].answers[0] === answers) {
+    //           updated[currentQuestion] = {
+    //             questionId: currentQuestion + 1,
+    //             answers: [],
+    //             subtest: 1
+    //           }
+    //           return updated
+    //         }
 
-            updated[currentQuestion] = {
+    //         updated[currentQuestion] = {
+    //         questionId: currentQuestion + 1,
+    //         answers: [answers],
+    //         subtest: 1
+    //         };
+
+    //         return updated; 
+    //     })
+    // };
+
+    const handleAnswer = async (answer: string) => {
+    const updated = [...answers];
+    
+    if (answers[currentQuestion]?.answers?.[0] === answer) {
+        updated[currentQuestion] = {
             questionId: currentQuestion + 1,
-            answers: [answers],
+            answers: [],
             subtest: 1
-            };
+        };
+    } else {
+        updated[currentQuestion] = {
+            questionId: currentQuestion + 1,
+            answers: [answer],
+            subtest: 1
+        };
+    }
 
-            return updated; 
-        })
-    };
+    setAnswers(updated);
+    localStorage.setItem('tempAnswers', JSON.stringify(updated));
+};
 
+    
     // const handleTestComplete = async () => {
     //         const testSession = sessionStorage.getItem('testSession')
                       
@@ -128,6 +152,8 @@ export default function CFITSubtest4Test() {
     //         }           
     // };
 
+    
+    
     const handleTestComplete = async () => {
         const testSession = sessionStorage.getItem('testSession');
 
@@ -180,6 +206,14 @@ export default function CFITSubtest4Test() {
           }
           getCfit4Soal()
         }, [])
+
+    useEffect(()=> {
+    const temp = localStorage.getItem('tempAnswers')
+    if(temp !== null) {
+      const answer = JSON.parse(temp)
+      setAnswers(answer)
+    }
+  }, [])
 
     const handleModal = () => {
       setIsModalOpen(true)

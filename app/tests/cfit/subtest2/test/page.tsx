@@ -85,42 +85,70 @@ export default function CFITsubtest2Test() {
         console.log('currentQuestion: ', currentQuestion)
     }, [currentQuestion]) 
 
-    const handleAnswer = (answerLabel: string) => {
-        setAnswers(prev => {
-            // Buat copy dari array
-            const newAnswers = [...prev]
+    // const handleAnswer = (answerLabel: string) => {
+    //     setAnswers(prev => {
+    //         // Buat copy dari array
+    //         const newAnswers = [...prev]
             
-            // Pastikan index ada, jika belum ada buat entry baru
-            if (!newAnswers[currentQuestion]) {
-                newAnswers[currentQuestion] = {
-                    questionId: currentQuestion + 1,
-                    answers: [],
-                    subtest: 2
-                }
-            }
-            const currentAnswers = newAnswers[currentQuestion].answers || []
-            // UNSELECT - jika sudah dipilih, hapus
-            if (currentAnswers.includes(answerLabel)) {
-                newAnswers[currentQuestion] = {
-                    ...newAnswers[currentQuestion],
-                    answers: currentAnswers.filter(x => x !== answerLabel)
-                }
-                return newAnswers
-            }
+    //         // Pastikan index ada, jika belum ada buat entry baru
+    //         if (!newAnswers[currentQuestion]) {
+    //             newAnswers[currentQuestion] = {
+    //                 questionId: currentQuestion + 1,
+    //                 answers: [],
+    //                 subtest: 2
+    //             }
+    //         }
+    //         const currentAnswers = newAnswers[currentQuestion].answers || []
+    //         // UNSELECT - jika sudah dipilih, hapus
+    //         if (currentAnswers.includes(answerLabel)) {
+    //             newAnswers[currentQuestion] = {
+    //                 ...newAnswers[currentQuestion],
+    //                 answers: currentAnswers.filter(x => x !== answerLabel)
+    //             }
+    //             return newAnswers
+    //         }
             
-            // TOLAK PILIHAN KE-3 - maksimal 2 jawaban
-            if (currentAnswers.length === 2) {
-                return prev
-            }
+    //         // TOLAK PILIHAN KE-3 - maksimal 2 jawaban
+    //         if (currentAnswers.length === 2) {
+    //             return prev
+    //         }
 
-            // TAMBAH JAWABAN
-            newAnswers[currentQuestion] = {
-                ...newAnswers[currentQuestion],
-                answers: [...currentAnswers, answerLabel]
-            }
-            return newAnswers
-        })
-    } 
+    //         // TAMBAH JAWABAN
+    //         newAnswers[currentQuestion] = {
+    //             ...newAnswers[currentQuestion],
+    //             answers: [...currentAnswers, answerLabel]
+    //         }
+    //         return newAnswers
+    //     })
+    // } 
+    const handleAnswer = (answerLabel: string) => {
+    const newAnswers = [...answers];
+    
+    if (!newAnswers[currentQuestion]) {
+        newAnswers[currentQuestion] = {
+            questionId: currentQuestion + 1,
+            answers: [],
+            subtest: 2
+        };
+    }
+    
+    const currentAnswers = newAnswers[currentQuestion].answers || [];
+    
+    if (currentAnswers.includes(answerLabel)) {
+        newAnswers[currentQuestion] = {
+            ...newAnswers[currentQuestion],
+            answers: currentAnswers.filter(x => x !== answerLabel)
+        };
+    } else if (currentAnswers.length < 2) {
+        newAnswers[currentQuestion] = {
+            ...newAnswers[currentQuestion],
+            answers: [...currentAnswers, answerLabel]
+        };
+    }
+
+    setAnswers(newAnswers);
+    localStorage.setItem('tempAnswers', JSON.stringify(newAnswers));
+};
 
     const handleTestComplete = async () => {
         try {
@@ -154,6 +182,14 @@ export default function CFITsubtest2Test() {
     setCurrentQuestion(prev => prev + 1)
   }
     const progressPercent = ((currentQuestion + 1) / question.length) * 100;
+
+    useEffect(()=> {
+    const temp = localStorage.getItem('tempAnswers')
+    if(temp !== null) {
+      const answer = JSON.parse(temp)
+      setAnswers(answer)
+    }
+  }, [])
 
     return (
         <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
