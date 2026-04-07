@@ -78,11 +78,19 @@ export default function CFITSubtest4Test() {
     const handleAnswer = (answers: string) => {
         setAnswers(prev => {
             const updated = [...prev];
+            if (prev[currentQuestion].answers[0] === answers) {
+              updated[currentQuestion] = {
+                questionId: currentQuestion + 1,
+                answers: [],
+                subtest: 1
+              }
+              return updated
+            }
 
             updated[currentQuestion] = {
             questionId: currentQuestion + 1,
             answers: [answers],
-            subtest: 4
+            subtest: 1
             };
 
             return updated; 
