@@ -29,15 +29,29 @@ interface Questionz {
   options : Option[]
 }
 
+type CfitAnswer = {
+  questionId: number
+  answers: string[]
+  subtest: number
+}
+
 export default function CFITSubtest1() {
     const router = useRouter()
     const [resultText, setResultText] = useState<string>('')
-    const [answers, setAnswers] = useState<string[]>([])
+    const [question, setQuestion] = useState<Questionz[]>([])
+    // const [answers, setAnswers] = useState<string[]>([])
+    const [answers, setAnswers] = useState<CfitAnswer[]>(
+        Array.from({ length: question.length}, (_, index) => ({
+          questionId: index + 1,
+          answers: [],
+          subtest: 1
+        }))
+      );
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [isChecked, setIsChecked] = useState<boolean | null>(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const [question, setQuestion] = useState<Questionz[]>([])
+    
   
     const questions: Question[] = [
       {
@@ -63,28 +77,37 @@ export default function CFITSubtest1() {
       }
     ]
   
-    const handleAnswer = (answerIndex: string) =>{
-      if (isChecked === true)
-        return
-  
-      const newAnswers = [...answers];
-      newAnswers[currentQuestion] = answerIndex;
-      setAnswers(newAnswers);
+    const handleAnswer = (answersIndex: string) =>{
+      setAnswers(prev => {
+        const updated = [...prev];
+        
+        // Toggle: jika klik jawaban yang sama, hapus. Jika beda, simpan yang baru.
+        const currentAnswers = prev[currentQuestion]?.answers[0];
+        
+        updated[currentQuestion] = {
+          questionId: currentQuestion + 1,
+          answers: currentAnswers === answersIndex ? [] : [answersIndex], // ✅ bandingkan dengan answersIndex
+          subtest: 1
+        };
+
+        return updated;
+      });
    }
   
     const checkAnswer = (questionIndex: number) => {
       const answer = answers[questionIndex]
-  
-      if(answer !== undefined) {
-        setIsChecked(true)
+    
+        if(answer !== undefined) {
+          setIsChecked(true)
+        }
+    
+        if (answer.answers[0] === questions[questionIndex]?.correctAnswer && answers[currentQuestion].answers.length > 0) {
+          setResultText(questions[questionIndex].explanationRight)
+      } else if (answer.answers[0] !== questions[questionIndex]?.correctAnswer && answers[currentQuestion].answers.length > 0) {
+          setResultText(questions[questionIndex].explanationFalse)
       }
-  
-      if (answer === questions[questionIndex].correctAnswer) {
-        setResultText(questions[questionIndex].explanationRight)
-    } else {
-        setResultText(questions[questionIndex].explanationFalse)
+
     }
-   }
   
     const handleModal = () => {
       setIsModalOpen(true)
@@ -105,10 +128,22 @@ export default function CFITSubtest1() {
       }
       getQuestion()
     }, [])
+
+    useEffect(() => {
+    if (question.length > 0 && answers.length === 0) {
+      setAnswers(
+        Array.from({ length: question.length }, (_, index) => ({
+          questionId: index + 1,
+          answers: [],
+          subtest: 1
+        }))
+      );
+    }
+  }, [question]);
   
     useEffect(() => {
-        console.log('question:', question);
-        }, [question]);
+        console.log('answers:', answers);
+        }, [answers]);
 
     useEffect(() => {
         console.log('option:', question[currentQuestion]?.options);
@@ -157,6 +192,7 @@ export default function CFITSubtest1() {
                 <li>Lengkapi kotak ke-4 yang kosong dengan memilih opsi A-F.</li>
                 <li>Klik gambar untuk memilih jawaban.</li>
                 <li>Jika ingin mengubah, cukup klik pada gambar pilihan yang lain.</li>
+                <li>Untuk membatalkan/mengosongkan jawaban, klik kembali gambar yang sudah dipilih.</li>
                 <li>
                   Waktu pengerjaan: <span className="font-semibold">3 menit.</span>
                 </li>
@@ -195,24 +231,39 @@ export default function CFITSubtest1() {
                     <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 w-full">
                       {question[currentQuestion]?.options?.map((option) => (
                         <button
+                          disabled= {isChecked === true}
                           key={option.label}
                           onClick={() => handleAnswer(option.label)} // Kirim label (A, B, C, dst)
-                          className={`aspect-square font-semibold 
-                            rounded-xl flex items-center justify-center transition-all border-2 ${
-                            isChecked === true && option.label === questions[currentQuestion].correctAnswer
+                          className={`aspect-square font-semibold rounded-xl flex items-center 
+                            justify-center transition-all border-2 border-slate-200 ${
+                            // 1. Sudah dicek & ini jawaban benar
+                            isChecked && option.label === questions[currentQuestion].correctAnswer
                               ? 'bg-green-600 text-white border-green-600 scale-105 shadow'
-                              : isChecked === true && 
-                                !(option.label === questions[currentQuestion].correctAnswer) && 
-                                answers[currentQuestion] === option.label
+                            // 2. Sudah dicek & ini jawaban yang dipilih tapi salah
+                            : isChecked && answers[currentQuestion]?.answers[0] === option.label
                               ? 'bg-red-600 text-white border-red-600 scale-105 shadow'
-                              : answers[currentQuestion] === option.label
+                            // 3. Belum dicek & ini jawaban yang dipilih (biru) ✅
+                            : answers[currentQuestion]?.answers[0] === option.label
                               ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
-                              : isChecked === false || answers[currentQuestion] === option.label
-                              ? 'hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
-                              : !(isChecked === true && option.label === questions[currentQuestion].correctAnswer)
-                              ? 'border-slate-200 bg-slate-50'
-                              : ''
+                            // 4. Default
+                            : 'hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
                           }`}
+                          // className={`aspect-square font-semibold 
+                          //   rounded-xl flex items-center justify-center transition-all border-2 border-slate-200 ${
+                          //   isChecked === true && option.label === questions[currentQuestion].correctAnswer
+                          //     ? 'bg-green-600 text-white border-green-600 scale-105 shadow'
+                          //     : isChecked === true && 
+                          //       !(option.label === questions[currentQuestion].correctAnswer) && 
+                          //       answers[currentQuestion].answers[0] === option.label
+                          //     ? 'bg-red-600 text-white border-red-600 scale-105 shadow'
+                          //     : answers[currentQuestion]?.answers[0] === option.label
+                          //     ? 'bg-blue-600 text-white border-blue-600 scale-105 shadow'
+                          //     : isChecked === false || answers[currentQuestion].answers[0] === option.label
+                          //     ? 'hover:border-blue-400 hover:scale-[1.02] border-slate-200 bg-slate-50'
+                          //     : !(isChecked === true && option.label === questions[currentQuestion].correctAnswer)
+                          //     ? 'border-slate-200 bg-slate-50'
+                          //     : ''
+                          // }`}
                         >
                           <div className='pt-2 h-full text-slate-700 text-xs'>
                             {option.label}
@@ -230,14 +281,28 @@ export default function CFITSubtest1() {
                         </button>
                       ))}
                     </div>
-
+                    
                     <div className='flex justify-center sm:justify-start'>
-                      <button onClick={() => checkAnswer(currentQuestion)} disabled = {isChecked === true} className={`px-3 py-2 sm:px-5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium bg-blue-600 hover:bg-blue-700 shadow hover:scale-[1.02] active:scale-95 transition${
-                          isChecked === true
-                          ? ' text-gray-200'
-                          : ' text-white'
-                        }`} >Cek Jawaban</button>
+                      <button 
+                        onClick={() => checkAnswer(currentQuestion)} 
+                        disabled = {isChecked === true || answers[currentQuestion]?.answers.length <= 0} 
+                        className={`px-3 py-2 sm:px-5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium bg-blue-600 hover:bg-blue-700 shadow hover:scale-[1.02] active:scale-95 transition${
+                          isChecked === true || answers[currentQuestion]?.answers.length <= 0
+                            ? ' text-gray-400 hover:bg-blue-900 bg-blue-900 active:scale-100 hover:scale-none'
+                            : ' text-white'
+                        }`} >
+                          Cek Jawaban
+                      </button>
                     </div>
+                    
+                    {/* <div className={` block ${
+                        isChecked == true && answers[currentQuestion]?.answers.length == 0 
+                        ? ''
+                        : 'hidden'
+                      }`}>
+                        <p className='bg-red-200 w-2/7 text-center border border-red-400 text-red-500 rounded-lg py-1 text-sm'>Harap pilih jawaban terlebih dahulu</p>
+                    </div> */}
+                    
                     <div className='text-center sm:text-left text-sm'>
                       <p>{resultText}</p>
                     </div>  

@@ -5,6 +5,7 @@ import Modal from '@/app/components/Modal';
 import { storeAnswersCfit } from '@/services/answers.service';
 import { getSoalCfit1Service } from '@/services/questions.service';
 import TestHeader from '@/app/components/TestHeader';
+import { pre } from 'framer-motion/client';
 
 interface Question {
   id: number;
@@ -79,6 +80,14 @@ export default function CFITSubtest1Test() {
   const handleAnswer = (answers: string) => {
         setAnswers(prev => {
             const updated = [...prev];
+            if (prev[currentQuestion].answers[0] === answers) {
+              updated[currentQuestion] = {
+                questionId: currentQuestion + 1,
+                answers: [],
+                subtest: 1
+              }
+              return updated
+            }
 
             updated[currentQuestion] = {
             questionId: currentQuestion + 1,

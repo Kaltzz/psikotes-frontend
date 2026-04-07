@@ -263,7 +263,7 @@ const handleAnswer = (option: string) => {
                     </div>
                     <div>
                       <p>{resultText}</p>
-                    </div>  
+                    </div>
 
                     <div className="flex justify-between items-center">
             <button
