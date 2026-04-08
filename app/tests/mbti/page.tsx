@@ -35,6 +35,7 @@ export default function MbtiInstructionPage() {
         { groupId: number; type: number }[]
         >([]);
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     
     const mbti: MbtiQuestion[]  = [
         {
@@ -73,8 +74,14 @@ export default function MbtiInstructionPage() {
     }
 
     const handleTestComplete = () => {
-        resetState()
-        router.push('/tests/mbti/test');
+        try {
+            const setLoading = setIsLoading(true)
+            resetState()
+            router.push('/tests/mbti/test');
+        } catch (error) {
+            const setLoading = setIsLoading(false)
+        }
+        
     };
 
     const handleModal = () => {
@@ -311,17 +318,33 @@ export default function MbtiInstructionPage() {
             <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
             <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 
-                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                    className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                        isLoading
+                        ? 'bg-slate-400'
+                        : 'from-blue-600 to-indigo-600' }`}
                     onClick={()=> setIsModalOpen(false)}
+                    disabled={isLoading}
                 >
                     Kembali
                 </button>
-                <button 
+                {isLoading ? (
+                    <button
+                        className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        aria-label="Mulai CFIT Subtes 1"
+                        onClick={handleTestComplete}
+                        disabled={isLoading}
+                        >
+                          Mohon Tunggu...
+                    </button>
+                ):(
+                    <button 
                     className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
                     onClick={handleTestComplete}
-                >
-                    Mulai Tes
-                </button>
+                    >
+                        Mulai Tes
+                    </button>
+                )}
+                
             </div>
         </Modal>
     </div>

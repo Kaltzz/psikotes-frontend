@@ -4,6 +4,8 @@ import { ArrowLeft, Brain, Clock, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import TestHeader from '@/app/components/TestHeader';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 function IconSeries() {
   return (
@@ -32,6 +34,19 @@ function IconList() {
 }
 
 export default function CFITTest() {
+
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleTest = () => {
+    try {
+      const setLoading = setIsLoading(true)
+      router.push('/tests/cfit/subtest1')
+    } catch (error) {
+      const setLoading = setIsLoading(false)
+    }
+  }
+
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
       {/* Header */}
@@ -131,14 +146,26 @@ export default function CFITTest() {
                   <strong className="text-slate-800">Sebelum mulai:</strong> pastikan data diri sudah lengkap dan Anda siap fokus.
                 </div>
                 <div className="flex items-center gap-3">
-                  <Link href="/tests/cfit/subtest1">
+                  {isLoading ? (
                     <button
-                      className="px-5 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.01] active:scale-95 transition-transform"
+                      className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
                       aria-label="Mulai CFIT Subtes 1"
+                      onClick={handleTest}
+                      disabled={isLoading}
+                    >
+                      Mohon Tunggu...
+                    </button>
+                  ):(
+                    <button
+                      className={`px-5 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.01] active:scale-95 transition-transform`}
+                      aria-label="Mulai CFIT Subtes 1"
+                      onClick={handleTest}
+                      disabled={isLoading}
                     >
                       Selanjutnya
                     </button>
-                  </Link>
+                  )}
+                    
                 </div>
               </div>
             </div>

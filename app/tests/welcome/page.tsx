@@ -15,6 +15,7 @@ export default function FrontPage()  {
     const router = useRouter()
     const [data, setData] = useState()
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
 //     useEffect(()=> {
 //     const tests = sessionStorage.getItem('testSession')
@@ -26,26 +27,32 @@ export default function FrontPage()  {
     }
 
     const handleTest = async () => {
-        const testSession = sessionStorage.getItem('testSession')
-        if(!testSession)
-            return console.log('gagal')
+        try {
+            const setLoading = setIsLoading(true)
+            const testSession = sessionStorage.getItem('testSession')
+            if(!testSession)
+                return console.log('gagal')
 
-        const testSessionParsed = JSON.parse(testSession)
-        const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+            const testSessionParsed = JSON.parse(testSession)
+            const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
 
-        console.log('ini tests:', testSessionParsed)
-        const sessionId = testSessionParsed.sessionId
-        if(sessionId && !(tests === null)) {
-            const statusTest = await updateStatusTest(sessionId)
-            // const indexIncrement = testSessionParsed.currentIndex + 1
-            // testSessionParsed.currentIndex = indexIncrement
-            // const id = await updateStatusTest(sessionId)
-            // const updatedTestString = JSON.stringify(testSessionParsed)
-            // sessionStorage.setItem('testSession', updatedTestString)
-            router.push(`/tests/${tests.toLowerCase()}`)        
-        } else {
-            router.push('/result')
+            console.log('ini tests:', testSessionParsed)
+            const sessionId = testSessionParsed.sessionId
+            if(sessionId && !(tests === null)) {
+                const statusTest = await updateStatusTest(sessionId)
+                // const indexIncrement = testSessionParsed.currentIndex + 1
+                // testSessionParsed.currentIndex = indexIncrement
+                // const id = await updateStatusTest(sessionId)
+                // const updatedTestString = JSON.stringify(testSessionParsed)
+                // sessionStorage.setItem('testSession', updatedTestString)
+                router.push(`/tests/${tests.toLowerCase()}`)        
+            } else {
+                router.push('/result')
+            }
+        } catch (error) {
+            const setLoading = setIsLoading(false)
         }
+        
     }
 
     // useEffect(()=> {
@@ -119,18 +126,35 @@ export default function FrontPage()  {
                                     <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
                                     <div className='flex gap-x-3 justify-evenly mt-4'>
                                     <button 
-                                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                                    className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                                        isLoading
+                                        ? 'bg-slate-400'
+                                        : 'from-blue-600 to-indigo-600'
+                                        }`}
                                     onClick={()=> setIsModalOpen(false)}
+                                    disabled={isLoading}
                                     >
                                         Kembali
                                     </button>
-
-                                    <button 
-                                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
-                                    onClick={handleTest}
-                                    >
-                                        Mulai Tes
-                                    </button>
+                                    
+                                    {isLoading ? (
+                                        <button 
+                                            className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                                            onClick={handleTest}
+                                            disabled={isLoading}
+                                        >
+                                            Mohon Tunggu...
+                                        </button>
+                                    ): (
+                                        <button 
+                                            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                                            onClick={handleTest}
+                                            disabled={isLoading}
+                                        >
+                                            Mulai Tes
+                                        </button>
+                                    )}
+                                    
                                     </div>
                                     
 

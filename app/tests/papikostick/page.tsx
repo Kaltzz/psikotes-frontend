@@ -63,21 +63,7 @@ export default function PapiInstructionPage() {
     const router = useRouter()
     const [currentGroup, setCurrentGroup] = useState(0)
     const [isModalOpen, setIsModalOpen] = useState(false)
-    // const [answers, setAnswers] = useState<{
-    //     groupId: number; type: string}[]
-    //     >([])
-    // const [answers, setAnswers] = useState({
-    //     groupId: 0,
-    //     type: ''
-    // })
-
-    // const [answers, setAnswers] = useState<{
-    //     groupId: number[]; type: string[]
-    // }>({groupId: [], type: []})
-
-    // const [answers, setAnswers] = useState([
-    //     {groupId: 0, type: ''}
-    // ])
+    const [isLoading, setIsLoading] = useState(false)
 
     const [answers, setAnswers] = useState<
         { groupId: number; type: number }[]
@@ -141,8 +127,13 @@ export default function PapiInstructionPage() {
     }
 
     const handleTestComplete = () => {
-        resetState()
-        router.push('/tests/papikostick/test');
+        try {
+            const setLoading = setIsLoading(true)
+            resetState()
+            router.push('/tests/papikostick/test');
+        } catch {
+            const setLoading = setIsLoading(false)
+        }
     };
 
     const handleSelection = (newType: 1 | 2) => {
@@ -404,17 +395,33 @@ export default function PapiInstructionPage() {
             <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
             <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 
-                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                    className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                        isLoading
+                        ? 'bg-slate-400'
+                        : 'from-blue-600 to-indigo-600' }`}
                     onClick={()=> setIsModalOpen(false)}
+                    disabled={isLoading}
                 >
                     Kembali
                 </button>
-                <button 
-                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
-                    onClick={handleTestComplete}
-                >
-                    Mulai Tes
-                </button>
+                {isLoading ? (
+                    <button
+                        className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        aria-label="Mulai CFIT Subtes 1"
+                        onClick={handleTestComplete}
+                        disabled={isLoading}
+                        >
+                          Mohon Tunggu...
+                    </button>
+                ):(
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={handleTestComplete}
+                    >
+                        Mulai Tes
+                    </button>
+                )}
+                
             </div>
         </Modal>
         </div>

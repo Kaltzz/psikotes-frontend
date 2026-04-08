@@ -269,7 +269,7 @@ export default function MbtiTestPage() {
                                     <button
                                         disabled= {!(answers[currentGroup])}
                                         onClick={
-                                        currentGroup === 5
+                                        currentGroup === questions.length - 1
                                             ? handleModal
                                             : handleNext
                                         }
@@ -281,7 +281,7 @@ export default function MbtiTestPage() {
                                             }
                                             `}
                                     >
-                                        {currentGroup === 5 ? 'Selesai' : 'Soal Berikutnya →'}
+                                        {currentGroup === questions.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
                                     </button>
                                 </div>
                         </div> 

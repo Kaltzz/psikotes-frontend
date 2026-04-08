@@ -257,9 +257,14 @@ export default function TestForm() {
             {/* Tombol */}
             <button
               type="submit"
+              disabled={isSubmitting}
               // disabled={!isFormValid}
-              className={`w-full py-2 text-sm font-semibold text-white rounded-md shadow-md transition-all duration-200 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 
-                `}
+              className={`w-full py-2 text-sm font-semibold text-white rounded-md shadow-md  
+                ${
+                  isSubmitting
+                  ? 'bg-slate-500'
+                  : 'transition-all duration-200 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'
+                }`}
             >
               {isSubmitting ? 'Memproses...' : 'Mulai Tes'}
             </button>

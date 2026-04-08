@@ -48,6 +48,7 @@ export default function CFITSubtest3() {
         );
   const [isChecked, setIsChecked] = useState<boolean | null>(false)
   const [isModalOpen, setIsModalOpen] =useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   
 
   const questions: Question[] = [
@@ -112,7 +113,12 @@ export default function CFITSubtest3() {
     }
 
   const handleTestComplete = () => {
+    try {
+      const setLoading = setIsLoading(true)
       router.push('/tests/cfit/subtest3/test')
+    } catch (error) {
+      const setLoading = setIsLoading(false)
+    } 
   }
 
   const handleNext = () => {
@@ -318,18 +324,35 @@ export default function CFITSubtest3() {
         <p className='text-gray-800'>Anda akan memasuki sesi tes. Setelah tes dimulai, waktu akan berjalan dan sesi tidak dapat diulang.</p>
         <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
         <div className='flex gap-x-3 justify-evenly mt-4'>
-          <button 
-            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+          <button
+            className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                  isLoading
+                  ? 'bg-slate-400'
+                  : 'from-blue-600 to-indigo-600'
+                  }`}
             onClick={()=> setIsModalOpen(false)}
+            disabled={isLoading}
           >
             Kembali
           </button>
-          <button 
-            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
-            onClick={handleTestComplete}
-          >
-            Mulai Tes
-          </button>
+          {isLoading ? (
+            <button
+              className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+              aria-label="Mulai CFIT Subtes 1"
+              onClick={handleTestComplete}
+              disabled={isLoading}
+              >
+              Mohon Tunggu...
+            </button>
+          ):(
+            <button 
+              className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+              onClick={handleTestComplete}
+            >
+              Mulai Tes
+            </button>
+          )}
+          
         </div>
       </Modal>
     </div>

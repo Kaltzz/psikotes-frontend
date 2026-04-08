@@ -9,6 +9,7 @@ import TestHeader from '../components/TestHeader'
 export default function ResultPage() {
   const router = useRouter()
   // const [userData, setUserData] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   // useEffect(() => {
   //   const storedUserData = localStorage.getItem('userData')
@@ -26,7 +27,12 @@ export default function ResultPage() {
     // const pesertaId = testSessionParsed.pesertaId
     // const trigger = await triggerN8n(pesertaId)
     // sessionStorage.clear()
-    router.push('/')
+    try {
+      const setLoading = setIsLoading(true)
+      router.push('/')
+    } catch(error) {
+      const setLoading = setIsLoading(false)
+    }
   }
 
   // if (!userData) {
@@ -57,11 +63,18 @@ export default function ResultPage() {
           </p>
 
           <div className="mt-6">
+            
             <button
+              disabled={isLoading}
               onClick={() => handleAnswer()}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2.5 rounded-lg hover:shadow-md transition-all duration-200"
+              className={`bg-gradient-to-r  text-white px-6 py-2.5 rounded-lg hover:shadow-md transition-all duration-200 ${
+                isLoading 
+                ? 'bg-slate-500'
+                : 'from-blue-600 to-indigo-600'
+                }`}
             >
-              Kembali ke halaman utama
+              
+              {isLoading ? 'Memproses...' : 'Kembali ke halaman utama'}
             </button>
           </div>
         </div>
