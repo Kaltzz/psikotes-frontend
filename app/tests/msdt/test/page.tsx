@@ -38,6 +38,7 @@ export default function MsdtTestPage() {
         >([]);
     const [timeLeft, setTimeLeft] = useState(300); // 5 menit
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [questions, setQuestions] = useState<MsdtQuestions[]>([])
     const [isOvertime, setIsOvertime] = useState(false);
     const [overtime, setOvertime] = useState(0);
@@ -138,35 +139,41 @@ export default function MsdtTestPage() {
     }
     
     const handleTestComplete = async() => {
-        const testSession = sessionStorage.getItem('testSession')
-        localStorage.removeItem('tempAnswers')
-        
-        if(!testSession)
-            return alert('gagal')
-        
-        const testSessionParsed = JSON.parse(testSession)
-        const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
-        const sessionId = testSessionParsed.sessionId
-        console.log('ini test4:', tests)
-        const res = await storeAnswersMsdt(sessionId, answers)
+        try {
+            const setLoading = setIsLoading(true)
+            const testSession = sessionStorage.getItem('testSession')
+            localStorage.removeItem('tempAnswers')
+            
+            if(!testSession)
+                return alert('gagal')
+            
+            const testSessionParsed = JSON.parse(testSession)
+            const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+            const sessionId = testSessionParsed.sessionId
+            console.log('ini test4:', tests)
+            const res = await storeAnswersMsdt(sessionId, answers)
 
-        const statusTest = await updateStatusTest(sessionId);
+            const statusTest = await updateStatusTest(sessionId);
 
-        const pesertaId = testSessionParsed.pesertaId;
-        const trigger = await triggerN8n(pesertaId, tests);
+            const pesertaId = testSessionParsed.pesertaId;
+            const trigger = await triggerN8n(pesertaId, tests);
 
-        const nextIndex = testSessionParsed.currentIndex + 1;
-        const newTests = testSessionParsed.tests[nextIndex]; 
+            const nextIndex = testSessionParsed.currentIndex + 1;
+            const newTests = testSessionParsed.tests[nextIndex]; 
 
-        testSessionParsed.currentIndex = nextIndex;
-        sessionStorage.setItem('testSession', JSON.stringify(testSessionParsed));
+            testSessionParsed.currentIndex = nextIndex;
+            sessionStorage.setItem('testSession', JSON.stringify(testSessionParsed));
 
-        if (newTests !== undefined) {
-            router.push(`/tests/${newTests.toLowerCase()}`); 
-        } else {
-            sessionStorage.removeItem('testSession');
-            router.push('/result');
+            if (newTests !== undefined) {
+                router.push(`/tests/${newTests.toLowerCase()}`); 
+            } else {
+                sessionStorage.removeItem('testSession');
+                router.push('/result');
+            }
+        } catch(error) {
+            const setLoading = setIsLoading(false)
         }
+        
     };
 
     useEffect(()=> {
@@ -309,17 +316,33 @@ export default function MsdtTestPage() {
             <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
             <div className='flex gap-x-3 justify-evenly mt-4'>
                 <button 
-                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                    className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                        isLoading
+                        ? 'bg-slate-400'
+                        : 'from-blue-600 to-indigo-600'
+                        }`}
                     onClick={()=> setIsModalOpen(false)}
+                    disabled={isLoading}
                 >
                     Kembali
                 </button>
-                <button 
-                    className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
-                    onClick={handleTestComplete}
-                >
-                    Selesai
-                </button>
+                {isLoading?(
+                    <button 
+                        className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={handleTestComplete}
+                        disabled={isLoading}
+                    >
+                        Mohon Tunggu...
+                    </button>
+                ):(
+                    <button 
+                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        onClick={handleTestComplete}
+                    >
+                        Selesai
+                    </button>
+                )}
+                
             </div>
         </Modal>
 

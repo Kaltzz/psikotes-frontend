@@ -43,6 +43,7 @@ export default function CFITsubtest2Test() {
 )
     const [isModalOpen, setIsModalOpen] = useState(false)
     const answered = answers[currentQuestion]?.answers?.length
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(()=> {
         const getCfit2Soal = async () => {
@@ -152,6 +153,7 @@ export default function CFITsubtest2Test() {
 
     const handleTestComplete = async () => {
         try {
+            const setLoading = setIsLoading(true)
               const testSession = sessionStorage.getItem('testSession')
               localStorage.removeItem('tempAnswers')
               if(!testSession) {
@@ -164,7 +166,8 @@ export default function CFITsubtest2Test() {
               console.log('ini jawaban subtest2: ', res)
               router.push('/tests/cfit/subtest3');
             } catch(err:any) {
-              console.log('error: ', err)
+                const setLoading = setIsLoading(false)
+                console.log('error: ', err)
             }
     };
 
@@ -305,17 +308,34 @@ export default function CFITsubtest2Test() {
                 <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
                 <div className='flex gap-x-3 justify-evenly mt-4'>
                     <button 
-                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                        isLoading
+                        ? 'bg-slate-400'
+                        : 'from-blue-600 to-indigo-600'
+                        }`}
                         onClick={()=> setIsModalOpen(false)}
+                        disabled={isLoading}
                     >
                         Kembali
                     </button>
-                    <button 
-                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
-                        onClick={handleTestComplete}
-                    >
-                        Subtes berikutnya
-                    </button>
+                    {isLoading? (
+                        <button
+                            className='disabled:pointer-events-none px-5 py-2 rounded-lg bg-gradient-to-r bg-slate-400 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                            aria-label="Mulai CFIT Subtes 1"
+                            onClick={handleTestComplete}
+                            disabled={isLoading}
+                        >
+                            Mohon Tunggu...
+                        </button>
+                    ):(
+                        <button 
+                            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                            onClick={handleTestComplete}
+                        >
+                            Subtes berikutnya
+                        </button>
+                    )}
+                    
                 </div>
             </Modal>
         </div>
