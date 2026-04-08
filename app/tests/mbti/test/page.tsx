@@ -269,7 +269,7 @@ export default function MbtiTestPage() {
                                     <button
                                         disabled= {!(answers[currentGroup])}
                                         onClick={
-                                        currentGroup === questions.length - 1
+                                        currentGroup === 5
                                             ? handleModal
                                             : handleNext
                                         }
@@ -281,7 +281,7 @@ export default function MbtiTestPage() {
                                             }
                                             `}
                                     >
-                                        {currentGroup === questions.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
+                                        {currentGroup === 5 ? 'Selesai' : 'Soal Berikutnya →'}
                                     </button>
                                 </div>
                         </div> 
@@ -295,8 +295,13 @@ export default function MbtiTestPage() {
                 <p className='text-gray-600 text-sm mt-3'>(Pastikan koneksi internet stabil dan Anda berada di lingkungan yang kondusif.)</p>
                 <div className='flex gap-x-3 justify-evenly mt-4'>
                     <button 
-                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
+                        className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
+                            isLoading
+                            ? 'bg-slate-400'
+                            : 'from-blue-600 to-indigo-600'
+                            }`}
                         onClick={()=> setIsModalOpen(false)}
+                        disabled={isLoading}
                     >
                         Kembali
                     </button>
