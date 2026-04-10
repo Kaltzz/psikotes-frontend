@@ -108,13 +108,13 @@ export default function CFITSubtest4Test() {
         updated[currentQuestion] = {
             questionId: currentQuestion + 1,
             answers: [],
-            subtest: 1
+            subtest: 4
         };
     } else {
         updated[currentQuestion] = {
             questionId: currentQuestion + 1,
             answers: [answer],
-            subtest: 1
+            subtest: 4
         };
     }
 
