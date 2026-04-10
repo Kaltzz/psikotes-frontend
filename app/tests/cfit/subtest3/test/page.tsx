@@ -105,13 +105,13 @@ export default function CFITSubtest3Test() {
         updated[currentQuestion] = {
             questionId: currentQuestion + 1,
             answers: [],
-            subtest: 1
+            subtest: 3
         };
     } else {
         updated[currentQuestion] = {
             questionId: currentQuestion + 1,
             answers: [answer],
-            subtest: 1
+            subtest: 3
         };
     }
 
