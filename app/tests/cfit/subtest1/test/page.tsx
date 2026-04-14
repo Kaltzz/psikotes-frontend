@@ -35,6 +35,7 @@ export default function CFITSubtest1Test() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [question, setQuestion] = useState<Questionz[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false)
 
   const [answers, setAnswers] = useState<CfitAnswer[]>(
     Array.from({ length: question.length}, (_, index) => ({
@@ -159,7 +160,7 @@ export default function CFITSubtest1Test() {
         }, [answers]);
 
   useEffect(()=> {
-    console.log('isi data: ', question.length)
+    console.log('isi question: ', question)
   }, [question])
 
   useEffect(()=> {
@@ -178,6 +179,7 @@ export default function CFITSubtest1Test() {
 
 
   return (
+    
     <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
       <header
         className='bg-white shadow-sm py-4 sticky top-0 z-10'
@@ -194,17 +196,19 @@ export default function CFITSubtest1Test() {
             </div>
             <div className='flex gap-x-3'>
               <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
-                ⏱ {formatTime(timeLeft)}
+                ⏱ {question.length > 0 ? (<span>{formatTime(timeLeft)}</span>):(<span>--:--</span>)}  
               </div>
               <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
-                <span>Soal: {currentQuestion + 1} / {question.length}</span>
+                {question.length > 0 ? (<span>Soal: {currentQuestion + 1} / {question.length}</span>):(<span>Soal: --/--</span>)}
               </div>
             </div>
             
           </div>
 
           {/* Soal */}
-          <div className="border rounded-2xl bg-white shadow-sm p-3 mb-4 flex flex-col gap-y-4">
+          {question.length > 0 ? (
+            <div>
+              <div className="border rounded-2xl bg-white shadow-sm p-3 mb-4 flex flex-col gap-y-4">
             <p className='text-center text-gray-600 italic '>Perhatikan rangkaian gambar berikut dan tentukan gambar yang tepat untuk gambar selanjutnya.</p>
             <div className="flex justify-center md:grid-cols-1 gap-3 mb-2">
                 <div
@@ -273,6 +277,13 @@ export default function CFITSubtest1Test() {
               {currentQuestion === question.length - 1 ? 'Selesai Tes' : 'Soal Berikutnya →'}
             </button>
           </div>
+          </div>
+          ):(
+            <div className='flex justify-center items-center px-8 py-10'>
+              <p className='bg-blue-50 border border-blue-200 rounded-xl p-6 text-gray-700 font-semibold'>SEDANG MEMUAT SOAL...</p>
+            </div>
+          )}
+          
         </div>
       </main>
       <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
@@ -310,6 +321,9 @@ export default function CFITSubtest1Test() {
           
         </div>
       </Modal>
+      
+    
+      
     </div>
   );
   

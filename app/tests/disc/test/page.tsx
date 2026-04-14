@@ -290,8 +290,9 @@ export default function DISCTestPage() {
               </p>
             </div>
             <div className="">
-                    {/* ⏱ {formatTime(timeLeft)} */}
-                        <div className={`text-xl font-mono px-4 py-2 rounded-lg shadow-sm ${
+                        {question.length > 0 ? (
+                            <div>
+                                <div className={`text-xl font-mono px-4 py-2 rounded-lg shadow-sm ${
                             isOvertime ? 'bg-red-100 text-red-600' : 'bg-gray-100'
                         }`}>
                             {isOvertime 
@@ -299,24 +300,33 @@ export default function DISCTestPage() {
                                 : `⏱ ${formatTime(timeLeft)}`
                             }
                         </div>
+                            </div>
+                        ):(
+                            <div className='text-xl font-mono px-4 py-2 rounded-lg shadow-sm bg-gray-100'>
+                                <span>--:--</span>
+                            </div>
+                        )}
                     </div>
           </div>
 
-          {/* Progress */}
-          <div className="mb-8">
-            <div className="text-sm text-gray-600 mb-2 text-center">
-              Soal {currentGroup + 1} dari {question.length}
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                style={{ width: `${((currentGroup + 1) / question.length) * 100}%` }}
-              />
-            </div>
-          </div>
+          
 
           {/* Soal */}
-          <AnimatePresence mode="wait">
+          {question.length > 0 ? (
+          <div>
+            {/* Progress */}
+            <div className="mb-8">
+              <div className="text-sm text-gray-600 mb-2 text-center">
+                Soal {currentGroup + 1} dari {question.length}
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${((currentGroup + 1) / question.length) * 100}%` }}
+                />
+              </div>
+            </div>
+            <AnimatePresence mode="wait">
             <motion.div
               key={currentGroup}
               initial={{ opacity: 0, y: 40 }}
@@ -415,6 +425,13 @@ export default function DISCTestPage() {
               : 'Selesai Tes'}
             </button>
           </div>
+          </div>
+          ):(
+            <div className='flex justify-center items-center px-8 py-10'>
+                    <p className='bg-blue-50 border border-blue-200 rounded-xl p-6 text-gray-700 font-semibold'>SEDANG MEMUAT SOAL...</p>
+                </div>
+          )}
+          
 
         </div>
       </main>

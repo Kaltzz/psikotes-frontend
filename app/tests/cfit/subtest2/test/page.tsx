@@ -209,10 +209,10 @@ export default function CFITsubtest2Test() {
                         </div>
                         <div className='flex gap-x-3'>
                             <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
-                                ⏱ {formatTime(timeLeft)}
+                                ⏱ {question.length > 0 ? (<span>{formatTime(timeLeft)}</span>):(<span>--:--</span>)}
                             </div>
                             <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
-                                <span>Soal: {currentQuestion + 1} / {question.length}</span>
+                                {question.length > 0 ? (<span>Soal: {currentQuestion + 1} / {question.length}</span>):(<span>Soal: --/--</span>)}
                             </div>
                         </div>
                     </div>
@@ -232,7 +232,10 @@ export default function CFITsubtest2Test() {
                     </div> */}
 
                     {/* Soal */}
-                    <div className="border rounded-2xl bg-white shadow-sm p-6 mb-8">
+                    {/* {question.length > 0 ?():} */}
+                    {question.length > 0 ? (
+                    <div>
+                        <div className="border rounded-2xl bg-white shadow-sm p-6 mb-8">
                         <div className="text-center text-slate-700 mb-6">
                             Pilih dua gambar yang paling tepat yang memiliki kesamaan hubungan:
                         </div>
@@ -300,6 +303,13 @@ export default function CFITsubtest2Test() {
                             {currentQuestion === question.length - 1 ? 'Selesai Tes' : 'Soal Berikutnya →'}
                         </button>
                     </div>
+                    </div>
+                    ):(
+                    <div className='flex justify-center items-center px-8 py-10'>
+                        <p className='bg-blue-50 border border-blue-200 rounded-xl p-6 text-gray-700 font-semibold'>SEDANG MEMUAT SOAL...</p>
+                    </div>
+                    )}
+                    
                 </div>
             </main>
 

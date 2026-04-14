@@ -245,10 +245,10 @@ export default function CFITSubtest4Test() {
                     </div>
                     <div className='flex gap-x-3'>
                         <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
-                            ⏱ {formatTime(timeLeft)}
+                            ⏱ {question.length > 0 ? (<span>{formatTime(timeLeft)}</span>):(<span>--:--</span>)}
                         </div>
                         <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
-                            <span>Soal: {currentQuestion + 1} / {question.length}</span>
+                            {question.length > 0 ? (<span>Soal: {currentQuestion + 1} / {question.length}</span>):(<span>Soal: --/--</span>)}
                         </div>
                     </div>
                 </div>
@@ -268,7 +268,9 @@ export default function CFITSubtest4Test() {
                 </div> */}
 
                 {/* Soal */}
-                <div className="flex flex-col gap-y-3 border rounded-2xl bg-white shadow-sm p-6 mb-8">
+                {question.length > 0 ?(
+                <div>
+                    <div className="flex flex-col gap-y-3 border rounded-2xl bg-white shadow-sm p-6 mb-8">
                     <p className='text-center text-gray-600 italic'>Amati posisi titik di antara bangunan berikut dan cari gambar dengan letak titik yang serupa dengan soal:</p>
                     <div className="flex justify-center items-center gap-3 mb-3 m-auto">
                         <div
@@ -337,6 +339,13 @@ export default function CFITSubtest4Test() {
                     {currentQuestion === question.length - 1 ? 'Selesai Tes' : 'Soal Berikutnya →'}
                     </button>
                 </div>
+                </div>
+                ):(
+                <div className='flex justify-center items-center px-8 py-10'>
+                    <p className='bg-blue-50 border border-blue-200 rounded-xl p-6 text-gray-700 font-semibold'>SEDANG MEMUAT SOAL...</p>
+                </div>
+                )}
+                
                 </div>
 
                 {/* Footer */}
