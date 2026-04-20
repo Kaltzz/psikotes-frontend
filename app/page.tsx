@@ -17,6 +17,7 @@ export default function TestForm() {
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
+    tanggalLahir: '',
     jenisKelamin: '',
     unit: '',
     usia: '',
@@ -44,6 +45,7 @@ export default function TestForm() {
       const form = {
         nama: formData.nama,
         email: formData.email,
+        tanggalLahir: formData.tanggalLahir,
         jenisKelamin: formData.jenisKelamin,
         unit: formData.unit,
         usia: parseInt(formData.usia),
@@ -123,6 +125,23 @@ export default function TestForm() {
                 className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
                 placeholder="Masukkan email"
               />
+            </div>
+
+            {/* tanggal lahir */}
+            <div>
+              <label htmlFor="tanggalLahir" className="block text-sm font-medium text-gray-700 mb-1">
+                tanggalLahir
+              </label>
+              <input 
+                type="date" 
+                name='tanggalLahir'
+                id='tanggalLahir'
+                required
+                value={formData.tanggalLahir}
+                onChange={handleChange}
+                className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
+                placeholder="Masukkan tanggal Lahir"
+                />
             </div>
 
             {/* Jenis Kelamin */}

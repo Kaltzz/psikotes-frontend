@@ -5,6 +5,7 @@ export const getAllPeserta = () => api.get('/api/admin/peserta')
 export const registerPeserta = (data: {
     nama: string,
     email: string,
+    tanggalLahir: string,
     jenisKelamin: string,
     unit: string,
     usia: number,

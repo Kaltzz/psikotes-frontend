@@ -18,8 +18,10 @@ const peserta = [
 ]
 
 interface peserta {
-    name: string
-    date: string
+    id: number
+    nama: string
+    createdAt: Date
+    tanggal: Date
 }
 
 export default function AdminManajemenTes() {
@@ -67,16 +69,16 @@ export default function AdminManajemenTes() {
                         </tr>
                     </thead>
                     <tbody>
-                    {peserta.map(item => (
+                    {hasilPeserta.map(item => (
                         <tr
                             key={item.nama}
                             className="border-b border-gray-300 text-base"
                         >
-                            <td className="py-2 px-4">{item.tanggal}</td>
+                            <td className="py-2 px-4">{item.tanggal.toString()}</td>
                             <td className="py-2 px-4">{item.nama}</td>
                             <td className="py-2 px-4 flex gap-x-3">
                                 <Link
-                                    href={`/admin/hasiltes/hasil`}
+                                    href={`/admin/hasiltes/hasil/${item.id}`}
                                     className="px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-700"
                                 >
                                     Hasil
