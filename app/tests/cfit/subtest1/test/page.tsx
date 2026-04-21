@@ -6,6 +6,7 @@ import { storeAnswersCfit } from '@/services/answers.service';
 import { getSoalCfit1Service } from '@/services/questions.service';
 import TestHeader from '@/app/components/TestHeader';
 import { pre } from 'framer-motion/client';
+import { useAntiCheat } from '@/lib/useAntiCheat';
 
 interface Question {
   id: number;
@@ -177,10 +178,11 @@ export default function CFITSubtest1Test() {
     setIsModalOpen(true)
   }
 
+  useAntiCheat({ mode: "silent" });
 
   return (
     
-    <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+    <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 select-none">
       <header
         className='bg-white shadow-sm py-4 sticky top-0 z-10'
       >

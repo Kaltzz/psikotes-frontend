@@ -6,6 +6,7 @@ import axios from "axios";
 import { storeAnswersKraepelin } from "@/services/answers.service";
 import { div } from "framer-motion/client";
 import Modal from "@/app/components/Modal";
+import { useAntiCheat } from "@/lib/useAntiCheat";
 
 /* ═══════════════════════════════════════════════════════════
    CONSTANTS & TYPES
@@ -689,9 +690,11 @@ export default function KraeplinTest() {
       </div>
     );
   }
+
+  useAntiCheat({ mode: "silent" });
   
   return (
-    <div className="w-screen h-screen flex flex-col bg-stone-100 select-none overflow-hidden">
+    <div className="w-screen h-screen flex flex-col bg-stone-100 select-none overflow-hidden select-none">
 
       {/* ── TOP BAR ── */}
       <div className="h-13 shrink-0 flex items-center justify-between px-4 border-b border-stone-200 bg-white">

@@ -53,7 +53,7 @@ export default function AdminHasilTesHasil({ params }: { params: Promise<{ id: s
     }, [data])
 
     return (
-        <div>
+        <div className="">
             <div className="">
             <div className="mb-8 border-b pb-5 border-gray-300 flex justify-between items-center">
                 <p className="font-bold text-4xl">Hasil Tes Peserta</p>
@@ -66,7 +66,7 @@ export default function AdminHasilTesHasil({ params }: { params: Promise<{ id: s
             </div>
             <div className="flex gap-x-20">
                 {data
-                ? <div>
+                ? <div className="w-full">
                     <div className="flex gap-x-20">
                         <ul className="flex flex-col gap-y-6">
                             <li>    

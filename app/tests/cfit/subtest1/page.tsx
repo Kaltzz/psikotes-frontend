@@ -9,6 +9,7 @@ import Modal from '@/app/components/Modal';
 import Image from 'next/image';
 import { getContohCfit1Service } from '@/services/questions.service';
 import TestHeader from '@/app/components/TestHeader';
+import { useAntiCheat } from '@/lib/useAntiCheat';
 
 interface Question {
   id: number;
@@ -164,9 +165,11 @@ export default function CFITSubtest1() {
       resetState()
       setCurrentQuestion(prev => prev + 1)
     }
+
+    useAntiCheat({ mode: "silent" });
   
   return (
-    <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col">
+    <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
         <TestHeader />

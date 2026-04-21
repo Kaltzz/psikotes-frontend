@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { storeAnswersKraepelin, triggerN8n } from "@/services/answers.service";
 import { updateStatusTest } from "@/services/answers.service";
+import { useAntiCheat } from "@/lib/useAntiCheat";
 
 /* ═══════════════════════════════════════════════════════════
    CONSTANTS & TYPES
@@ -833,9 +834,11 @@ export default function KraeplinTest() {
       </div>
     );
   }
+
+  useAntiCheat({ mode: "silent" });
   
   return (
-    <div className="w-screen h-screen flex flex-col bg-stone-100 select-none overflow-hidden">
+    <div className="w-screen h-screen flex flex-col bg-stone-100 select-none overflow-hidden select-none">
 
       {/* ── TOP BAR ── */}
       <div className="h-13 shrink-0 flex items-center justify-between px-4 border-b border-stone-200 bg-white">

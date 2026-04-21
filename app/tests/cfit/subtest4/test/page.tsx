@@ -6,6 +6,7 @@ import { storeAnswersCfit, triggerN8n } from '@/services/answers.service';
 import { getSoalCfit4Service } from '@/services/questions.service';
 import { updateStatusTest } from "@/services/answers.service"
 import TestHeader from '@/app/components/TestHeader';
+import { useAntiCheat } from '@/lib/useAntiCheat';
 
 interface Question {
     id: number;
@@ -228,8 +229,10 @@ export default function CFITSubtest4Test() {
     }
     const progressPercent = ((currentQuestion + 1) / question.length) * 100;
 
+    useAntiCheat({ mode: "silent" });
+
     return(
-        <div className='font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100'>
+        <div className='font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 select-none'>
             <header
                 className='bg-white shadow-sm py-4 sticky top-0 z-10'
             >
