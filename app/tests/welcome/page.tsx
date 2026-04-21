@@ -66,7 +66,7 @@ export default function FrontPage()  {
     // })
     
     return (
-        <div>
+        <div className="select-none">
             <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
                 <header
                                 className='bg-white shadow-sm py-4 sticky top-0 z-10'

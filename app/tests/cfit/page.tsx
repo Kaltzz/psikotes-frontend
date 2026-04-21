@@ -5,7 +5,8 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import TestHeader from '@/app/components/TestHeader';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useAntiCheat } from '@/lib/useAntiCheat';
 
 function IconSeries() {
   return (
@@ -47,8 +48,10 @@ export default function CFITTest() {
     }
   }
 
+  useAntiCheat({ mode: "silent" });
+
   return (
-    <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100">
+    <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 select-none">
       {/* Header */}
       <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
         <TestHeader />

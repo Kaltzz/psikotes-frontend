@@ -8,6 +8,7 @@ import Modal from "@/app/components/Modal"
 import TestHeader from "@/app/components/TestHeader"
 import { getMbtiQuestionsService } from "@/services/questions.service"
 import { storeAnswersMbti, updateStatusTest, triggerN8n } from "@/services/answers.service"
+import { useAntiCheat } from "@/lib/useAntiCheat"
 
 interface MbtiQuestion {
     id: number,
@@ -162,8 +163,10 @@ export default function MbtiTestPage() {
         setIsModalOpen(true)
     }
 
+    useAntiCheat({ mode: "silent" });
+
     return(
-        <div className="font-sans min-h-screen bg-gray-50">
+        <div className="font-sans min-h-screen bg-gray-50 select-none">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
                 <TestHeader />
             </header>

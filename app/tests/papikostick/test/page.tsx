@@ -8,6 +8,7 @@ import Modal from "@/app/components/Modal"
 import { getPapikostickQuestionsService } from "@/services/questions.service"
 import { triggerN8n, updateStatusTest, storeAnswersPapikostik } from "@/services/answers.service"
 import TestHeader from "@/app/components/TestHeader"
+import { useAntiCheat } from "@/lib/useAntiCheat"
 
 interface PapiQuestion {
     id: number,
@@ -188,8 +189,10 @@ export default function PapiTestPage() {
         }
     }, [])
 
+    useAntiCheat({ mode: "silent" });
+
     return(
-        <div className="font-sans min-h-screen bg-gray-50">
+        <div className="font-sans min-h-screen bg-gray-50 select-none">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
                 <TestHeader />
             </header>

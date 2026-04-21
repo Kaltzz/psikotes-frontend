@@ -8,6 +8,7 @@ import Modal from "@/app/components/Modal"
 import TestHeader from "@/app/components/TestHeader"
 import { getMsdtQuestionsService } from "@/services/questions.service"
 import { storeAnswersMsdt, updateStatusTest, triggerN8n } from "@/services/answers.service"
+import { useAntiCheat } from "@/lib/useAntiCheat"
 
 
 interface MsdtQuestion {
@@ -184,8 +185,10 @@ export default function MsdtTestPage() {
         }
     }, [])
 
+    useAntiCheat({ mode: "silent" });
+
     return(
-        <div className="font-sans min-h-screen bg-gray-50">
+        <div className="font-sans min-h-screen bg-gray-50 select-none">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
                 <TestHeader />
             </header>
