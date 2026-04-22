@@ -64,6 +64,10 @@ export default function FrontPage()  {
     //     const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
     //     console.log('ini tests:', tests)
     // })
+
+    useEffect(() => {
+    document.title = "Welcome - Psychological Tests";
+  }, [])
     
     return (
         <div className="select-none">

@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowLeft, Brain } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Modal from "@/app/components/Modal"
 import TestHeader from "@/app/components/TestHeader"
 import { getMsdtQuestionsService } from "@/services/questions.service"
@@ -44,6 +44,16 @@ export default function MsdtTestPage() {
     const [isOvertime, setIsOvertime] = useState(false);
     const [overtime, setOvertime] = useState(0);
 
+    const [isPassed, setIsPassed] = useState<number[]>(() => {
+        if (typeof window === "undefined") return [];
+        const saved = localStorage.getItem("isPassed");
+        return saved ? JSON.parse(saved) : [];
+    });
+    
+    const [aktif, setAktif] = useState(1);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const msdt: MsdtQuestion[]  = [
         {
@@ -133,10 +143,7 @@ export default function MsdtTestPage() {
 
     const handleModal = () => {
         setIsModalOpen(true)
-    }
 
-    const handleNext = () => {
-        setCurrentGroup(prev => prev + 1)
     }
     
     const handleTestComplete = async() => {
@@ -144,6 +151,7 @@ export default function MsdtTestPage() {
             const setLoading = setIsLoading(true)
             const testSession = sessionStorage.getItem('testSession')
             localStorage.removeItem('tempAnswers')
+            localStorage.removeItem('isPassed')
             
             if(!testSession)
                 return alert('gagal')
@@ -187,6 +195,62 @@ export default function MsdtTestPage() {
 
     useAntiCheat({ mode: "silent" });
 
+    useEffect(() => {
+        document.title = "Test - Psychological Tests";
+    }, [])
+
+    const checkScroll = () => {
+        const el = scrollRef.current;
+        if (!el) return;
+        setCanScrollLeft(el.scrollLeft > 0);
+        setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
+    };
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const observer = new ResizeObserver(() => checkScroll());
+        observer.observe(el);
+
+        return () => observer.disconnect();
+    }, [questions]);
+
+    const scroll = (dir: "left" | "right") => {
+        const el = scrollRef.current;
+        if (!el) return;
+        el.scrollBy({ left: dir === "left" ? -120 : 120, behavior: "smooth" });
+        setTimeout(checkScroll, 300);
+    };
+
+    const handleBefore = () => {
+        setCurrentGroup(prev => Math.max(0, prev - 1))
+        setAktif((i) => Math.min(i - 1, questions.length));
+    }
+
+    const handleNext = () => {
+        setCurrentGroup(prev => prev + 1)
+        setAktif((i) => Math.min(i + 1, questions.length));
+    }
+
+    useEffect(() => {
+        // cari elemen tombol nomor yang aktif lalu scroll ke sana
+        scrollRef.current
+        ?.querySelector(`[data-nomor="${aktif}"]`)
+        ?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }, [aktif]);
+
+    useEffect(() => {
+        localStorage.setItem("isPassed", JSON.stringify(isPassed));
+    }, [isPassed]);
+
+    // setiap kali aktif berubah, simpan nomor sebelumnya ke sudahDilalui
+    useEffect(() => {
+        if (!isPassed.includes(aktif)) {
+        setIsPassed((prev) => [...prev, aktif]);
+        }
+    }, [aktif]);
+
     return(
         <div className="font-sans min-h-screen bg-gray-50 select-none">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
@@ -205,15 +269,18 @@ export default function MsdtTestPage() {
                     </div>
                     <div className="">
                         {questions.length > 0 ? (
-                            <div>
-                                <div className={`text-xl font-mono px-4 py-2 rounded-lg shadow-sm ${
-                            isOvertime ? 'bg-red-100 text-red-600' : 'bg-gray-100'
-                        }`}>
-                            {isOvertime 
-                                ? `⚠️ +${formatTime(overtime)}` 
-                                : `⏱ ${formatTime(timeLeft)}`
-                            }
-                        </div>
+                            <div className="flex items-center gap-x-4">
+                                <div className={`text-base font-mono px-4 py-2 rounded-lg shadow-sm border text-gray-800 ${
+                                    isOvertime ? 'bg-red-100 text-red-600 border-red-200' : 'bg-gray-100 border-gray-200'
+                                }`}>
+                                    {isOvertime 
+                                        ? `⚠️ +${formatTime(overtime)}` 
+                                        : `⏱ ${formatTime(timeLeft)}`
+                                    }
+                                </div>
+                                <div className=" text-base text-gray-800 font-mono px-4 py-2 rounded-lg shadow-sm bg-gray-100 border border-gray-200">
+                                    {questions.length > 0 ? (<span>Soal: {currentGroup + 1} / {questions.length}</span>):(<span>Soal: --/--</span>)}
+                                </div>
                             </div>
                         ):(
                             <div className='text-xl font-mono px-4 py-2 rounded-lg shadow-sm bg-gray-100'>
@@ -223,22 +290,70 @@ export default function MsdtTestPage() {
                     </div>
                 </div>
 
-                
+                <style>{`
+                    div::-webkit-scrollbar { display: none; }
+                `}</style>
 
                 {/* Soal */}
                 {questions.length > 0 ?(
-                <div>
-                    {/* Progress */}
-                    <div className="mb-8">
-                        <div className="text-sm text-gray-600 mb-2 text-center">
-                        Kelompok {currentGroup + 1} dari {questions.length}
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="flex flex-col gap-y-4">
+                    {/* nomor soal */}
+                    <div className='w-full h-full flex bg-gray-200 border border-gray-300 p-2 gap-x-4 rounded-xl items-center'>
+                    
+                        {/* Tombol Kiri */}
+                        <button
+                        onClick={() => scroll("left")}
+                        disabled={!canScrollLeft}
+                        className={`shrink-0 w-10 h-22 border rounded-lg bor flex items-center justify-center text-lg transition-all
+                            ${canScrollLeft
+                            ? "border-gray-400 text-gray-600 hover:bg-gray-400 cursor-pointer"
+                            : "border-gray-100 text-gray-300 cursor-not-allowed"
+                            }`}
+                        >
+                        ‹
+                        </button>
+                    
+                        {/* List Nomor */}
                         <div
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${((currentGroup + 1) / questions.length) * 100}%` }}
-                        />
+                        ref={scrollRef}
+                        onScroll={checkScroll}
+                        className="flex gap-2 overflow-x-scroll flex-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                        >
+                        {Array.from({ length: questions.length }, (_, i) => i + 1).map((nomor) => (
+                            <button
+                            key={nomor}
+                            onClick={() => {
+                                setAktif(nomor)
+                                setCurrentGroup(nomor-1)
+                            }}
+                            className={`shrink-0 p-8 border border-gray-300 rounded-lg text-sm font-medium transition-all
+                                ${aktif === nomor 
+                                ? "bg-blue-600 border-blue-600 text-white border-2"
+                                : answers.some((a) => a?.groupId === nomor && a.type)
+                                ?" bg-green-500 text-white"
+                                : isPassed.includes(nomor)
+                                ? "bg-red-500 text-white"
+                                : "bg-white text-gray-700 border border-gray-200 hover:border-indigo-300"
+                                }`
+                            }
+                            >
+                            {nomor}
+                            </button>
+                        ))}
                         </div>
+                            
+                        {/* Tombol Kanan */}
+                        <button
+                        onClick={() => scroll("right")}
+                        disabled={!canScrollRight}
+                        className={`shrink-0 w-10 h-22 border rounded-lg bor flex items-center justify-center text-lg transition-all
+                            ${canScrollRight
+                            ? "border-gray-400 text-gray-600 hover:bg-gray-400 cursor-pointer"
+                            : "border-gray-100 text-gray-300 cursor-not-allowed"
+                            }`}
+                        >
+                        ›
+                        </button>
                     </div>
 
                     <section className="mb-10">
@@ -286,11 +401,7 @@ export default function MsdtTestPage() {
 
                         <div className="flex justify-between items-center mt-7">
                                     <button
-                                        onClick={() => 
-                                        {
-                                            setCurrentGroup(prev => Math.max(0, prev - 1))
-                                            // resetState()
-                                        }}
+                                        onClick={handleBefore}
                                         disabled={currentGroup === 0}
                                         className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
                                         currentGroup === 0
@@ -302,18 +413,14 @@ export default function MsdtTestPage() {
                                     </button>
 
                                     <button
-                                        disabled= {!(answers[currentGroup])}
+                                        // disabled= {!(answers[currentGroup])}
                                         onClick={
                                         currentGroup === questions.length - 1
                                             ? handleModal
                                             : handleNext
                                         }
-                                        className={`px-4 py-2 rounded-lg bg-gradient-to-r  text-white shadow hover:scale-[1.02] active:scale-95 transition
-                                            ${
-                                            !(answers[currentGroup])
-                                                ? 'cursor-not-allowed bg-gray-400'
-                                                : 'from-blue-600 to-indigo-600'
-                                            }
+                                        className={`px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow hover:scale-[1.02] active:scale-95 transition
+                                            
                                             `}
                                     >
                                         {currentGroup === questions.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
@@ -357,8 +464,13 @@ export default function MsdtTestPage() {
                     </button>
                 ):(
                     <button 
-                        className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
                         onClick={handleTestComplete}
+                        disabled={answers.length !== questions.length}
+                        className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 ${
+                            !(answers.length !== questions.length)
+                            ? 'from-blue-600 to-indigo-600 transition'
+                            : 'cursor-not-allowed bg-gray-300'
+                            }`}
                     >
                         Selesai
                     </button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, ArrowLeft } from 'lucide-react';
@@ -79,6 +79,17 @@ export default function DISCTestPage() {
   const [timeLeft, setTimeLeft] = useState(900); 
   const [isOvertime, setIsOvertime] = useState(false);
   const [overtime, setOvertime] = useState(0);
+
+  const [isPassed, setIsPassed] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
+    const saved = localStorage.getItem("isPassed");
+    return saved ? JSON.parse(saved) : [];
+    });
+      
+  const [aktif, setAktif] = useState(1);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(()=> {
     const getDiscQuestions = async () => {
@@ -274,6 +285,62 @@ export default function DISCTestPage() {
 
   useAntiCheat({ mode: "silent" });
 
+  useEffect(() => {
+    document.title = "Test - Psychological Tests";
+  }, [])
+
+  const checkScroll = () => {
+        const el = scrollRef.current;
+        if (!el) return;
+        setCanScrollLeft(el.scrollLeft > 0);
+        setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
+    };
+
+    useEffect(() => {
+        const el = scrollRef.current;
+        if (!el) return;
+
+        const observer = new ResizeObserver(() => checkScroll());
+        observer.observe(el);
+
+        return () => observer.disconnect();
+    }, [question]);
+
+    const scroll = (dir: "left" | "right") => {
+        const el = scrollRef.current;
+        if (!el) return;
+        el.scrollBy({ left: dir === "left" ? -120 : 120, behavior: "smooth" });
+        setTimeout(checkScroll, 300);
+    };
+
+    const handleBefore = () => {
+        setCurrentGroup(prev => Math.max(0, prev - 1))
+        setAktif((i) => Math.min(i - 1, question.length));
+    }
+
+    const handleNext = () => {
+        setCurrentGroup(prev => prev + 1)
+        setAktif((i) => Math.min(i + 1, question.length));
+    }
+
+    useEffect(() => {
+        // cari elemen tombol nomor yang aktif lalu scroll ke sana
+        scrollRef.current
+        ?.querySelector(`[data-nomor="${aktif}"]`)
+        ?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }, [aktif]);
+
+    useEffect(() => {
+        localStorage.setItem("isPassed", JSON.stringify(isPassed));
+    }, [isPassed]);
+
+    // setiap kali aktif berubah, simpan nomor sebelumnya ke sudahDilalui
+    useEffect(() => {
+        if (!isPassed.includes(aktif)) {
+        setIsPassed((prev) => [...prev, aktif]);
+        }
+    }, [aktif]);
+
   return (
     <div className="font-sans min-h-screen bg-gray-50 select-none">
       {/* ✅ Sticky Header Navbar */}
@@ -312,11 +379,73 @@ export default function DISCTestPage() {
                     </div>
           </div>
 
-          
+          <style>{`
+            div::-webkit-scrollbar { display: none; }
+          `}</style>
 
           {/* Soal */}
           {question.length > 0 ? (
           <div>
+
+            {/* nomor soal */}
+                    <div className='w-full h-full flex bg-gray-200 border border-gray-300 p-2 gap-x-4 rounded-xl items-center'>
+                    
+                        {/* Tombol Kiri */}
+                        <button
+                        onClick={() => scroll("left")}
+                        disabled={!canScrollLeft}
+                        className={`shrink-0 w-10 h-22 border rounded-lg bor flex items-center justify-center text-lg transition-all
+                            ${canScrollLeft
+                            ? "border-gray-400 text-gray-600 hover:bg-gray-400 cursor-pointer"
+                            : "border-gray-100 text-gray-300 cursor-not-allowed"
+                            }`}
+                        >
+                        ‹
+                        </button>
+                    
+                        {/* List Nomor */}
+                        <div
+                        ref={scrollRef}
+                        onScroll={checkScroll}
+                        className="flex gap-2 overflow-x-scroll flex-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                        >
+                        {Array.from({ length: question.length }, (_, i) => i + 1).map((nomor) => (
+                            <button
+                            key={nomor}
+                            onClick={() => {
+                                setAktif(nomor)
+                                setCurrentGroup(nomor-1)
+                            }}
+                            className={`shrink-0 p-8 border border-gray-300 rounded-lg text-sm font-medium transition-all
+                                ${aktif === nomor 
+                                ? "bg-blue-600 border-blue-600 text-white border-2"
+                                : answers.most.some((a) => a.groupId === nomor) || answers.least.some((a) => a.groupId === nomor)
+                                ?" bg-green-500 text-white"
+                                : isPassed.includes(nomor)
+                                ? "bg-red-500 text-white"
+                                : "bg-white text-gray-700 border border-gray-200 hover:border-indigo-300"
+                                }`
+                            }
+                            >
+                            {nomor}
+                            </button>
+                        ))}
+                        </div>
+                            
+                        {/* Tombol Kanan */}
+                        <button
+                        onClick={() => scroll("right")}
+                        disabled={!canScrollRight}
+                        className={`shrink-0 w-10 h-22 border rounded-lg bor flex items-center justify-center text-lg transition-all
+                            ${canScrollRight
+                            ? "border-gray-400 text-gray-600 hover:bg-gray-400 cursor-pointer"
+                            : "border-gray-100 text-gray-300 cursor-not-allowed"
+                            }`}
+                        >
+                        ›
+                        </button>
+                    </div>
+
             {/* Progress */}
             <div className="mb-8">
               <div className="text-sm text-gray-600 mb-2 text-center">
@@ -448,7 +577,7 @@ export default function DISCTestPage() {
               isLoading
               ? 'bg-slate-400'
               : 'from-blue-600 to-indigo-600' }`}
-            onClick={()=> setIsModalOpen(false)}
+            onClick={handleBefore}
             disabled={isLoading}
           >
             Kembali
@@ -464,8 +593,13 @@ export default function DISCTestPage() {
             </button>
           ):(
           <button 
-            className='px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition'
             onClick={handleTestComplete}
+            disabled={answers.most.length !== question.length || answers.least.length !== question.length}
+            className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 ${
+              !(answers.most.length !== question.length || answers.least.length !== question.length)
+              ? 'from-blue-600 to-indigo-600 transition'
+              : 'cursor-not-allowed bg-gray-300'
+            }`}
           >
             Selesai
           </button>

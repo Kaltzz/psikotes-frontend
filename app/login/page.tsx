@@ -40,6 +40,9 @@ export default function AdminLoginForm() {
 
     const isFormValid = Object.values(formData).every(v => v.trim() !== '') && !isSubmitting
 
+    useEffect(() => {
+    document.title = "Login - Psychological Tests";
+  }, [])
 
     return(
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 px-4 py-10">

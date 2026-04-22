@@ -75,6 +75,9 @@ export default function AdminTokenTes() {
         console.log(data)
     }, [data])
 
+    useEffect(() => {
+    document.title = "Token Tes - Psychological Tests";
+  }, [])
 
     return (
         <div>

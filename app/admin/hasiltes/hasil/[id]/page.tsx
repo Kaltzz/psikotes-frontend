@@ -52,6 +52,10 @@ export default function AdminHasilTesHasil({ params }: { params: Promise<{ id: s
         console.log('ini data', data)
     }, [data])
 
+    useEffect(() => {
+    document.title = "Hasil Peserta - Psychological Tests";
+  }, [])
+
     return (
         <div className="">
             <div className="">

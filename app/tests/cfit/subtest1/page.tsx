@@ -52,6 +52,8 @@ export default function CFITSubtest1() {
     const [isChecked, setIsChecked] = useState<boolean | null>(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+
+    
   
     const questions: Question[] = [
       {
@@ -167,7 +169,10 @@ export default function CFITSubtest1() {
     }
 
     useAntiCheat({ mode: "silent" });
-  
+    
+    useEffect(() => {
+    document.title = "Instructions - Psychological Tests";
+  }, [])
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none">
       {/* Header */}
@@ -217,7 +222,7 @@ export default function CFITSubtest1() {
                 Jawab soal berikut dengan teliti dan cepat.
               </p>
               
-              <div className="flex justify-center items-center bg-white rounded-lg p-4 sm:p-8 border">
+              <div className="flex justify-center items-center bg-white rounded-lg p-4 sm:p-8 border border-gray-200">
                 <div className='w-full flex flex-col gap-3 text-gray-500'>
                   <div className='text-center'>
                     <p>Perhatikan rangkaian gambar berikut dan tentukan gambar yang tepat untuk gambar selanjutnya.</p>
