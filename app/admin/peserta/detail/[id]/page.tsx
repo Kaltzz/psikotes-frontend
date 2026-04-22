@@ -25,6 +25,10 @@ export default function AdminPesertaDetail({ params }: { params: Promise<{ id: s
     useEffect(()=>{
         console.log('ini data', data)
     }, [data])
+
+    useEffect(() => {
+    document.title = "Detail Peserta - Psychological Tests";
+  }, [])
     
     return(
         <div className="">

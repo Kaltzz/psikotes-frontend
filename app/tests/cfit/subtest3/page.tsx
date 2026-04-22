@@ -161,6 +161,10 @@ export default function CFITSubtest3() {
 
   useAntiCheat({ mode: "silent" });
 
+  useEffect(() => {
+    document.title = "Instructions - Psychological Tests";
+  }, [])
+
   return(
     <div className='font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none'>
       

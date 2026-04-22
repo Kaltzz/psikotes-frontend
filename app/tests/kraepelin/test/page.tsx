@@ -836,6 +836,10 @@ export default function KraeplinTest() {
   }
 
   useAntiCheat({ mode: "silent" });
+
+  useEffect(() => {
+    document.title = "Test - Psychological Tests";
+  }, [])
   
   return (
     <div className="w-screen h-screen flex flex-col bg-stone-100 select-none overflow-hidden select-none">

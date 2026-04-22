@@ -28,6 +28,10 @@ export default function AdminDashboard() {
         dashboard()
     }, [])
 
+    useEffect(() => {
+    document.title = "Dashboard - Psychological Tests";
+  }, [])
+
     return(
         <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">

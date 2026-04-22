@@ -1,7 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
+import Carousel from '@/app/components/Carousel';
 import { storeAnswersCfit } from '@/services/answers.service';
 import { getSoalCfit1Service } from '@/services/questions.service';
 import TestHeader from '@/app/components/TestHeader';
@@ -30,6 +31,8 @@ interface Questionz {
   options : Option[]
 }
 
+const totalSoal = 50;
+
 export default function CFITSubtest1Test() {
   const router = useRouter();
   const [timeLeft, setTimeLeft] = useState(180); // satuan detik, 3 menit
@@ -37,6 +40,17 @@ export default function CFITSubtest1Test() {
   const [question, setQuestion] = useState<Questionz[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [pageLoading, setPageLoading] = useState(false)
+
+  const [isPassed, setIsPassed] = useState<number[]>(() => {
+    if (typeof window === "undefined") return [];
+    const saved = localStorage.getItem("isPassed");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [aktif, setAktif] = useState(1);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const [answers, setAnswers] = useState<CfitAnswer[]>(
     Array.from({ length: question.length}, (_, index) => ({
@@ -80,34 +94,6 @@ export default function CFITSubtest1Test() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  // const handleAnswer = async (answer: string) => {
-  //       // {questionId, answers subtest}
-        
-
-  //       setAnswers(prev => {
-  //           const updated = [...prev];
-  //           if (prev[currentQuestion].answers[0] === answer) {
-  //             updated[currentQuestion] = {
-  //               questionId: currentQuestion + 1,
-  //               answers: [],
-  //               subtest: 1
-  //             }
-
-  //             return updated
-  //           }
-
-  //           updated[currentQuestion] = {
-  //           questionId: currentQuestion + 1,
-  //           answers: [answer],
-  //           subtest: 1
-  //           };
-
-  //           return updated; 
-  //       })
-
-  //       const tempAnswers =  answers
-  //       const  store = localStorage.setItem('tempAnswers', JSON.stringify(tempAnswers))
-  //   }
   const handleAnswer = async (answer: string) => {
     const updated = [...answers];
     
@@ -134,6 +120,7 @@ export default function CFITSubtest1Test() {
       const setLoading = setIsLoading(true)
       const testSession = sessionStorage.getItem('testSession')
       localStorage.removeItem('tempAnswers')
+      localStorage.removeItem('isPassed')
       
       if(!testSession) {
         return (console.log('gagal'))
@@ -180,6 +167,62 @@ export default function CFITSubtest1Test() {
 
   useAntiCheat({ mode: "silent" });
 
+  useEffect(() => {
+    document.title = "Test - Psychological Tests";
+  }, [])
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth);
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const observer = new ResizeObserver(() => checkScroll());
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [question]);
+
+  const scroll = (dir: "left" | "right") => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -120 : 120, behavior: "smooth" });
+    setTimeout(checkScroll, 300);
+  };
+
+  const handleBefore = () => {
+    setCurrentQuestion(prev => Math.max(0, prev - 1))
+    setAktif((i) => Math.min(i - 1, question.length));
+  }
+
+  const handleNext = () => {
+    setCurrentQuestion(prev => prev + 1)
+    setAktif((i) => Math.min(i + 1, question.length));
+  }
+
+  useEffect(() => {
+    // cari elemen tombol nomor yang aktif lalu scroll ke sana
+    scrollRef.current
+      ?.querySelector(`[data-nomor="${aktif}"]`)
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [aktif]);
+
+  useEffect(() => {
+    localStorage.setItem("isPassed", JSON.stringify(isPassed));
+  }, [isPassed]);
+
+  // setiap kali aktif berubah, simpan nomor sebelumnya ke sudahDilalui
+  useEffect(() => {
+    if (!isPassed.includes(aktif)) {
+      setIsPassed((prev) => [...prev, aktif]);
+    }
+  }, [aktif]);
+
   return (
     
     <div className="font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 select-none">
@@ -206,11 +249,73 @@ export default function CFITSubtest1Test() {
             </div>
             
           </div>
+          
+          <style>{`
+            div::-webkit-scrollbar { display: none; }
+          `}</style>
 
           {/* Soal */}
           {question.length > 0 ? (
-            <div>
-              <div className="border rounded-2xl bg-white shadow-sm p-3 mb-4 flex flex-col gap-y-4">
+            <div className='flex flex-col gap-y-4'>
+              {/* nomor soal */}
+              <div className='w-full h-full flex bg-gray-200 border border-gray-300 p-2 gap-x-4 rounded-xl items-center'>
+              
+                {/* Tombol Kiri */}
+                <button
+                  onClick={() => scroll("left")}
+                  disabled={!canScrollLeft}
+                  className={`shrink-0 w-10 h-22 border rounded-lg bor flex items-center justify-center text-lg transition-all
+                    ${canScrollLeft
+                      ? "border-gray-400 text-gray-600 hover:bg-gray-400 cursor-pointer"
+                      : "border-gray-100 text-gray-300 cursor-not-allowed"
+                    }`}
+                >
+                  ‹
+                </button>
+              
+                {/* List Nomor */}
+                <div
+                  ref={scrollRef}
+                  onScroll={checkScroll}
+                  className="flex gap-2 overflow-x-scroll flex-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                >
+                  {Array.from({ length: question.length }, (_, i) => i + 1).map((nomor) => (
+                    <button
+                      key={nomor}
+                      onClick={() => {
+                        setAktif(nomor)
+                        setCurrentQuestion(nomor-1)
+                      }}
+                      className={`shrink-0 p-8 border border-gray-300 rounded-lg text-sm font-medium transition-all
+                        ${aktif === nomor 
+                          ? "bg-blue-600 border-blue-600 text-white border-2"
+                          : answers.some((a) => a.questionId === nomor && a.answers.length > 0)
+                          ?" bg-green-500 text-white"
+                          : isPassed.includes(nomor)
+                          ? "bg-red-500 text-white"
+                          : "bg-white text-gray-700 border border-gray-200 hover:border-indigo-300"
+                        }`
+                      }
+                    >
+                      {nomor}
+                    </button>
+                  ))}
+                </div>
+                    
+                {/* Tombol Kanan */}
+                <button
+                  onClick={() => scroll("right")}
+                  disabled={!canScrollRight}
+                  className={`shrink-0 w-10 h-22 border rounded-lg bor flex items-center justify-center text-lg transition-all
+                    ${canScrollRight
+                      ? "border-gray-400 text-gray-600 hover:bg-gray-400 cursor-pointer"
+                      : "border-gray-100 text-gray-300 cursor-not-allowed"
+                    }`}
+                >
+                  ›
+                </button>
+              </div>
+              <div className="border border-gray-200 rounded-2xl bg-white shadow-sm p-3 mb-4 flex flex-col gap-y-4">
             <p className='text-center text-gray-600 italic '>Perhatikan rangkaian gambar berikut dan tentukan gambar yang tepat untuk gambar selanjutnya.</p>
             <div className="flex justify-center md:grid-cols-1 gap-3 mb-2">
                 <div
@@ -256,7 +361,7 @@ export default function CFITSubtest1Test() {
           {/* Navigasi Soal */}
           <div className="flex justify-between items-center">
             <button
-              onClick={() => setCurrentQuestion(prev => Math.max(0, prev - 1))}
+              onClick={handleBefore}
               disabled={currentQuestion === 0}
               className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
                 currentQuestion === 0
@@ -271,7 +376,7 @@ export default function CFITSubtest1Test() {
               onClick={
                 currentQuestion === question.length - 1
                   ? handleModal
-                  : () => setCurrentQuestion(prev => prev + 1)
+                  : handleNext
               }
               className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition"
             > 

@@ -35,6 +35,10 @@ export default function AdminPeserta() {
         console.log(data)
     }, [data])
 
+    useEffect(() => {
+    document.title = "Peserta - Psychological Tests";
+  }, [])
+
     return (
         <div>
             <p className="mb-12 text-3xl font-bold border-b pb-5 border-gray-200">List Peserta</p>

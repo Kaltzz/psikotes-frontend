@@ -43,6 +43,10 @@ export default function ResultPage() {
   //   )
   // }
 
+  useEffect(() => {
+    document.title = "Result - Psychological Tests";
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-slate-100">
       {/* Header */}

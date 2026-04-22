@@ -75,6 +75,10 @@ export default function TestForm() {
       }
   }
 
+  useEffect(() => {
+    document.title = "Registration - Psychological Tests";
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 px-4 py-8">
       <div className="relative w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden border border-indigo-100">

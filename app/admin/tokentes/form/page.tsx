@@ -94,6 +94,10 @@ export default function AdminForm() {
             getForm() 
     } , [])
 
+    useEffect(() => {
+    document.title = "Form Token Tes - Psychological Tests";
+  }, [])
+
     return (
         <div>
             <p className="mb-12 text-3xl font-bold border-b pb-5 border-gray-200">Buat Token</p>

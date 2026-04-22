@@ -112,6 +112,10 @@ const KraepelinInstructionPage: React.FC = () => {
 
   useAntiCheat({ mode: "silent" });
 
+  useEffect(() => {
+    document.title = "Instructions - Psychological Tests";
+  }, [])
+
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 select-none">
       {/* Header */}

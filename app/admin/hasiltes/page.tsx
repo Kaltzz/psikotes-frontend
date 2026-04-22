@@ -45,6 +45,10 @@ export default function AdminManajemenTes() {
         console.log('ini hasil:', hasilPeserta)
     }, [hasilPeserta])
 
+    useEffect(() => {
+    document.title = "Hasil Tes - Psychological Tests";
+  }, [])
+
     return (
         <div className="">
             {/* <div className="flex w-full border border-gray-200 rounded-lg">
