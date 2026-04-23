@@ -367,15 +367,18 @@ export default function DISCTestPage() {
             </div>
             <div className="">
                         {question.length > 0 ? (
-                            <div>
-                                <div className={`text-xl font-mono px-4 py-2 rounded-lg shadow-sm ${
-                            isOvertime ? 'bg-red-100 text-red-600' : 'bg-gray-100'
+                            <div className='flex items-center gap-x-4'>
+                                <div className={`text-base font-mono px-4 py-2 rounded-lg shadow-sm border text-gray-800 ${
+                            isOvertime ? 'bg-red-100 text-red-600 border-red-200' : 'bg-gray-100 border-gray-200'
                         }`}>
                             {isOvertime 
                                 ? `⚠️ +${formatTime(overtime)}` 
                                 : `⏱ ${formatTime(timeLeft)}`
                             }
                         </div>
+                        <div className=" text-base text-gray-800 font-mono px-4 py-2 rounded-lg shadow-sm bg-gray-100 border border-gray-200">
+                                    {question.length > 0 ? (<span>Soal: {currentGroup + 1} / {question.length}</span>):(<span>Soal: --/--</span>)}
+                                </div>
                             </div>
                         ):(
                             <div className='text-xl font-mono px-4 py-2 rounded-lg shadow-sm bg-gray-100'>
@@ -425,7 +428,7 @@ export default function DISCTestPage() {
                             className={`shrink-0 p-8 border border-gray-300 rounded-lg text-sm font-medium transition-all
                                 ${aktif === nomor 
                                 ? "bg-blue-600 border-blue-600 text-white border-2"
-                                : answers.most.some((a) => a.groupId === nomor) || answers.least.some((a) => a.groupId === nomor)
+                                : answers.most.filter(Boolean).some((a) => a.groupId === nomor) || answers.least.filter(Boolean).some((a) => a.groupId === nomor)
                                 ?" bg-green-500 text-white"
                                 : isPassed.includes(nomor)
                                 ? "bg-red-500 text-white"
@@ -545,22 +548,17 @@ export default function DISCTestPage() {
             </button>
 
             <button
-            disabled={!(answers.most[currentGroup] && answers.least[currentGroup])}
+            // disabled={!(answers.most[currentGroup] && answers.least[currentGroup])}
               onClick={
                 currentGroup === question.length - 1
                   ? handleModal
-                  : () => setCurrentGroup(prev => prev + 1)
+                  : handleNext
                 }
-              className={`px-3 sm:px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
-                !(answers.most[currentGroup] && answers.least[currentGroup])
-                ? 'cursor-not-allowed bg-gray-400'
-                : 'from-blue-600 to-indigo-600'
-
-                }`}
+              className={`px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow hover:scale-[1.02] active:scale-95 transition
+                                            
+                                            `}
             >
-              {currentGroup !== question.length - 1 
-              ? 'Soal Berikutnya →' 
-              : 'Selesai Tes'}
+              {currentGroup === question.length - 1 ? 'Selesai' : 'Soal Berikutnya →'}
             </button>
           </div>
           </div>
