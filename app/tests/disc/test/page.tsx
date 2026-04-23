@@ -220,12 +220,12 @@ export default function DISCTestPage() {
       else {
           if (type === 'most') {
               updated.most[currentGroup] = {
-                  groupId: currentGroup,
+                  groupId: currentGroup + 1,
                   questionIndex: questionIndex,
               };
           } else {
               updated.least[currentGroup] = {
-                  groupId: currentGroup,
+                  groupId: currentGroup + 1,
                   questionIndex: questionIndex,
               };
           }
@@ -241,6 +241,7 @@ export default function DISCTestPage() {
       const setLoading = setIsLoading(true)
       const testSession = sessionStorage.getItem('testSession')
       localStorage.removeItem('tempAnswers')
+      localStorage.removeItem('isPassed')
       if(!testSession) {
         return (console.log('gagal'))
       }            
