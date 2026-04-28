@@ -13,13 +13,13 @@ export default function AdminLayout({children}: Readonly<{
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     
     const toggleSidebar = () => {
-    setIsSidebarOpen(prev => !prev);
-  };
+        setIsSidebarOpen(prev => !prev);
+    };
     
     return(
-        <div className='font-sans flex flex-row bg-gradient-to-br from-red-50 to-indigo-100 w-full text-slate-800'>
+        <div className='font-sans flex flex-row bg-[#DFDFDE] w-full h-screen overflow-hidden text-slate-800'>
             {/* kiri */}
-            <div className='min-h-screen'>
+            <div className='h-screen'>
                 <Sidebar 
                     isOpen={isSidebarOpen}
                     toggle={toggleSidebar}
@@ -27,7 +27,7 @@ export default function AdminLayout({children}: Readonly<{
             </div>
             
             {/* kanan */}
-            <div className='flex-1 container mx-auto px-4 py-3'>
+            <div className='flex-1 overflow-y-auto px-4 py-3'>
                 <Burger
                     toggle={toggleSidebar}
                 />

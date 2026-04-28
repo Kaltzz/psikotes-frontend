@@ -41,7 +41,9 @@ export default function AdminPeserta() {
 
     return (
         <div>
-            <p className="mb-12 text-3xl font-bold border-b pb-5 border-gray-200">List Peserta</p>
+            <div className="mb-15 text-4xl font-extrabold">
+                <p>PESERTA</p>
+            </div>
             <div className="rounded-lg overflow-hidden">
                 <table className="border-collapse w-full">
                     <thead className="border-b border-gray-300 bg-gray-300 p-4 text-left text-base">

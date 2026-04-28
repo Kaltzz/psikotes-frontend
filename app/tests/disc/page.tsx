@@ -11,6 +11,7 @@ import { useAntiCheat } from '@/lib/useAntiCheat';
 import { useClipboardPermissionGuard } from '@/lib/useClipboardPermissionGuard';
 import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
+import { useBackGuard } from '@/lib/useBackGuard';
 
 interface WordGroup {
   id: number;
@@ -77,6 +78,8 @@ function IconPersonality() {
 }
 
 export default function DISCInstructionPage() {
+  useBackGuard("Data belum tersimpan. Yakin ingin keluar?");
+  
   const router = useRouter();
   const [currentGroup, setCurrentGroup] = useState(0);
   const [answers, setAnswers] = useState<{

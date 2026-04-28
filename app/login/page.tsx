@@ -52,7 +52,7 @@ export default function AdminLoginForm() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 px-4 py-10">
       <div className="relative w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden border border-indigo-100">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center py-4">
+        <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white text-center py-4">
           <h1 className="text-xl font-bold tracking-wide">DASHBOARD ADMIN</h1>
           <p className="text-xs opacity-90">tes psikotes</p>
         </div>

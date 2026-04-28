@@ -13,6 +13,7 @@ import { useAntiCheat } from '@/lib/useAntiCheat';
 import { useClipboardPermissionGuard } from '@/lib/useClipboardPermissionGuard';
 import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
+import { useBackGuard } from '@/lib/useBackGuard';
 
 interface WordGroup {
   id: number;
@@ -32,6 +33,7 @@ interface DiscQuestion {
 }
 
 export default function DISCTestPage() {
+  useBackGuard("Data belum tersimpan. Yakin ingin keluar?");
 
   const discQuestion:DiscQuestion[] = [
     {

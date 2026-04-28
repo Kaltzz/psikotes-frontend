@@ -34,6 +34,9 @@ export default function AdminDashboard() {
 
     return(
         <div>
+            <div className="mb-15 text-4xl font-extrabold">
+                <p>DASHBOARD</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div className="bg-gray-300 p-4 rounded-xl flex flex-col gap-y-6">
                     <div className="text-lg font-semibold">Total Token Aktif</div>
