@@ -51,6 +51,9 @@ export default function AdminManajemenTes() {
 
     return (
         <div className="">
+            <div className="mb-15 text-4xl font-extrabold">
+                <p>HASIL TES</p>
+            </div>
             {/* <div className="flex w-full border border-gray-200 rounded-lg">
                 <button className="w-2/12 py-2 flex gap-x-3 justify-center hover:bg-gray-300">
                     <p>Filter</p>

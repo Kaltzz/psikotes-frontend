@@ -81,7 +81,10 @@ export default function AdminTokenTes() {
 
     return (
         <div>
-            <div className="mb-6">
+            <div className="mb-15 text-4xl font-extrabold">
+                <p>TOKEN TES</p>
+            </div>
+            <div className="mb-6 flex">
                 <Link
                     href="/admin/tokentes/form"
                     className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
@@ -91,13 +94,13 @@ export default function AdminTokenTes() {
             </div>
             <div className="rounded-lg overflow-hidden">
                 <table className="border-collapse w-full">
-                    <thead className="border-b border-gray-300 bg-gray-300 p-4 text-left text-base">
+                    <thead className="border-b border-gray-200 bg-gray-200 p-4 text-left text-base">
                         <tr>
-                            <th className="py-2 px-4">Token</th>
-                            <th className="py-2 px-4">Jenis Tes</th>
-                            <th className="py-2 px-4">Kuota</th>
-                            <th className="py-2 px-4">Status</th>
-                            <th className="py-2 px-4">Aksi</th>
+                            <th className="py-4 px-4">Token</th>
+                            <th className="py-4 px-4">Jenis Tes</th>
+                            <th className="py-4 px-4">Kuota</th>
+                            <th className="py-4 px-4">Status</th>
+                            <th className="py-4 px-4">Aksi</th>
                         </tr>
                         
                     </thead>
@@ -109,11 +112,11 @@ export default function AdminTokenTes() {
                                 key={item.token}
                                 className="border-b border-gray-300 text-base"
                             >
-                                <td className="py-2 px-2">
+                                <td className="py-4 px-2">
                                     <input type="text" className="" value={item.token} readOnly/>
                                 </td>
                                 
-                                <td className="py-2 px-4">
+                                <td className="py-4 px-4">
                                     {item.tests.map(list=> (
                                     <ul
                                     key={list}
@@ -123,8 +126,8 @@ export default function AdminTokenTes() {
                                     </ul>
                                 ))}
                                 </td>
-                                <td className="py-2 px-4">{item.usedCount}/{item.kuota}</td>
-                                <td className="py-2 px-4">
+                                <td className="py-4 px-4">{item.usedCount}/{item.kuota}</td>
+                                <td className="py-4 px-4">
                                     <div className={`text-center text-white rounded-lg py-0.5 ${
                                         item.isActive
                                         ? 'bg-green-500'
@@ -133,7 +136,7 @@ export default function AdminTokenTes() {
                                         {item.isActive ? 'Aktif': 'Tidak Aktif'}
                                     </div>
                                 </td>
-                                <td className="py-2 px-4 h-full">
+                                <td className="py-4 px-4 h-full">
                                     <div className="flex gap-x-4 items-center">
                                         <button 
                                             className="flex hover:bg-gray-300 bg-gray-200 px-2 py-1 rounded-lg"
