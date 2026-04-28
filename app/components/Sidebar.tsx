@@ -98,16 +98,15 @@ export default function Sidebar({isOpen, toggle}: SidebarProps) {
 
         <div 
             className={
-                
-                `bg-[#DFDFDE] font-sans min-h-screen flex ${
+                `bg-[#DFDFDE] font-sans min-h-screen flex  ${
                 isOpen === true
                 ?`block`
                 :`hidden md:block`
                 }`
-                
             }
         >
-
+            <div className="flex flex-col min-h-screen justify-between ">
+            <div>
             <div className=" border-gray-200 mb-10 py-5 mx-4">
                 <p className=" px-8 text-2xl font-bold ">TES PSIKOTES</p>
             </div>
@@ -155,7 +154,9 @@ export default function Sidebar({isOpen, toggle}: SidebarProps) {
                 })}
                 
             </ul>
-            <button className="text-left px-4 flex gap-x-3 text-lg font-semibold hover:bg-gray-200 mb-4 py-4 rounded-lg"
+            </div>
+            
+            <button className="text-left px-10 flex gap-x-3 text-lg font-semibold hover:bg-gray-200 mb-4 py-4 rounded-lg"
                     onClick={handleModal}
                 >
                     <Image 
@@ -165,7 +166,9 @@ export default function Sidebar({isOpen, toggle}: SidebarProps) {
                         alt=""
                     />
                     Logout
-                </button>
+            </button>
+            </div>
+            
         </div>
         <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
             <p className='text-gray-800'>Apakah anda ingin keluar dari akun ini?</p>
