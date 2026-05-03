@@ -235,6 +235,19 @@ export default function MbtiTestPage() {
 
     const { showModal } = useClipboardPermissionGuard()
     const { modalProps } = useBackGuard();
+
+    const testsCount = () => {
+        const testSession = sessionStorage.getItem('testSession')
+        if (!testSession) {
+            return console.log('gagal')
+        }
+        
+        const testSessionParsed = JSON.parse(testSession)
+        const count = testSessionParsed.currentIndex + 1
+
+        return count
+    }
+
     return(
         <div className="font-sans min-h-screen bg-gray-50 select-none">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
@@ -246,7 +259,7 @@ export default function MbtiTestPage() {
                 {/* Header Info */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-gray-800">Instruksi</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">Instruksi <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span></h2>
                     <p className="text-gray-500 text-sm">
                         Pilih kalimat yang paling menggambarkan diri Anda.
                     </p>

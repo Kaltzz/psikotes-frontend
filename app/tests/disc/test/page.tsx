@@ -300,6 +300,18 @@ export default function DISCTestPage() {
         }
     }, [aktif]);
 
+    const testsCount = () => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      return console.log('gagal')
+    }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    const count = testSessionParsed.currentIndex + 1
+
+    return count
+  }
+
   return (
     <div className="font-sans min-h-screen bg-gray-50 select-none">
       {/* ✅ Sticky Header Navbar */}
@@ -312,7 +324,7 @@ export default function DISCTestPage() {
           {/* Header Info */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
             <div className="text-center md:text-left">
-              <h2 className="text-2xl font-bold text-gray-800">Instruksi</h2>
+              <h2 className="text-2xl font-bold text-gray-800">Instruksi <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span></h2>
               <p className="text-gray-500 text-sm">
                 Pilih pernyataan yang <span className="text-green-600 font-semibold">PALING SESUAI (P)</span> dan{' '}
                 <span className="text-red-600 font-semibold">KURANG SESUAI (K)</span>dalam menggambarkan diri Anda.
