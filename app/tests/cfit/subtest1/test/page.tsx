@@ -256,17 +256,18 @@ export default function CFITSubtest1Test() {
 
   const { showModal } = useClipboardPermissionGuard();
 
-  const testsCount = () => {
+  const [testsCount, setTestsCount] = useState<number | null>(null)
+
+  useEffect(() => {
     const testSession = sessionStorage.getItem('testSession')
     if (!testSession) {
-      return console.log('gagal')
+      console.log('gagal')
+      return
     }
     
     const testSessionParsed = JSON.parse(testSession)
-    const count = testSessionParsed.currentIndex + 1
-
-    return count
-  }
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
 
 
   return (
@@ -282,7 +283,7 @@ export default function CFITSubtest1Test() {
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-3">
             <div>
-              <h1 className="text-2xl font-bold text-slate-800 text-center sm:text-left">SUBTES 1 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span></h1>
+              <h1 className="text-2xl font-bold text-slate-800 text-center sm:text-left">SUBTES 1 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span></h1>
               <p className="text-sm text-slate-500">Temukan pola urutan pada rangkaian gambar berikut.</p>
             </div>
             <div className='flex gap-x-3'>
