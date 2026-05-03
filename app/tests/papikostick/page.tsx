@@ -205,17 +205,18 @@ export default function PapiInstructionPage() {
     const { showModal } = useClipboardPermissionGuard()
     const { modalProps } = useBackGuard();
 
-    const testsCount = () => {
-        const testSession = sessionStorage.getItem('testSession')
-        if (!testSession) {
-        return console.log('gagal')
-        }
-        
-        const testSessionParsed = JSON.parse(testSession)
-        const count = testSessionParsed.currentIndex + 1
+    const [testsCount, setTestsCount] = useState<number | null>(null)
 
-        return count
+  useEffect(() => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      console.log('gagal')
+      return
     }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
 
     return(
         <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 select-none">
@@ -251,7 +252,7 @@ export default function PapiInstructionPage() {
                     </ol>
                     </nav> */}
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                    Tes Psikotes <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span>
+                    Tes Psikotes <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
                     </h2>
                 </div>
 

@@ -319,17 +319,18 @@ export default function KraeplinTest() {
     document.title = "Example - Psychological Tests";
   }, [])
 
-  const testsCount = () => {
-      const testSession = sessionStorage.getItem('testSession')
-      if (!testSession) {
-        return console.log('gagal')
-      }
-        
-    const testSessionParsed = JSON.parse(testSession)
-    const count = testSessionParsed.currentIndex + 1
+  const [testsCount, setTestsCount] = useState<number | null>(null)
 
-    return count
-  }
+  useEffect(() => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      console.log('gagal')
+      return
+    }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
   
   useEffect(() => {
     setIsClient(true);
@@ -720,7 +721,7 @@ export default function KraeplinTest() {
       {/* ── TOP BAR ── */}
       <div className="h-13 shrink-0 flex items-center justify-between px-4 border-b border-stone-200 bg-white">
         <h1 className="text-xs font-semibold tracking-widest text-stone-500 uppercase">
-          Tes Psikotes <span className='text-xs text-stone-500 font-semibold ml-3'>(TES KE-{testsCount()})</span>
+          Tes Psikotes <span className='text-xs text-stone-500 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
         </h1>
 
         <div className="flex items-center gap-x-3">

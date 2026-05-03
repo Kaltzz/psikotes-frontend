@@ -263,17 +263,18 @@ export default function PapiTestPage() {
 
     const { showModal } = useClipboardPermissionGuard()
 
-    const testsCount = () => {
-        const testSession = sessionStorage.getItem('testSession')
-        if (!testSession) {
-            return console.log('gagal')
-        }
-        
-        const testSessionParsed = JSON.parse(testSession)
-        const count = testSessionParsed.currentIndex + 1
+    const [testsCount, setTestsCount] = useState<number | null>(null)
 
-        return count
+  useEffect(() => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      console.log('gagal')
+      return
     }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
 
     return(
         <div className="font-sans min-h-screen bg-gray-50 select-none">
@@ -286,7 +287,7 @@ export default function PapiTestPage() {
                 {/* Header Info */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                     <div className="text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-gray-800">Instruksi <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span></h2>
+                    <h2 className="text-2xl font-bold text-gray-800">Instruksi <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span></h2>
                     <p className="text-gray-500 text-sm">
                         Pilih kalimat yang paling menggambarkan diri Anda.
                     </p>

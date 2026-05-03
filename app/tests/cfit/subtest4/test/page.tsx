@@ -304,17 +304,18 @@ export default function CFITSubtest4Test() {
         }
     }, [aktif]);
 
-    const testsCount = () => {
-        const testSession = sessionStorage.getItem('testSession')
-        if (!testSession) {
-            return console.log('gagal')
-        }
-            
-        const testSessionParsed = JSON.parse(testSession)
-        const count = testSessionParsed.currentIndex + 1
+    const [testsCount, setTestsCount] = useState<number | null>(null)
 
-        return count
+  useEffect(() => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      console.log('gagal')
+      return
     }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
 
     return(
         <div className='font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 select-none'>
@@ -328,7 +329,7 @@ export default function CFITSubtest4Test() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-800 text-center md:text-left">SUBTES 4 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span></h1>
+                        <h1 className="text-2xl font-bold text-slate-800 text-center md:text-left">SUBTES 4 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span></h1>
                         <p className="text-sm text-slate-500 text-center md:text-left">Jawab soal berikut dengan teliti dan cepat.</p>
                     </div>
                     <div className='flex gap-x-3'>

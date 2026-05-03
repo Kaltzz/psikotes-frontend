@@ -168,17 +168,18 @@ export default function CFITSubtest4() {
 
   const { showModal } = useClipboardPermissionGuard();
 
-  const testsCount = () => {
-      const testSession = sessionStorage.getItem('testSession')
-      if (!testSession) {
-        return console.log('gagal')
-      }
-        
-    const testSessionParsed = JSON.parse(testSession)
-    const count = testSessionParsed.currentIndex + 1
+  const [testsCount, setTestsCount] = useState<number | null>(null)
 
-    return count
-  }
+  useEffect(() => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      console.log('gagal')
+      return
+    }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
 
     return(
         <div className='font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none'>
@@ -199,7 +200,7 @@ export default function CFITSubtest4() {
                 <section className="mb-10">
                     <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                     <ListChecks className="text-blue-600" size={22} />
-                    Petunjuk Subtes 4 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()}) </span>
+                    Petunjuk Subtes 4 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
                     </h2>
 
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">

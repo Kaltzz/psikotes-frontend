@@ -180,17 +180,18 @@ const handleAnswer = (option: string) => {
 
   const { showModal } = useClipboardPermissionGuard();
 
-  const testsCount = () => {
+  const [testsCount, setTestsCount] = useState<number | null>(null)
+
+  useEffect(() => {
     const testSession = sessionStorage.getItem('testSession')
     if (!testSession) {
-      return console.log('gagal')
+      console.log('gagal')
+      return
     }
     
     const testSessionParsed = JSON.parse(testSession)
-    const count = testSessionParsed.currentIndex + 1
-
-    return count
-  }
+    setTestsCount(testSessionParsed.currentIndex + 1)
+  }, [])
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none">
@@ -211,7 +212,7 @@ const handleAnswer = (option: string) => {
           <section className="mb-10">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
               <ListChecks className="text-blue-600" size={22} />
-              Petunjuk Subtes 2 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span>
+              Petunjuk Subtes 2 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
             </h2>
 
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
