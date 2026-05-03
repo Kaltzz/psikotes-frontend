@@ -119,10 +119,23 @@ export default function MsdtInstructionPage() {
     useAntiCheat({ mode: "silent" });
 
     useEffect(() => {
-    document.title = "Instructions - Psychological Tests";
-  }, [])
+        document.title = "Instructions - Psychological Tests";
+    }, [])
+
     const { modalProps } = useBackGuard();
     const { showModal } = useClipboardPermissionGuard()
+
+    const testsCount = () => {
+        const testSession = sessionStorage.getItem('testSession')
+        if (!testSession) {
+            return console.log('gagal')
+        }
+        
+        const testSessionParsed = JSON.parse(testSession)
+        const count = testSessionParsed.currentIndex + 1
+
+        return count
+    }
 
     return(
         <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 select-none">
@@ -149,7 +162,7 @@ export default function MsdtInstructionPage() {
                     
                     </nav>
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                    Tes Psikotes
+                    Tes Psikotes <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span>
                     </h2>
                     {/* <p className="mt-2 text-sm text-slate-600">
                         Tes untuk mengidentifikasi kebutuhan, motivasi, dan gaya perilaku individu dalam lingkungan kerja.

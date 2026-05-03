@@ -60,7 +60,19 @@ export default function CFITTest() {
     document.title = "Instructions - Psychological Tests";
   }, [])
 
-  const { showModal } = useClipboardPermissionGuard();
+  const { showModal } = useClipboardPermissionGuard(); 
+
+  const testsCount = () => {
+    const testSession = sessionStorage.getItem('testSession')
+    if (!testSession) {
+      return console.log('gagal')
+    }
+    
+    const testSessionParsed = JSON.parse(testSession)
+    const count = testSessionParsed.currentIndex + 1
+
+    return count
+  }
 
   return (
     
@@ -98,7 +110,7 @@ export default function CFITTest() {
             <div className="p-6 md:p-8">
               {/* Breadcrumb / Title */}
               <div className="mb-4">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center md:text-left">TES PSIKOTES</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center md:text-left">TES PSIKOTES <span className='text-2xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount()})</span></h2>
               </div>
               
               {/* Info box */}
