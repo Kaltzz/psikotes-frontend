@@ -489,11 +489,12 @@ export default function MbtiTestPage() {
                     ):(
                         <button 
                             onClick={handleTestComplete}
-                            disabled={answers.length !== questions.length}
+                            disabled={((answers as any[]).includes(undefined) || (answers as any[]).includes(null) ) || answers.length !== questions.length}
+                            // disabled={answers.length !== questions.length}
                             className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 ${
-                                !(answers.length !== questions.length)
-                                ? 'from-blue-600 to-indigo-600 transition'
-                                : 'cursor-not-allowed bg-gray-300'
+                                ((answers as any[]).includes(undefined) || (answers as any[]).includes(null)) || ((answers.length !== questions.length))
+                                ? ' cursor-not-allowed bg-gray-300'
+                                : 'from-blue-600 to-indigo-600 transition'
                             }`}
                         >
                             Selesai
