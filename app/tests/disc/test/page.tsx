@@ -397,7 +397,7 @@ export default function DISCTestPage() {
                             className={`shrink-0 p-8 border border-gray-300 rounded-lg text-sm font-medium transition-all
                                 ${aktif === nomor 
                                 ? "bg-blue-600 border-blue-600 text-white border-2"
-                                : answers.most.filter(Boolean).some((a) => a.groupId === nomor) || answers.least.filter(Boolean).some((a) => a.groupId === nomor)
+                                : answers.most.filter(Boolean).some((a) => a.groupId === nomor) && answers.least.filter(Boolean).some((a) => a.groupId === nomor)
                                 ?" bg-green-500 text-white"
                                 : isPassed.includes(nomor)
                                 ? "bg-red-500 text-white"
