@@ -450,7 +450,7 @@ export default function DISCInstructionPage() {
                                     }
                                     className={`px-4 sm:px-5 py-2  rounded-lg bg-gradient-to-r text-xs sm:text-sm from-blue-600 to-indigo-600 text-white font-medium shadow hover:scale-[1.02] active:scale-95 transition ${
                                       !(answers.most[currentGroup] && answers.least[currentGroup])
-                                        ? 'cursor-not-allowed bg-gray-400'
+                                        ? ' bg-gray-400'
                                         : 'from-blue-600 to-indigo-600'
                                       }`}
                                 >
