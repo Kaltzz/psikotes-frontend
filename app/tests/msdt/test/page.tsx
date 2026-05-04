@@ -61,6 +61,10 @@ export default function MsdtTestPage() {
     const [canScrollRight, setCanScrollRight] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const [isBlank, setIsBlank] = useState<number[]>([])
+
+    
+
     const msdt: MsdtQuestion[]  = [
         {
             id: 1,
@@ -272,6 +276,16 @@ export default function MsdtTestPage() {
     setTestsCount(testSessionParsed.currentIndex + 1)
   }, [])
 
+  useEffect(()=> {
+        const isPassed = localStorage.getItem('isPassed')
+        if (!isPassed) 
+            return (console.log('gagal'))
+        const passedArray = JSON.parse(isPassed)
+        const questions = Array.from({length: Math.max(...passedArray)}, (v, i)=> i+1)
+        const hasil = questions.filter(item => !passedArray.includes(item));
+        setIsBlank(hasil)
+    }, [isPassed])
+
     return(
         <div className="font-sans min-h-screen bg-gray-50 select-none">
             <header className="bg-white shadow-sm py-4 sticky top-0 z-10">
@@ -353,7 +367,7 @@ export default function MsdtTestPage() {
                                 ? "bg-blue-600 border-blue-600 text-white border-2"
                                 : answers.some((a) => a?.groupId === nomor && a.type)
                                 ?" bg-green-500 text-white"
-                                : isPassed.includes(nomor)
+                                : isPassed.includes(nomor) || isBlank.includes(nomor)
                                 ? "bg-red-500 text-white"
                                 : "bg-white text-gray-700 border border-gray-200 hover:border-indigo-300"
                                 }`

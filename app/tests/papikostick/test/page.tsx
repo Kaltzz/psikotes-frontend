@@ -50,15 +50,17 @@ export default function PapiTestPage() {
     const [overtime, setOvertime] = useState(0);
 
     const [isPassed, setIsPassed] = useState<number[]>(() => {
-                if (typeof window === "undefined") return [];
-                const saved = localStorage.getItem("isPassed");
-                return saved ? JSON.parse(saved) : [];
-            });
+        if (typeof window === "undefined") return [];
+        const saved = localStorage.getItem("isPassed");
+        return saved ? JSON.parse(saved) : [];
+    });
+
+    const [isBlank, setIsBlank] = useState<number[]>([])
             
-            const [aktif, setAktif] = useState(1);
-            const [canScrollLeft, setCanScrollLeft] = useState(false);
-            const [canScrollRight, setCanScrollRight] = useState(false);
-            const scrollRef = useRef<HTMLDivElement>(null);
+    const [aktif, setAktif] = useState(1);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const papi: PapikostickQuestion[]  = [
         {
@@ -261,6 +263,16 @@ export default function PapiTestPage() {
         }
     }, [aktif]);
 
+    useEffect(()=> {
+        const isPassed = localStorage.getItem('isPassed')
+        if (!isPassed) 
+            return (console.log('gagal'))
+        const passedArray = JSON.parse(isPassed)
+        const questions = Array.from({length: Math.max(...passedArray)}, (v, i)=> i+1)
+        const hasil = questions.filter(item => !passedArray.includes(item));
+        setIsBlank(hasil)
+    }, [isPassed])
+
     const { showModal } = useClipboardPermissionGuard()
 
     const [testsCount, setTestsCount] = useState<number | null>(null)
@@ -357,7 +369,7 @@ export default function PapiTestPage() {
                                 ? "bg-blue-600 border-blue-600 text-white border-2"
                                 : answers.some((a) => a?.groupId === nomor && a.type)
                                 ?" bg-green-500 text-white"
-                                : isPassed.includes(nomor)
+                                : isPassed.includes(nomor) || isBlank.includes(nomor)
                                 ? "bg-red-500 text-white"
                                 : "bg-white text-gray-700 border border-gray-200 hover:border-indigo-300"
                                 }`
