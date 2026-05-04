@@ -568,11 +568,16 @@ export default function DISCTestPage() {
           ):(
           <button 
             onClick={handleTestComplete}
-            disabled={answers.most.length !== question.length || answers.least.length !== question.length}
+            // disabled={answers.most.length !== question.length || answers.least.length !== question.length}
+            disabled={((answers.most as any[]).includes(undefined) || (answers.most as any[]).includes(null)) || (answers.most.length !== question.length || answers.least.length !== question.length)}
             className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 ${
-              !(answers.most.length !== question.length || answers.least.length !== question.length)
-              ? 'from-blue-600 to-indigo-600 transition'
-              : 'cursor-not-allowed bg-gray-300'
+              // !(((answers.most as any[]).includes(undefined)) || !(answers.most.length !== question.length || answers.least.length !== question.length))
+              // !(((answers.most as any[]).includes(undefined)) || !(answers.most.length !== question.length || answers.least.length !== question.length)) || ((!((answers.most as any[]).includes(undefined)) || (answers.most.length !== question.length || answers.least.length !== question.length)))
+              // ? 'from-blue-600 to-indigo-600 transition'
+              // : 'cursor-not-allowed bg-gray-300'
+              ((answers.most as any[]).includes(undefined) || (answers.most as any[]).includes(null)) || (answers.most.length !== question.length || answers.least.length !== question.length)
+              ? 'cursor-not-allowed bg-gray-300'
+              : 'from-blue-600 to-indigo-600 transition'
             }`}
           >
             Selesai
