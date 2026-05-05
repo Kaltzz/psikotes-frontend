@@ -102,8 +102,10 @@ const KRAEPELIN_DATA: number[][] = [
 const ROWS = KRAEPELIN_DATA[0].length;
 const COLS = KRAEPELIN_DATA.length;
 const PAIRS = ROWS - 1; // 39 pasangan per kolom
-const COL_TIME_MS = 5_000; // detik per kolom
- 
+const COL_TIME_MS = 10_000; // detik per kolom
+
+
+
 // Mengembalikan data soal Kraepelin sebagai grid[col][row]
 function genGrid(): number[][] {
   return KRAEPELIN_DATA;
@@ -345,9 +347,85 @@ export default function KraeplinTest() {
   const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
   // Mencegah double-call onFocus + onClick pada event yang sama
   const focusHandledRef = useRef(false);
+  // Ref audio peringatan — load sekali, diputar ulang tiap lajur
+  const warningAudioRef = useRef<HTMLAudioElement | null>(null);
+  // Pastikan bunyi peringatan hanya diputar sekali per lajur
+  const warningPlayedRef = useRef(false);
+  // Pastikan unlock audio hanya dilakukan sekali
+  const audioUnlockedRef = useRef(false);
  
   // Waktu tersisa lajur aktif sistem (untuk ditampilkan di UI)
   const timeLeftMs = colStates[systemActiveCol]?.timeLeftMs ?? COL_TIME_MS;
+
+  /* ═══ INISIALISASI AUDIO ═══
+   * Load file audio satu kali saat komponen mount.
+   * preload="auto" agar file sudah siap di memori sebelum diputar.
+   */
+  useEffect(() => {
+    const audio = new Audio("/sounds/alert.mp3");
+    audio.preload = "auto";
+    warningAudioRef.current = audio;
+    return () => {
+      warningAudioRef.current = null;
+    };
+  }, []);
+
+  /* ═══ UNLOCK AUDIO SAAT INTERAKSI PERTAMA ═══
+   * Browser memblokir autoplay audio sebelum ada user gesture.
+   * Trik: mainkan audio secara muted (silent) saat pertama kali user
+   * menyentuh/mengklik halaman → browser "membuka kunci" audio context,
+   * sehingga audio berikutnya bisa diputar secara programatik tanpa interaksi.
+   */
+  useEffect(() => {
+    const unlockAudio = () => {
+      if (audioUnlockedRef.current) return;
+      const audio = warningAudioRef.current;
+      if (!audio) return;
+      audioUnlockedRef.current = true;
+      audio.muted = true;
+      audio.play()
+        .then(() => {
+          audio.pause();
+          audio.muted = false;
+          audio.currentTime = 0;
+        })
+        .catch(() => {/* abaikan */});
+      document.removeEventListener("pointerdown", unlockAudio);
+      document.removeEventListener("keydown", unlockAudio);
+    };
+    document.addEventListener("pointerdown", unlockAudio);
+    document.addEventListener("keydown", unlockAudio);
+    return () => {
+      document.removeEventListener("pointerdown", unlockAudio);
+      document.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
+
+  /* ═══ SUARA PERINGATAN 5 DETIK TERAKHIR ═══
+   * Berbunyi satu kali saat timeLeftMs pertama kali menyentuh ≤ 5000ms.
+   * warningPlayedRef direset setiap kali systemActiveCol berganti kolom.
+   */
+  useEffect(() => {
+    warningPlayedRef.current = false;
+  }, [systemActiveCol]);
+
+  useEffect(() => {
+    if (status !== "playing") return;
+    if (timeLeftMs > 5000) return;
+    if (timeLeftMs <= 0) return;
+    if (warningPlayedRef.current) return;
+
+    warningPlayedRef.current = true;
+
+    try {
+      if (warningAudioRef.current) {
+        warningAudioRef.current.currentTime = 0;
+        warningAudioRef.current.play();
+      }
+    } catch {
+      // Abaikan jika browser memblokir autoplay
+    }
+  }, [status, timeLeftMs]);
  
   /* ═══ CALCULATE RESULTS PER COLUMN ═══
    * Menghitung jumlah jawaban benar, salah, dan total per lajur.
