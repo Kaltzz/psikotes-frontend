@@ -14,6 +14,7 @@ import PermissionModal from "@/app/components/PermissionModal"
 import Image from "next/image"
 import BackGuardModal from "@/app/components/BackGuardModal"
 import { useBackGuard } from "@/lib/useBackGuard"
+import { checkMoveTab } from "@/lib/checkMoveTab"
 
 interface MbtiQuestion {
     id: number,
@@ -180,6 +181,8 @@ export default function MbtiTestPage() {
     }
 
     useAntiCheat({ mode: "silent" });
+
+    checkMoveTab()
 
     useEffect(() => {
     document.title = "Test - Psychological Tests";

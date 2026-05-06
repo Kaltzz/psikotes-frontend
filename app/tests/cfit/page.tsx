@@ -12,6 +12,7 @@ import { useClipboardPermissionGuard } from '@/lib/useClipboardPermissionGuard';
 import PermissionModal from '@/app/components/PermissionModal';
 import { useBackGuard } from '@/lib/useBackGuard';
 import BackGuardModal from '@/app/components/BackGuardModal';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 function IconSeries() {
   return (
@@ -74,6 +75,8 @@ export default function CFITTest() {
     const testSessionParsed = JSON.parse(testSession)
     setTestsCount(testSessionParsed.currentIndex + 1)
   }, [])
+
+  checkMoveTab()
 
   return (
     

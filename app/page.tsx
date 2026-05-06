@@ -62,7 +62,7 @@ import { useAntiCheat } from "@/lib/useAntiCheat";
 import { div } from "framer-motion/client";
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function psychologicaltests() {
     const router = useRouter()
@@ -74,6 +74,7 @@ export default function psychologicaltests() {
         // Await tanpa .catch() agar benar-benar menunggu user respons izin
         await navigator.clipboard.readText()
         router.push('/registrations')
+
     } catch (error) {
         // Izin ditolak atau error lain — tetap lanjut pindah halaman
         router.push('/registrations')

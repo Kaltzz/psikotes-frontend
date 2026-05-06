@@ -13,6 +13,7 @@ import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
 import BackGuardModal from '@/app/components/BackGuardModal';
 import { useBackGuard } from '@/lib/useBackGuard';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface MsdtQuestion {
     id: number,
@@ -126,6 +127,8 @@ export default function MsdtInstructionPage() {
     const { showModal } = useClipboardPermissionGuard()
 
     const [testsCount, setTestsCount] = useState<number | null>(null)
+
+    checkMoveTab()
 
   useEffect(() => {
     const testSession = sessionStorage.getItem('testSession')

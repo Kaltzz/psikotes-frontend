@@ -8,6 +8,7 @@ import { updateStatusTest } from "@/services/answers.service";
 import { useAntiCheat } from "@/lib/useAntiCheat";
 import BackGuardModal from "@/app/components/BackGuardModal";
 import { useBackGuard } from "@/lib/useBackGuard";
+import { checkMoveTab } from "@/lib/checkMoveTab";
  
 /* ═══════════════════════════════════════════════════════════
    CONSTANTS & TYPES
@@ -320,6 +321,8 @@ export default function KraeplinTest() {
   useAntiCheat({ mode: "silent" });
    const { modalProps } = useBackGuard();
  
+  checkMoveTab()
+
   useEffect(() => {
     document.title = "Test - Psychological Tests";
   }, [])

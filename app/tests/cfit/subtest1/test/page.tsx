@@ -12,6 +12,7 @@ import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
 import BackGuardModal from '@/app/components/BackGuardModal';
 import { useBackGuard } from '@/lib/useBackGuard';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface Question {
   id: number;
@@ -282,6 +283,8 @@ export default function CFITSubtest1Test() {
         const hasil = questions.filter(item => !passedArray.includes(item));
         setIsBlank(hasil)
     }, [isPassed])
+
+    checkMoveTab()
 
   return (
     

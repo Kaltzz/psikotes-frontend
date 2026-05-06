@@ -15,6 +15,7 @@ import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
 import { useBackGuard } from '@/lib/useBackGuard';
 import BackGuardModal from '@/app/components/BackGuardModal';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface WordGroup {
   id: number;
@@ -326,6 +327,7 @@ export default function DISCTestPage() {
         setIsBlank(hasil)
     }, [isPassed])
   
+  checkMoveTab()
 
   return (
     <div className="font-sans min-h-screen bg-gray-50 select-none">

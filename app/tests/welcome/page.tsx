@@ -10,6 +10,7 @@ import { updateStatusTest } from "@/services/answers.service"
 import TestHeader from "@/app/components/TestHeader"
 import { useBackGuard } from "@/lib/useBackGuard"
 import BackGuardModal from "@/app/components/BackGuardModal"
+import { checkMoveTab } from "@/lib/checkMoveTab"
 
 function IconSoal() {
   return (
@@ -254,7 +255,7 @@ export default function FrontPage()  {
         return total
     }
 
-    
+    checkMoveTab()
     
     return (
         <div className="select-none">

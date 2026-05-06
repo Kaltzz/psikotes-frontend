@@ -9,6 +9,7 @@ import TestHeader from '@/app/components/TestHeader';
 import { useAntiCheat } from '@/lib/useAntiCheat';
 import BackGuardModal from '@/app/components/BackGuardModal';
 import { useBackGuard } from '@/lib/useBackGuard';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface Question {
     id: number;
@@ -330,6 +331,8 @@ export default function CFITSubtest4Test() {
         const hasil = questions.filter(item => !passedArray.includes(item));
         setIsBlank(hasil)
     }, [isPassed])
+
+    checkMoveTab()
 
     return(
         <div className='font-sans min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 select-none'>

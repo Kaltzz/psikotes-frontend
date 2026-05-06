@@ -13,6 +13,7 @@ import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
 import BackGuardModal from '@/app/components/BackGuardModal';
 import { useBackGuard } from '@/lib/useBackGuard';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface Question {
   id: number;
@@ -180,6 +181,8 @@ export default function CFITSubtest4() {
     const testSessionParsed = JSON.parse(testSession)
     setTestsCount(testSessionParsed.currentIndex + 1)
   }, [])
+
+  checkMoveTab()
 
     return(
         <div className='font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none'>
