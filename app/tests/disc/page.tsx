@@ -13,6 +13,7 @@ import PermissionModal from '@/app/components/PermissionModal';
 import Image from 'next/image';
 import { useBackGuard } from '@/lib/useBackGuard';
 import BackGuardModal from '@/app/components/BackGuardModal';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface WordGroup {
   id: number;
@@ -248,6 +249,8 @@ export default function DISCInstructionPage() {
     const testSessionParsed = JSON.parse(testSession)
     setTestsCount(testSessionParsed.currentIndex + 1)
   }, [])
+
+  checkMoveTab()
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 select-none">

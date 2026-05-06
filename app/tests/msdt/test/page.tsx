@@ -14,6 +14,7 @@ import Image from "next/image"
 import PermissionModal from "@/app/components/PermissionModal"
 import BackGuardModal from "@/app/components/BackGuardModal"
 import { useBackGuard } from "@/lib/useBackGuard"
+import { checkMoveTab } from "@/lib/checkMoveTab"
 
 
 interface MsdtQuestion {
@@ -125,6 +126,8 @@ export default function MsdtTestPage() {
         const s = seconds % 60;
         return `${m}:${s.toString().padStart(2, '0')}`;
     };
+
+    checkMoveTab()
 
     const handleSelection = (newType: 1 | 2) => {
         const updated = [...answers]

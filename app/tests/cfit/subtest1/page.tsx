@@ -14,6 +14,7 @@ import { useClipboardPermissionGuard } from '@/lib/useClipboardPermissionGuard';
 import PermissionModal from '@/app/components/PermissionModal';
 import { useBackGuard } from '@/lib/useBackGuard';
 import BackGuardModal from '@/app/components/BackGuardModal';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface Question {
   id: number;
@@ -193,6 +194,8 @@ export default function CFITSubtest1() {
     const testSessionParsed = JSON.parse(testSession)
     setTestsCount(testSessionParsed.currentIndex + 1)
   }, [])
+
+  checkMoveTab()
 
   return (
     <div className="font-sans min-h-screen bg-gradient-to-br from-red-50 to-indigo-100 flex flex-col select-none">

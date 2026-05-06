@@ -10,6 +10,7 @@ import TestHeader from '@/app/components/TestHeader';
 import { useAntiCheat } from '@/lib/useAntiCheat';
 import BackGuardModal from '@/app/components/BackGuardModal';
 import { useBackGuard } from '@/lib/useBackGuard';
+import { checkMoveTab } from '@/lib/checkMoveTab';
 
 interface Question {
   id: number
@@ -114,6 +115,8 @@ const KraepelinInstructionPage: React.FC = () => {
   }
 
   useAntiCheat({ mode: "silent" });
+
+  checkMoveTab()
 
   useEffect(() => {
     document.title = "Instructions - Psychological Tests";
