@@ -43,11 +43,11 @@ export default function MbtiTestPage() {
     const [answers, setAnswers] = useState<
         { groupId: number; type: number }[]
         >([]);
-    const [timeLeft, setTimeLeft] = useState(300); // 5 menit
+    // const [timeLeft, setTimeLeft] = useState(300); // 5 menit
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [questions, setQuestions] = useState<MbtiQuestions[]>([])
-    const [isOvertime, setIsOvertime] = useState(false);
-    const [overtime, setOvertime] = useState(0);
+    // const [isOvertime, setIsOvertime] = useState(false);
+    // const [overtime, setOvertime] = useState(0);
     const [isLoading, setIsLoading] = useState(false)
 
     const [isPassed, setIsPassed] = useState<number[]>(() => {
@@ -63,7 +63,36 @@ export default function MbtiTestPage() {
 
         const [isBlank, setIsBlank] = useState<number[]>([])
 
+    const EXAM_DURATION = 60 * 60 
     
+    const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+    
+    const [timeLeft, setTimeLeft] = useState(() => Math.max(0, getRemainingTime()));
+    const [isOvertime, setIsOvertime] = useState(() => getRemainingTime() < 0);
+    const [overtime, setOvertime] = useState(() => Math.max(0, -getRemainingTime()));
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const remaining = getRemainingTime();
+
+            if (remaining > 0) {
+                setTimeLeft(remaining);
+                setIsOvertime(false);
+            } else {
+                setTimeLeft(0);
+                setIsOvertime(true);
+                setOvertime(Math.abs(remaining));
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
 
     useEffect(() => {
         if (!isOvertime && timeLeft <= 0) {

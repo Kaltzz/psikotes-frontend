@@ -136,6 +136,8 @@ export default function PapiInstructionPage() {
     const handleTestComplete = () => {
         try {
             const setLoading = setIsLoading(true)
+            const startTime = Date.now();
+            localStorage.setItem("examStartTime", startTime.toString());
             resetState()
             router.push('/tests/papikostick/test');
         } catch {

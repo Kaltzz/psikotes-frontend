@@ -37,6 +37,8 @@ interface MsdtQuestions {
     }[]
 }
 
+
+
 export default function MsdtTestPage() {
     const { modalProps } = useBackGuard();
     const router = useRouter()
@@ -44,12 +46,14 @@ export default function MsdtTestPage() {
     const [answers, setAnswers] = useState<
         { groupId: number; type: number }[]
         >([]);
-    const [timeLeft, setTimeLeft] = useState(300);
+    // const [timeLeft, setTimeLeft] = useState(300);
+    
+   
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [questions, setQuestions] = useState<MsdtQuestions[]>([])
-    const [isOvertime, setIsOvertime] = useState(false);
-    const [overtime, setOvertime] = useState(0);
+    // const [isOvertime, setIsOvertime] = useState(false);
+    // const [overtime, setOvertime] = useState(0);
 
     const [isPassed, setIsPassed] = useState<number[]>(() => {
         if (typeof window === "undefined") return [];
@@ -63,8 +67,37 @@ export default function MsdtTestPage() {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const [isBlank, setIsBlank] = useState<number[]>([])
-
     
+    const EXAM_DURATION = 60 * 60 
+    
+    const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+    
+    const [timeLeft, setTimeLeft] = useState(() => Math.max(0, getRemainingTime()));
+    const [isOvertime, setIsOvertime] = useState(() => getRemainingTime() < 0);
+    const [overtime, setOvertime] = useState(() => Math.max(0, -getRemainingTime()));
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const remaining = getRemainingTime();
+
+            if (remaining > 0) {
+                setTimeLeft(remaining);
+                setIsOvertime(false);
+            } else {
+                setTimeLeft(0);
+                setIsOvertime(true);
+                setOvertime(Math.abs(remaining));
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
 
     const msdt: MsdtQuestion[]  = [
         {
@@ -73,7 +106,7 @@ export default function MsdtTestPage() {
                 {text: 'Saya suka menjadi pendengar', type: 'R'},
                 {text: 'Saya mengerjakan semua pekerjaan sekaligus', type: 'F'}
             ]
-        },
+        },  
         {
             id: 2,
             sentences: [
@@ -165,6 +198,7 @@ export default function MsdtTestPage() {
             const testSession = sessionStorage.getItem('testSession')
             localStorage.removeItem('tempAnswers')
             localStorage.removeItem('isPassed')
+            localStorage.removeItem('examStartTime')
             
             if(!testSession)
                 return alert('gagal')

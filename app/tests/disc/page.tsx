@@ -161,6 +161,8 @@ export default function DISCInstructionPage() {
   const handleTestComplete = () => {
     try {
       const setLoading = setIsLoading(true)
+      const startTime = Date.now();
+      localStorage.setItem("examStartTime", startTime.toString());
       router.push('/tests/disc/test');
     } catch(error) {
       const setLoading = setIsLoading(false)

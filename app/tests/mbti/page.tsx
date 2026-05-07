@@ -83,6 +83,8 @@ export default function MbtiInstructionPage() {
     const handleTestComplete = () => {
         try {
             const setLoading = setIsLoading(true)
+            const startTime = Date.now();
+            localStorage.setItem("examStartTime", startTime.toString());
             resetState()
             router.push('/tests/mbti/test');
         } catch (error) {
