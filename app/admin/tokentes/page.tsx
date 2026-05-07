@@ -14,7 +14,8 @@ interface Data {
     kuota: number
     usedCount: number
     isActive: boolean
-
+    activeDate: string
+    expiredDate: string
 }
 
 export default function AdminTokenTes() {
@@ -69,6 +70,27 @@ export default function AdminTokenTes() {
     }
     getTOken()
     }, [])
+
+    const convertDate = (date: string | Date) => {
+    const newDate = new Date(date)
+    
+    const datePart = newDate.toLocaleDateString('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'Asia/Makassar'
+    })
+    
+    const timePart = newDate.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+        timeZone: 'Asia/Makassar'
+    }).replace('.', ':')
+    
+    return `${datePart} ${timePart}`
+}
     
 
     useEffect(()=> {
@@ -96,10 +118,18 @@ export default function AdminTokenTes() {
                 <table className="border-collapse w-full">
                     <thead className="border-b border-gray-200 bg-gray-200 p-4 text-left text-base">
                         <tr>
-                            <th className="py-4 px-4">Token</th>
+                            <th className="py-3 px-3">Token</th>
                             <th className="py-4 px-4">Jenis Tes</th>
                             <th className="py-4 px-4">Kuota</th>
                             <th className="py-4 px-4">Status</th>
+                            <th className="py-4 px-4">
+                                Masa aktif
+                                (dari)
+                            </th>
+                            <th className="py-4 px- ">
+                                Masa aktif
+                                (hingga)
+                            </th>
                             <th className="py-4 px-4">Aksi</th>
                         </tr>
                         
@@ -136,21 +166,30 @@ export default function AdminTokenTes() {
                                         {item.isActive ? 'Aktif': 'Tidak Aktif'}
                                     </div>
                                 </td>
+                                <td className="py-4 px-4">{convertDate(item.activeDate)}</td>
+                                <td className="py-4 px-4">{convertDate(item.expiredDate)}</td>
                                 <td className="py-4 px-4 h-full">
-                                    <div className="flex gap-x-4 items-center">
+                                    <div className="flex flex-col gap-y-3 gap-x-4 items-center">
                                         <button 
-                                            className="flex hover:bg-gray-300 bg-gray-200 px-2 py-1 rounded-lg"
+                                            className="flex w-full justify-center hover:bg-blue-800 bg-blue-600 text-white px-2 py-1 rounded-lg"
                                             onClick={()=> copyToClipboard(item.token)}
                                             >
-                                            <Image
-                                                src='/assets/copysvg.svg'
-                                                width={20}
-                                                height={20}
-                                                alt="copy svg"
-                                            />
+                                            <svg 
+                                                width="20" 
+                                                height="20" 
+                                                viewBox="0 0 64 64" 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                strokeWidth="3" 
+                                                stroke="currentColor" 
+                                                fill="none"
+                                                className="text-white"
+                                            >
+                                                <rect x="11.13" y="17.72" width="33.92" height="36.85" rx="2.5"/>
+                                                <path d="M19.35,14.23V13.09a3.51,3.51,0,0,1,3.33-3.66H49.54a3.51,3.51,0,0,1,3.33,3.66V42.62a3.51,3.51,0,0,1-3.33,3.66H48.39"/>
+                                            </svg>
                                             <p className=" ml-1">Salin</p>
                                         </button>
-                                        <button className={`flex hover:bg-gray-300 bg-gray-200  px-2 py-1 rounded-lg 
+                                        <button className={`flex w-full hover:bg-red-800 bg-red-600 text-white  px-2 py-1 rounded-lg 
                                             
                                             `}
                                             onClick={()=>{handleDelete(item.id)}}

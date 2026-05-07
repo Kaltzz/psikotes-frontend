@@ -12,10 +12,15 @@ export default function AdminForm() {
     const router = useRouter()
     const [formData, setFormData] = useState<{
         tests: string[],
-        kuota: number
+        kuota: number,
+        activeDate: string,
+        expiredDate: string
+
     }>({
         tests: [],
-        kuota: 0
+        kuota: 0,
+        activeDate: '',
+        expiredDate: ''
     })
 
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -153,6 +158,17 @@ export default function AdminForm() {
                 <div className="space-x-2 text-lg">
                     <label htmlFor="kuota">Kuota: </label>
                     <input type="number" name="kuota" id="kuota" min="1" max="1000" className="border border-gray-400 rounded-lg px-3 py-2" onChange={handleChange}/>
+                </div>
+
+                <div className="space-x-2 text-lg flex">
+                    <div>
+                        <label htmlFor="activeDate">Mulai dari: </label>
+                        <input type="datetime-local" name="activeDate" id="activeDate" className="border border-gray-400 rounded-lg px-3 py-2" onChange={handleChange}/>
+                    </div>
+                    <div>
+                        <label htmlFor="expiredDate">Hingga: </label>
+                        <input type="datetime-local" name="expiredDate" id="expiredDate" className="border border-gray-400 rounded-lg px-3 py-2" onChange={handleChange}/>
+                    </div>
                 </div>
 
                 <div className="flex gap-x-5 mt-16">
