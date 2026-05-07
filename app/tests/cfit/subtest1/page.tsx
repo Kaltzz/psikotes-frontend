@@ -124,6 +124,8 @@ export default function CFITSubtest1() {
     const handleTestComplete = () => {
       try {
         const setLoading = setIsLoading(true)
+        const startTime = Date.now();
+        localStorage.setItem("examStartTime", startTime.toString());
         router.push('/tests/cfit/subtest1/test')
       } catch (error) {
         const setLoading = setIsLoading(false)

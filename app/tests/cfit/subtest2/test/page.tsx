@@ -39,7 +39,7 @@ interface Questionz {
 export default function CFITsubtest2Test() {
     const { modalProps } = useBackGuard();
     const router = useRouter();
-    const [timeLeft, setTimeLeft] = useState(240); // 3 menit
+    // const [timeLeft, setTimeLeft] = useState(240); // 3 menit
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [question, setQuestion] = useState<Questionz[]>([])
     const [answers, setAnswers] = useState<CfitAnswer[]>(
@@ -67,7 +67,37 @@ export default function CFITsubtest2Test() {
 
     const [isBlank, setIsBlank] = useState<number[]>([])
 
+    const EXAM_DURATION = 4 * 60 
     
+    const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+    
+    const [timeLeft, setTimeLeft] = useState(() => Math.max(0, getRemainingTime()));
+    const [isOvertime, setIsOvertime] = useState(() => getRemainingTime() < 0);
+    const [overtime, setOvertime] = useState(() => Math.max(0, -getRemainingTime()));
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            const remaining = getRemainingTime();
+
+            if (remaining > 0) {
+                setTimeLeft(remaining);
+                setIsOvertime(false);
+            } else {
+                setTimeLeft(0);
+                setIsOvertime(true);
+                setOvertime(Math.abs(remaining));
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
 
     useEffect(()=> {
         const getCfit2Soal = async () => {

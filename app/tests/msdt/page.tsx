@@ -78,10 +78,16 @@ export default function MsdtInstructionPage() {
         // resetState()
         setCurrentGroup(prev => prev + 1)
     }
+    // const startExam = () => {
+    //     const startTime = Date.now();
+    //     localStorage.setItem("examStartTime", startTime.toString());
+    // };
 
     const handleTestComplete = () => {
         try {
             const setLoading = setIsLoading(true)
+            const startTime = Date.now();
+            localStorage.setItem("examStartTime", startTime.toString());
             resetState()
             router.push('/tests/msdt/test');
         } catch(error) {
