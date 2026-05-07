@@ -4,7 +4,9 @@ export const getAllToken = () => api.get('/api/admin/token')
 
 export const postToken = ( data: {
     tests: string[],
-    kuota: number
+    kuota: number,
+    activeDate: string,
+    expiredDate: string
 }) => api.post('/api/admin/token', data)
 
 export const statusToken = (id:number, status:any) => api.put(`/api/admin/token/${id}`, status)
