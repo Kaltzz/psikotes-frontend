@@ -209,7 +209,7 @@ export default function FrontPage()  {
         let questions: number
         switch(tests) {
             case 'CFIT':
-                questions = 46
+                questions = 50
                 break
             case 'DISC':
                 questions = 24
@@ -237,7 +237,7 @@ export default function FrontPage()  {
         let total = 0
         for (let test of tests) {
             if (test === 'CFIT') {
-                total += 63
+                total += 50
             } else if ( test === 'DISC') {
                 total += 24
             } else if (test === 'MSDT') {
