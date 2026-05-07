@@ -53,6 +53,8 @@ export default function AdminForm() {
         return
     }
 
+
+
     // input biasa
     setFormData(prev => ({
         ...prev,
@@ -61,28 +63,28 @@ export default function AdminForm() {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-        try {
-            setIsSubmitting(true)
-            const res = await postToken(formData)
-            setIsLoading(false)
-            router.push('/admin/tokentes')
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+        setIsSubmitting(true)
 
-        } catch(err:any){
-
-        } finally {
-            setIsLoading(false)
-            setIsSubmitting(false)
+        const payload = {
+            ...formData,
+            activeDate: new Date(formData.activeDate).toISOString(),  // ✅
+            expiredDate: new Date(formData.expiredDate).toISOString(), // ✅
         }
-        // const {tests, kuota} = formData
-        // if(tests.length === 0 || !kuota) {
-        //     alert('Mohon Lengkapi semua data')
-        //     return
-        // }
-        // setIsSubmitting(true)
-        // localStorage.setItem('userdata', JSON.stringify(formData))
+
+        const res = await postToken(payload) // ✅ kirim payload bukan formData
+        setIsLoading(false)
+        router.push('/admin/tokentes')
+
+    } catch(err:any){
+
+    } finally {
+        setIsLoading(false)
+        setIsSubmitting(false)
     }
+}
 
 
     useEffect(()=> {
