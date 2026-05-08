@@ -251,7 +251,9 @@ export default function DISCTestPage() {
           sessionStorage.setItem('testSession', JSON.stringify(testSessionParsed));
 
           if (newTests !== undefined) {
-              router.push(`/tests/${newTests.toLowerCase()}`); 
+            const startTime = Date.now();
+            localStorage.setItem("examStartTime", startTime.toString());
+            router.push(`/tests/${newTests.toLowerCase()}`); 
           } else {
               sessionStorage.removeItem('testSession');
               router.push('/result');
