@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import test from "node:test"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Modal from "@/app/components/Modal"
 import { updateStatusTest } from "@/services/answers.service"
 import TestHeader from "@/app/components/TestHeader"
@@ -135,6 +135,48 @@ export default function FrontPage()  {
 //     const tests = sessionStorage.getItem('testSession')
 //     console.log(tests)
 // }, [])
+    const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+
+    const formatTime = (seconds: number) => {
+      const minutes = Math.floor(seconds / 60);
+      const remaining = seconds % 60;
+      return `${minutes}:${remaining.toString().padStart(2, '0')}`;
+    };
+
+    const EXAM_DURATION = 1 * 60;
+
+    // Server-safe: selalu mulai dari EXAM_DURATION
+    const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
+    const [isReady, setIsReady] = useState(false);
+
+    // Jalankan hanya di client setelah hydration selesai
+    useEffect(() => {
+      const existing = localStorage.getItem("examStartTime");
+      if (!existing) {
+        localStorage.setItem("examStartTime", Date.now().toString());
+      }
+
+      const remaining = getRemainingTime();
+      setTimeLeft(Math.max(0, remaining));
+      setIsReady(true);
+    }, []);
+
+    // Timer berjalan hanya setelah isReady
+    useEffect(() => {
+      if (!isReady) return;
+      if (timeLeft <= 0) {
+        handleTest();
+        return;
+      }
+      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    }, [timeLeft, isReady]);
 
     const handleModal = () => {
         setIsModalOpen(true)
@@ -159,6 +201,7 @@ export default function FrontPage()  {
                 // const id = await updateStatusTest(sessionId)
                 // const updatedTestString = JSON.stringify(testSessionParsed)
                 // sessionStorage.setItem('testSession', updatedTestString)
+                
                 router.push(`/tests/${tests.toLowerCase()}`)        
             } else {
                 router.push('/result')
@@ -168,6 +211,29 @@ export default function FrontPage()  {
         }
         
     }
+
+//     const handleTest = useCallback(async () => {
+//     try {
+//         const setLoading = setIsLoading(true)
+//         const testSession = sessionStorage.getItem('testSession')
+//         if(!testSession)
+//             return console.log('gagal')
+
+//         const testSessionParsed = JSON.parse(testSession)
+//         const tests = testSessionParsed.tests[testSessionParsed.currentIndex]
+
+//         const sessionId = testSessionParsed.sessionId
+//         if(sessionId && !(tests === null)) {
+//             const statusTest = await updateStatusTest(sessionId)
+//             router.push(`/tests/${tests.toLowerCase()}`)        
+//         } else {
+//             router.push('/result')
+//         }
+//     } catch (error) {
+//         setIsLoading(false)
+//     }
+// }, [router]) // ✅ dependency handleTest
+
 
     // useEffect(()=> {
     //     const testSession = sessionStorage.getItem('testSession')
@@ -274,7 +340,15 @@ export default function FrontPage()  {
                             className="max-w-5xl bg-white rounded-2xl shadow-lg p-8 w-2/3"
                         >
                             <div>
-                                <h2 className="text-2xl text-left md:text-3xl font-bold text-slate-800 mb-8">Selamat Datang di Sesi Tes Anda</h2>
+                                <div className="flex items-center mb-8 justify-between">
+                                    <div>
+                                        <h2 className="text-2xl text-left md:text-3xl font-bold text-slate-800">Selamat Datang di Sesi Tes Anda</h2>
+                                    </div>
+                                    
+                                    <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
+                                        <span>{isReady ? formatTime(timeLeft) : "--:--"}</span>
+                                    </div>
+                                </div>
                                 <p className="mt-3 text-base text-slate-700 text-left">Pendaftaran Anda telah berhasil dan data Anda telah diverifikasi oleh sistem.
                                 Pada tahap selanjutnya, Anda akan mengikuti rangkaian tes psikologi sesuai dengan token yang telah diberikan kepada Anda.
 

@@ -161,6 +161,7 @@ export default function CFITSubtest1Test() {
       const testSession = sessionStorage.getItem('testSession')
       localStorage.removeItem('tempAnswers')
       localStorage.removeItem('isPassed')
+      // localStorage.removeItem('examStartTime')
       
       if(!testSession) {
         return (console.log('gagal'))
