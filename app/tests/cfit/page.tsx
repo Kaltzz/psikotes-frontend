@@ -46,9 +46,54 @@ export default function CFITTest() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
+  const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+
+    const formatTime = (seconds: number) => {
+      const minutes = Math.floor(seconds / 60);
+      const remaining = seconds % 60;
+      return `${minutes}:${remaining.toString().padStart(2, '0')}`;
+    };
+
+    const EXAM_DURATION = 1 * 60;
+
+    // Server-safe: selalu mulai dari EXAM_DURATION
+    const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
+    const [isReady, setIsReady] = useState(false);
+
+    // Jalankan hanya di client setelah hydration selesai
+    useEffect(() => {
+      const existing = localStorage.getItem("examStartTime");
+      if (!existing) {
+        localStorage.setItem("examStartTime", Date.now().toString());
+      }
+
+      const remaining = getRemainingTime();
+      setTimeLeft(Math.max(0, remaining));
+      setIsReady(true);
+    }, []);
+
+    // Timer berjalan hanya setelah isReady
+    useEffect(() => {
+      if (!isReady) return;
+      if (timeLeft <= 0) {
+        handleTest();
+        return;
+      }
+      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    }, [timeLeft, isReady]);
+
   const handleTest = () => {
     try {
       const setLoading = setIsLoading(true)
+      const startTime = Date.now();
+      localStorage.setItem("examStartTime", startTime.toString());
       router.push('/tests/cfit/subtest1')
     } catch (error) {
       const setLoading = setIsLoading(false)
@@ -113,9 +158,15 @@ export default function CFITTest() {
           <section>
             <div className="p-6 md:p-8">
               {/* Breadcrumb / Title */}
-              <div className="mb-4">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center md:text-left">TES PSIKOTES <span className='text-2xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span></h2>
+              <div className='flex items-center mb-8 justify-between'>
+                <div className="">
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center md:text-left">TES PSIKOTES <span className='text-2xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span></h2>
+                </div>
+                <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
+                  <span>{isReady ? formatTime(timeLeft) : "--:--"}</span>
+                </div>
               </div>
+              
               
               {/* Info box */}
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">

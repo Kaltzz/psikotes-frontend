@@ -58,7 +58,10 @@ export default function TestForm() {
         tokenPeserta: formData.tokenPeserta
       }
       const res = await registerPeserta(form)
-
+      
+      const startTime = Date.now();
+      localStorage.setItem("examStartTime", startTime.toString());
+      
       sessionStorage.setItem('testSession', 
         JSON.stringify({
           sessionId: res.data.data.sessionId,
