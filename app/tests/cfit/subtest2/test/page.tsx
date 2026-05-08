@@ -218,7 +218,9 @@ export default function CFITsubtest2Test() {
               const testSessionParsed = JSON.parse(testSession)
               const sessionId = testSessionParsed.sessionId
               const res = await storeAnswersCfit(sessionId, answers)
-              console.log('ini jawaban subtest2: ', res)
+                console.log('ini jawaban subtest2: ', res)
+                const startTime = Date.now();
+                localStorage.setItem("examStartTime", startTime.toString());
               router.push('/tests/cfit/subtest3');
             } catch(err:any) {
                 const setLoading = setIsLoading(false)

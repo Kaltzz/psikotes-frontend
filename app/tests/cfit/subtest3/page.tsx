@@ -57,6 +57,48 @@ export default function CFITSubtest3() {
   const [isModalOpen, setIsModalOpen] =useState(false)
   const [isLoading, setIsLoading] = useState(false)
   
+  const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+
+    const formatTime = (seconds: number) => {
+      const minutes = Math.floor(seconds / 60);
+      const remaining = seconds % 60;
+      return `${minutes}:${remaining.toString().padStart(2, '0')}`;
+    };
+
+    const EXAM_DURATION = 2 * 60;
+
+    // Server-safe: selalu mulai dari EXAM_DURATION
+    const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
+    const [isReady, setIsReady] = useState(false);
+
+    // Jalankan hanya di client setelah hydration selesai
+    useEffect(() => {
+      const existing = localStorage.getItem("examStartTime");
+      if (!existing) {
+        localStorage.setItem("examStartTime", Date.now().toString());
+      }
+
+      const remaining = getRemainingTime();
+      setTimeLeft(Math.max(0, remaining));
+      setIsReady(true);
+    }, []);
+
+    // Timer berjalan hanya setelah isReady
+    useEffect(() => {
+      if (!isReady) return;
+      if (timeLeft <= 0) {
+        handleTestComplete();
+        return;
+      }
+      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    }, [timeLeft, isReady]);
 
   const questions: Question[] = [
     {
@@ -205,10 +247,18 @@ export default function CFITSubtest3() {
           className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8"
         >
           <section className='mb-10'>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-              <ListChecks className="text-blue-600" size={22} />
-              Petunjuk Subtes 3 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
-            </h2>
+            <div className='flex items-center mb-8 justify-between'>
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+                  <ListChecks className="text-blue-600" size={22} />
+                  Petunjuk Subtes 3 <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
+                </h2>
+              </div>
+              
+              <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-base tracking-wider border border-slate-200">
+                <span>{isReady ? formatTime(timeLeft) : "--:--"}</span>
+              </div>
+            </div>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
               <p className="text-gray-700 mb-4">
                 Pada subtes ini, Anda dihadapkan pada persoalan matriks bergambar. Baca dengan saksama petunjuk di bawah ini:

@@ -201,7 +201,8 @@ export default function FrontPage()  {
                 // const id = await updateStatusTest(sessionId)
                 // const updatedTestString = JSON.stringify(testSessionParsed)
                 // sessionStorage.setItem('testSession', updatedTestString)
-                
+                const startTime = Date.now();
+                localStorage.setItem("examStartTime", startTime.toString());
                 router.push(`/tests/${tests.toLowerCase()}`)        
             } else {
                 router.push('/result')

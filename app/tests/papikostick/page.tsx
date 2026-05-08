@@ -77,6 +77,49 @@ export default function PapiInstructionPage() {
         >([]);
     const [questions, setQuestions] = useState<PapikostickQuestion[]>([])
 
+    const getRemainingTime = (): number => {
+        if (typeof window === "undefined") return EXAM_DURATION
+        const startTime = localStorage.getItem("examStartTime");
+        if (!startTime) return EXAM_DURATION;
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        return EXAM_DURATION - elapsed; // bisa negatif = overtime
+    };
+
+    const formatTime = (seconds: number) => {
+      const minutes = Math.floor(seconds / 60);
+      const remaining = seconds % 60;
+      return `${minutes}:${remaining.toString().padStart(2, '0')}`;
+    };
+
+    const EXAM_DURATION = 2 * 60;
+
+    // Server-safe: selalu mulai dari EXAM_DURATION
+    const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
+    const [isReady, setIsReady] = useState(false);
+
+    // Jalankan hanya di client setelah hydration selesai
+    useEffect(() => {
+      const existing = localStorage.getItem("examStartTime");
+      if (!existing) {
+        localStorage.setItem("examStartTime", Date.now().toString());
+      }
+
+      const remaining = getRemainingTime();
+      setTimeLeft(Math.max(0, remaining));
+      setIsReady(true);
+    }, []);
+
+    // Timer berjalan hanya setelah isReady
+    useEffect(() => {
+      if (!isReady) return;
+      if (timeLeft <= 0) {
+        handleTestComplete();
+        return;
+      }
+      const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+      return () => clearInterval(timer);
+    }, [timeLeft, isReady]);
+
     const papikostick: PapikostickQuestion[] = [
         {
             id: 0,
@@ -256,9 +299,16 @@ export default function PapiInstructionPage() {
                         <li className="font-medium text-slate-700">PAPIKostick</li>
                     </ol>
                     </nav> */}
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                    Tes Psikotes <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
-                    </h2>
+                    <div className='flex items-center mb-8 justify-between'>
+                        <div>
+                            <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+                            Tes Psikotes <span className='text-xl text-slate-700 font-semibold ml-3'>(TES KE-{testsCount ?? '...'})</span>
+                            </h2>
+                        </div>
+                        <div className="mt-4 md:mt-0 bg-slate-100 text-slate-800 px-3 py-1 rounded-xl font-mono text-lg tracking-wider border border-slate-200">
+                            <span>{isReady ? formatTime(timeLeft) : "--:--"}</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Info box */}

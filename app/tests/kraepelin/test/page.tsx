@@ -506,6 +506,8 @@ export default function KraeplinTest() {
         sessionStorage.setItem('testSession', JSON.stringify(testSessionParsed));
  
         if (newTests !== undefined) {
+            const startTime = Date.now();
+            localStorage.setItem("examStartTime", startTime.toString());
             router.push(`/tests/${newTests.toLowerCase()}`); 
         } else {
             sessionStorage.removeItem('testSession');
