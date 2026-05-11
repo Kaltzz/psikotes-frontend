@@ -9,7 +9,8 @@ import { useAntiCheat } from "@/lib/useAntiCheat";
 import BackGuardModal from "@/app/components/BackGuardModal";
 import { useBackGuard } from "@/lib/useBackGuard";
 import { checkMoveTab } from "@/lib/checkMoveTab";
- 
+import { userExpiredDate } from "@/services/peserta.service";
+
 /* ═══════════════════════════════════════════════════════════
    CONSTANTS & TYPES
    ═══════════════════════════════════════════════════════════ */
@@ -494,7 +495,7 @@ export default function KraeplinTest() {
       const sessionId = testSessionParsed.sessionId
       const res = await storeAnswersKraepelin(sessionId, payloadConverted)
  
-      const statusTest = await updateStatusTest(sessionId);
+      
  
         const pesertaId = testSessionParsed.pesertaId;
         const trigger = await triggerN8n(pesertaId, tests);
@@ -510,7 +511,9 @@ export default function KraeplinTest() {
             localStorage.setItem("examStartTime", startTime.toString());
             router.push(`/tests/${newTests.toLowerCase()}`); 
         } else {
+          const statusTest = await updateStatusTest(sessionId);
             sessionStorage.removeItem('testSession');
+            localStorage.removeItem('examStartTime')
             router.push('/result');
         }  
       

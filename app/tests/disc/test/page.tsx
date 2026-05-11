@@ -239,7 +239,6 @@ export default function DISCTestPage() {
       console.log('ini test4:', tests)
       const res = await storeAnswersDisc(sessionId, answers)
 
-      const statusTest = await updateStatusTest(sessionId);
 
           const pesertaId = testSessionParsed.pesertaId;
           const trigger = await triggerN8n(pesertaId, tests);
@@ -255,7 +254,9 @@ export default function DISCTestPage() {
             localStorage.setItem("examStartTime", startTime.toString());
             router.push(`/tests/${newTests.toLowerCase()}`); 
           } else {
+            const statusTest = await updateStatusTest(sessionId);
               sessionStorage.removeItem('testSession');
+              localStorage.removeItem('examStartTime')
               router.push('/result');
           }
     } catch(error) {
@@ -604,13 +605,13 @@ export default function DISCTestPage() {
           <button 
             onClick={handleTestComplete}
             // disabled={answers.most.length !== question.length || answers.least.length !== question.length}
-            disabled={((answers.most as any[]).includes(undefined) || (answers.most as any[]).includes(null)) || (answers.most.length !== question.length || answers.least.length !== question.length)}
+            disabled={((answers.most as any[]).includes(undefined) || (answers.most as any[]).includes(null)) || ((answers.least as any[]).includes(undefined) || (answers.least as any[]).includes(null)) || (answers.most.length !== question.length || answers.least.length !== question.length)}
             className={`px-5 py-2 rounded-lg bg-gradient-to-r  text-white font-medium shadow hover:scale-[1.02] active:scale-95 ${
               // !(((answers.most as any[]).includes(undefined)) || !(answers.most.length !== question.length || answers.least.length !== question.length))
               // !(((answers.most as any[]).includes(undefined)) || !(answers.most.length !== question.length || answers.least.length !== question.length)) || ((!((answers.most as any[]).includes(undefined)) || (answers.most.length !== question.length || answers.least.length !== question.length)))
               // ? 'from-blue-600 to-indigo-600 transition'
               // : 'cursor-not-allowed bg-gray-300'
-              ((answers.most as any[]).includes(undefined) || (answers.most as any[]).includes(null)) || (answers.most.length !== question.length || answers.least.length !== question.length)
+              ((answers.most as any[]).includes(undefined) || (answers.most as any[]).includes(null)) || ((answers.least as any[]).includes(undefined) || (answers.least as any[]).includes(null)) || (answers.most.length !== question.length || answers.least.length !== question.length)
               ? 'cursor-not-allowed bg-gray-300'
               : 'from-blue-600 to-indigo-600 transition'
             }`}

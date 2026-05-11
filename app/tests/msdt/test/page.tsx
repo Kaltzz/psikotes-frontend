@@ -209,7 +209,7 @@ export default function MsdtTestPage() {
             console.log('ini test4:', tests)
             const res = await storeAnswersMsdt(sessionId, answers)
 
-            const statusTest = await updateStatusTest(sessionId);
+            
 
             const pesertaId = testSessionParsed.pesertaId;
             const trigger = await triggerN8n(pesertaId, tests);
@@ -225,7 +225,9 @@ export default function MsdtTestPage() {
                 localStorage.setItem("examStartTime", startTime.toString());
                 router.push(`/tests/${newTests.toLowerCase()}`); 
             } else {
+                const statusTest = await updateStatusTest(sessionId);
                 sessionStorage.removeItem('testSession');
+                localStorage.removeItem('examStartTime')
                 router.push('/result');
             }
         } catch(error) {
