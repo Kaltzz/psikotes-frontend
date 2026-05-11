@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { registerPeserta } from '@/services/peserta.service'
+import { registerPeserta, userExpiredDate } from '@/services/peserta.service'
 import { number } from 'framer-motion'
 import { useAntiCheat } from '@/lib/useAntiCheat'
 import PermissionModal from '../components/PermissionModal'
@@ -20,6 +20,7 @@ export default function TestForm() {
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
+    nik: '',
     tanggalLahir: '',
     jenisKelamin: '',
     unit: '',
@@ -48,6 +49,7 @@ export default function TestForm() {
       const form = {
         nama: formData.nama,
         email: formData.email,
+        nik: formData.nik,
         tanggalLahir: formData.tanggalLahir,
         jenisKelamin: formData.jenisKelamin,
         unit: formData.unit,
@@ -57,24 +59,57 @@ export default function TestForm() {
         posisi: formData.posisi,
         tokenPeserta: formData.tokenPeserta
       }
-      const res = await registerPeserta(form)
-      
-      const startTime = Date.now();
-      localStorage.setItem("examStartTime", startTime.toString());
-      
-      sessionStorage.setItem('testSession', 
-        JSON.stringify({
-          sessionId: res.data.data.sessionId,
-          pesertaId: res.data.data.pesertaId,
-          tests: res.data.data.tests,
-          currentIndex: 0
-        })
-      )
+      // if (!formData.nik) {
+      //   return
+      // }
+    
+      // const isExpired = await userExpiredDate(form.nik)
+      // console.log('ini isi expired', isExpired)
+      // const statusCode = isExpired.data.statusCode
+      // console.log('ini statusCode:', statusCode)
 
-      router.push('/tests/welcome')
+      // if(statusCode === 0 || statusCode === 2) {
+      //   const res = await registerPeserta(form)
+      //   const startTime = Date.now();
+      //   localStorage.setItem("examStartTime", startTime.toString());
+        
+      //   sessionStorage.setItem('testSession', 
+      //     JSON.stringify({
+      //       sessionId: res.data.data.sessionId,
+      //       pesertaId: res.data.data.pesertaId,
+      //       tests: res.data.data.tests,
+      //       currentIndex: 0
+      //     })
+      //   )
+        const res = await registerPeserta(form)
+        const statusCode = res.data.statusCode
 
+        if (statusCode === 3) {
+            setErrorMessage('Peserta masih aktif, belum perlu tes ulang')
+            return
+        }
+
+        if (!res.data.status) {
+            setErrorMessage(res.data.message)
+            return
+        }
+
+        // statusCode 0 atau 2 → lanjut ke tes
+        const startTime = Date.now()
+        localStorage.setItem("examStartTime", startTime.toString())
+
+        sessionStorage.setItem('testSession', 
+            JSON.stringify({
+                sessionId: res.data.data.sessionId,
+                pesertaId: res.data.data.pesertaId,
+                tests: res.data.data.tests,
+                currentIndex: 0
+            })
+        )
+
+        router.push('/tests/welcome')
+      
     } catch (err:any) {
-      // alert(err.response?.data?.message || 'Login gagal');
       setErrorMessage(err.response?.data?.message || 'Login gagal')
       } finally {
         setIsSubmitting(false);
@@ -161,6 +196,24 @@ export default function TestForm() {
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
                 placeholder="Masukkan email"
+                autoComplete='off'
+              />
+            </div>
+
+            {/* NIK */}
+            <div>
+              <label htmlFor="nik" className="block text-sm font-medium text-gray-700 mb-1">
+                Nomor Induk Kependudukan (NIK)
+              </label>
+              <input
+                type="text"
+                name="nik"
+                id="nik"
+                required
+                value={formData.nik}
+                onChange={handleChange}
+                className="w-full rounded-md border border-gray-300 bg-gray-50 py-2 px-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition text-sm"
+                placeholder="Masukkan Nomor Induk Kependudukan (NIK)"
                 autoComplete='off'
               />
             </div>

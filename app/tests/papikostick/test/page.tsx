@@ -191,6 +191,7 @@ export default function PapiTestPage() {
     
     const handleTestComplete = async () => {
         try {
+            const setLoading = setIsLoading(true)
             const testSession = sessionStorage.getItem('testSession')
             localStorage.removeItem('tempAnswers')
             localStorage.removeItem('isPassed')
@@ -203,7 +204,7 @@ export default function PapiTestPage() {
             console.log('ini test4:', tests)
             const res = await storeAnswersPapikostik(sessionId, answers)
 
-            const statusTest = await updateStatusTest(sessionId);
+            
 
             const pesertaId = testSessionParsed.pesertaId;
             const trigger = await triggerN8n(pesertaId, tests);
@@ -219,7 +220,9 @@ export default function PapiTestPage() {
                 localStorage.setItem("examStartTime", startTime.toString());
                 router.push(`/tests/${newTests.toLowerCase()}`); 
             } else {
+                const statusTest = await updateStatusTest(sessionId);
                 sessionStorage.removeItem('testSession');
+                localStorage.removeItem('examStartTime')
                 router.push('/result');
             }
         } catch(error) {

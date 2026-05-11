@@ -223,7 +223,7 @@ export default function CFITSubtest4Test() {
             const sessionId = testSessionParsed.sessionId;
 
             const res = await storeAnswersCfit(sessionId, answers);
-            const statusTest = await updateStatusTest(sessionId);
+            
 
             const pesertaId = testSessionParsed.pesertaId;
             const trigger = await triggerN8n(pesertaId, tests);
@@ -239,7 +239,9 @@ export default function CFITSubtest4Test() {
                 localStorage.setItem("examStartTime", startTime.toString());
                 router.push(`/tests/${newTests.toLowerCase()}`); 
             } else {
+                const statusTest = await updateStatusTest(sessionId);
                 sessionStorage.removeItem('testSession');
+                localStorage.removeItem('examStartTime')
                 router.push('/result');
             }
         } catch (error) {
