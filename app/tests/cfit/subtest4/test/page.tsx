@@ -224,7 +224,10 @@ export default function CFITSubtest4Test() {
 
             const res = await storeAnswersCfit(sessionId, answers);
             
-
+            if (!res || !res.status) {
+                console.error('gagal menyimpan jawaban')
+                return 
+            }
             const pesertaId = testSessionParsed.pesertaId;
             const trigger = await triggerN8n(pesertaId, tests);
 

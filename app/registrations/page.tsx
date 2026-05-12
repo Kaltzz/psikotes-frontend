@@ -59,28 +59,7 @@ export default function TestForm() {
         posisi: formData.posisi,
         tokenPeserta: formData.tokenPeserta
       }
-      // if (!formData.nik) {
-      //   return
-      // }
-    
-      // const isExpired = await userExpiredDate(form.nik)
-      // console.log('ini isi expired', isExpired)
-      // const statusCode = isExpired.data.statusCode
-      // console.log('ini statusCode:', statusCode)
-
-      // if(statusCode === 0 || statusCode === 2) {
-      //   const res = await registerPeserta(form)
-      //   const startTime = Date.now();
-      //   localStorage.setItem("examStartTime", startTime.toString());
-        
-      //   sessionStorage.setItem('testSession', 
-      //     JSON.stringify({
-      //       sessionId: res.data.data.sessionId,
-      //       pesertaId: res.data.data.pesertaId,
-      //       tests: res.data.data.tests,
-      //       currentIndex: 0
-      //     })
-      //   )
+      
         const res = await registerPeserta(form)
         const statusCode = res.data.statusCode
 
