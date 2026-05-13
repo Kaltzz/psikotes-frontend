@@ -59,7 +59,7 @@ export default function AdminPeserta() {
                             const status = item.testSession[0].statusTest
                             return (
                             <tr
-                                key={item.nama}
+                                key={item.id}
                                 className="border-b border-gray-300 text-base"
                             >
                                 <td className="py-2 px-4">{item.nama}</td>
